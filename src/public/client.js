@@ -5,6 +5,7 @@ let logPass = document.querySelector(".l-password");
 let regBut = document.querySelector(".r-button");
 let regUser = document.querySelector(".r-username");
 let regEmail = document.querySelector(".r-email");
+let regTel = document.querySelector(".r-tel");
 let regPass = document.querySelector(".r-password");
 let regRepPass = document.querySelector(".r-rep-password");
 
@@ -32,10 +33,15 @@ regBut.addEventListener("click",()=>{
     let regValues={
         username: regUser.value,
         email: regEmail.value,
+        tel: regTel.value,
         pass: regPass.value,
         rPass: regRepPass.value
-    }
-    fetch("/register-account",regValues)
+    };
+    fetch("/register-account",{
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(regValues)
+    })
     .then( res => res.json())
     .then( dataRes =>{
         if(dataRes.error){
