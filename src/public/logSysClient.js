@@ -21,10 +21,10 @@ logBut.addEventListener("click",()=>{
     })
     .then(res =>res.json())
     .then(data => {
-        if(data.error){
-            data.error.forEach(err => console.log("Error: "+err.msg));
-            return 
-        }
+        if(data==undefined)return;
+        if(data.errors==undefined)return;
+        data.errors.forEach(err => console.log("Error: "+err.msg));
+        return 
         console.log(data);
     });
 })
@@ -42,12 +42,14 @@ regBut.addEventListener("click",()=>{
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(regValues)
     })
-    .then( res => res.json())
+    .then( res => {
+        if(res.status==400){return res.json()}
+        else{window.location.href="./index.html"}
+    })
     .then( dataRes =>{
-        if(dataRes.error){
-            return dataRes.errors.forEach(err=>console.log(err));
-        }
-        console.log(dataRes.msg);
+        if(dataRes==undefined)return;
+        if(dataRes.errors==undefined)return;
+        dataRes.errors.forEach(err=>alert("Error al ingresar datos de registro: "+err.msg));
 
     })
 })
