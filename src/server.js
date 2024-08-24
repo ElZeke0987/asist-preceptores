@@ -1,18 +1,21 @@
-const mysql = require("mysql");
+const mysql = require("mysql2/promise");
 
-async function mySQLConnection(query){
-    let conn = mysql.createConnection({
+async function mySQLConnection(query, func, args){
+    let conn = await mysql.createConnection({
         host: "127.0.0.1",
         database: "escuela",
         user: "root",
         password: ""
     })
     try{
-        await query(conn);//Aca esta el unico problema que tengo ahora, las query deben ser promesas y necesito mysql2/promise
+        let [results]=await conn.execute(query, data);//query(conn);
+        func(res,...args);
+        if(results)return results;
+        
     }catch (error){
         throw error;
     }finally{
-        conn.end();
+        await conn.end();
     }
     
 }
@@ -30,26 +33,19 @@ let public = path.join(__dirname, "public");
 app.use(express.static(public));
 app.use(express.json());
 
-function vldExistence(fld, val){
+async function vldExistence(fld, val){
     let qry=`SELECT * FROM cuenta WHERE ${fld}='${val}'`;
-    let state;
-    mySQLConnection((conn)=>{
-        let state;
-        conn.query(qry, (err, results)=>{
-            if(results[0]!=undefined) {
-                console.log(`${fld} ${val} already exists`)
-                state=false;
-                return state;
-            }
-            state=true;
-            return state;
-        });
+    return await mySQLConnection(async (conn)=>{
+        let [err, result] = await conn.execute(qry)
+        if(err)throw err;
+        if(results[0]!=undefined) {
+            console.log("Field existente para "+val+": true");
+            return true;
+        }
+        console.log("Field existente para "+val+": false");
+        return false;
+            
        
-    }).then((s)=>{
-        console.log("line 57: ",s)
-        return s;
-    }).catch((err)=>{
-        throw err;
     })
 }
 
@@ -73,19 +69,16 @@ app.post("/login-account",[
     }
 
     mySQLConnection((conn)=>{
-        conn.query(`
+        let [err, result]=conn.execute(`
             SELECT * FROM cuenta 
             WHERE username = ${dataBody.userOEmail} 
             OR email = ${dataBody.userOEmail} 
-            AND password = ${dataBody.password}`, 
-            (err, result)=>{
-                if(err){
-                    res.send({msg:"Hubo un error en la contraseña o el usuario "+err});
-                    return err;
-                }
-                res.send("LOGEO TOTALMENTE EXITOSO")
-                
-        })
+            AND password = ${dataBody.password}`)
+        if(err){
+            res.send({msg:"Hubo un error en la contraseña o el usuario "+err});
+            return err;
+        }
+        res.send("LOGEO TOTALMENTE EXITOSO")
     })
 })
 
@@ -101,8 +94,8 @@ app.post("/register-account",
         if(value != req.body.pass){throw new Error("Passwords do not match");return false;}
         return true;
     }),
-    body("username", "username already exists").custom(value=> {console.log(vldExistence("username", value))}),
-    body("email", "email already exists").custom(value=>{console.log(vldExistence("email", value))}),
+    body("username", "username already exists").custom(value=> {console.log("Verificacion de usuario existente: ",vldExistence("username", value))}),
+    body("email", "email already exists").custom(value=>{console.log("Verificacion de email existente: ",vldExistence("email", value))}),
     ],
     (req, res)=>{
         let body = req.body;
@@ -116,11 +109,12 @@ app.post("/register-account",
         ?, NULL)`
         
         mySQLConnection((conn)=>{
-            conn.query(queryIns, [body.username, body.email, body.pass, telNumber],
-            (err)=>{
-                if(err){throw err};
+            try{
+                let results=conn.execute(queryIns, [body.username, body.email, body.pass, telNumber])
                 console.log("Registro exitoso de "+body.username+" email: "+body.email); //Se puede quitar
-            })
+            }catch(err){throw err}
+                
+                
         })
 })
 
