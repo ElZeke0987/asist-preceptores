@@ -115,7 +115,10 @@ function requestToLoadCourses(tr){
     loadBd.body = JSON.stringify({
         turno: trn
     })
-    fetch("/load-courses", loadBd).then(res=>res.json()).then(data=>renderCourses(data.couList));
+    
+    fetch("/load-courses", loadBd)
+    .then(res=>res.json())
+    .then(data=>renderCourses(data.couList));
 }
 requestToLoadCourses();
 
