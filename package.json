@@ -4,6 +4,12 @@
     "express-validator": "^7.2.0",
     "mysql": "^2.18.1",
     "mysql2": "^3.11.0",
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.4",
+    "server-mods": "file:src/back/servMods",
+    "server-modules": "file:src/back/servMods"
+  },
+  "type": "module",
+  "scripts": {
+    "server": "node ./src/back/server.js"
   }
 }

@@ -1,56 +1,21 @@
-const mysql = require("mysql2/promise");
+import * as mysql from "mysql2/promise";
+import { mySQLConnection, vldExistence } from "./servMods/connection.js";
+import { body, validationResult } from "express-validator";
+import express from "express";
+import { readFile } from "fs";
+import {join, dirname} from "path";
+import { error, time } from "console";
+import { fileURLToPath } from "url";
 
-async function mySQLConnection(query, func, args){
-    let conn = await mysql.createConnection({
-        host: "127.0.0.1",
-        database: "escuela",
-        user: "root",
-        password: ""
-    })
-    try{
-        let [results]=await conn.execute(query, data);//query(conn);
-        func(res,...args);
-        if(results)return results;
-        
-    }catch (error){
-        throw error;
-    }finally{
-        await conn.end();
-    }
-    
-}
-
-const { body, validationResult } = require("express-validator");
-
-const express = require("express");
-const fs = require("fs");
-const path = require("path");
-const { error, time } = require("console");
-
+let __dirname = dirname(fileURLToPath(import.meta.url))
 let app = express();
-let public = path.join(__dirname, "public");
+let publico = join(__dirname, "../public");
 
-app.use(express.static(public));
+app.use(express.static(publico));
 app.use(express.json());
 
-async function vldExistence(fld, val){
-    let qry=`SELECT * FROM cuenta WHERE ${fld}='${val}'`;
-    return await mySQLConnection(async (conn)=>{
-        let [err, result] = await conn.execute(qry)
-        if(err)throw err;
-        if(results[0]!=undefined) {
-            console.log("Field existente para "+val+": true");
-            return true;
-        }
-        console.log("Field existente para "+val+": false");
-        return false;
-            
-       
-    })
-}
-
 app.get("/", (req, res)=>{
-    fs.readFile(path.join(public, "index.html"), (err, page)=>{
+    fs.readFile(join(publico, "index.html"), (err, page)=>{
         if(err)throw err;
         res.setHeader("Content-Type", "text/html")
         res.sendFile(page);
@@ -67,19 +32,12 @@ app.post("/login-account",[
     if(!errors.isEmpty()){
         return res.status(400).json({errors: errors.array()});
     }
-
-    mySQLConnection((conn)=>{
-        let [err, result]=conn.execute(`
-            SELECT * FROM cuenta 
-            WHERE username = ${dataBody.userOEmail} 
-            OR email = ${dataBody.userOEmail} 
-            AND password = ${dataBody.password}`)
-        if(err){
-            res.send({msg:"Hubo un error en la contraseña o el usuario "+err});
-            return err;
-        }
-        res.send("LOGEO TOTALMENTE EXITOSO")
-    })
+    let queryLog = `
+    SELECT * FROM cuenta 
+    WHERE username = ?
+    OR email = ? 
+    AND password = ?`;
+    mySQLConnection(queryLog, [dataBody.userOEmail, dataBody.userOEmail, dataBody.password])
 })
 
 app.post("/register-account",
@@ -107,43 +65,14 @@ app.post("/register-account",
         INSERT INTO cuenta (id, username, email, password, reg_date, telefono,imagen) 
         VALUES (NULL, ?, ?, ?, current_timestamp(), 
         ?, NULL)`
-        
-        mySQLConnection((conn)=>{
-            try{
-                let results=conn.execute(queryIns, [body.username, body.email, body.pass, telNumber])
-                console.log("Registro exitoso de "+body.username+" email: "+body.email); //Se puede quitar
-            }catch(err){throw err}
-                
-                
-        })
+        mySQLConnection(queryIns, [body.username, body.email, body.pass, telNumber])
 })
 
-app.post("/load-courses", (req, res)=>{
-    res.setHeader("Content-Type", "application/json");
-    let searchCourse=`SELECT * FROM cursos WHERE turno='${req.body.turno}' `
-    mySQLConnection((conn)=>{
-        conn.query(searchCourse, (err, cursos)=>{
-            if(err) throw err;
-            res.send({couList: cursos});
-        })
-    })
-})
+import { loadCourses, loadAlumns } from "./servMods/endpoints/loadPoints.js";
 
-app.post("/load-alumns", (req,res)=>{
-    let alumnsParamsBody = req.body;
-    res.setHeader("Content-Type", "application/json");
-    let searchAlumns= alumnsParamsBody.grupo ?
-    `SELECT * FROM alumnos WHERE curso_id=${alumnsParamsBody.courseId} AND grupo_tal='${alumnsParamsBody.grupo}'`
-    :
-    `SELECT * FROM alumnos WHERE curso_id=${alumnsParamsBody.courseId}`;
-    
-    mySQLConnection((conn)=>{
-        conn.query(searchAlumns, (err, alumnos)=>{
-            if(err) throw err;
-            res.send({alumnsList: alumnos})
-        })
-    })
-})
+app.post("/load-courses", (req, res)=>loadCourses(req, res))
+
+app.post("/load-alumns", (req,res)=>loadAlumns(req, res))
 
 app.post("/submit-presence",(req, res)=>{
     let asistBody = req.body;
