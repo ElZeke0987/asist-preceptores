@@ -1,9 +1,8 @@
 import { mySQLConnection } from "../connection.js";
 
-export function loadCourses(req, res){
+export function loadCourses(req, res){//Funcion llamada en server.js:74,39
     res.setHeader("Content-Type", "application/json");
-    let searchCourse=`SELECT * FROM cursos WHERE turno=? `
-    console.log(req.body.turno);
+    let searchCourse=`SELECT * FROM cursos WHERE turno=? `;
     mySQLConnection(searchCourse, [req.body.turno]).then(v=>res.send({couList: v})) ;
 }
 

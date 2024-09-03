@@ -69,33 +69,13 @@ app.post("/register-account",
 })
 
 import { loadCourses, loadAlumns } from "./servMods/endpoints/loadPoints.js";
+import { submitPresence } from "./servMods/endpoints/presencePoints.js";
 
 app.post("/load-courses", (req, res)=>loadCourses(req, res))
 
 app.post("/load-alumns", (req,res)=>loadAlumns(req, res))
 
-app.post("/submit-presence",(req, res)=>{
-    let asistBody = req.body;
-    //Consultas sujeta a futuras modificaciones
-    let newClass = `INSERT INTO clases (id, materia_class_id, submit_datetime, curso_id, prof_asist, hora_enum, modulo, grupo_tal, asistencias, justificada) VALUES (NULL, NULL, current_timestamp(), ?, ?, NULL, ?, ?, ?, ?)`;
-    mySQLConnection(conn=>{
-        conn.query(newClass, [asistBody.courseId, asistBody.prof_asist, asistBody.modv, asistBody.grupo, asistBody.presentes, asistBody.justificada], 
-        (err, results)=>{
-                if(err)throw err;
-                asistBody.asistArr.forEach(asist=>{
-                    asist.justificada = asistBody.justificada ? true : asist.justificada;
-                    console.log("Alumno "+asist.nombre_alumno+" ",asist.justificada);
-                    let newAsistance = `INSERT INTO asistencias (id, alumno_id, fecha, presencia, modulo, clase_id, name_completo, grupo_tal, justificada) VALUES (NULL, ?, current_timestamp(), ?, ?, ?, ?, ?, ?)`;
-                    mySQLConnection(conn=>conn.query(newAsistance, [asist.id, asist.presencia, asistBody.modv, results.insertId, asist.nombre_alumno, asistBody.grupo, asistBody.justificada], err=>{if(err)throw err}));
-                    let alumnInas=`UPDATE alumnos SET inasistencias = inasistencias + 1 WHERE id = ?`;
-                    if(!asist.presencia&&!asist.justificada)mySQLConnection(conn=>{conn.query(alumnInas,[asist.id],err=>{if(err)throw err})});
-                })
-        })
-    })
-    
-    
-    res.send(true)
-})
+app.post("/submit-presence",(req, res)=> submitPresence(req, res))
 
 let PORT=3000;
 let HOSTNAME="127.0.0.1";

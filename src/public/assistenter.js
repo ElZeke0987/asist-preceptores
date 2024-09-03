@@ -19,7 +19,7 @@ function searchTalSelGrp(){
     let ret;
     gruposInp.forEach(opt=>{if(opt.checked)ret=opt.id})
     return ret;
-    }
+}
 
 function requestToPostInform(){
     console.log("Enviando informe...")
@@ -87,18 +87,25 @@ function renderAlumns(almList){
 }
 
 function getTourn(){
-    let datMin = new Date();
-    let datMax = new Date();
-    //Verificar que si paso el horario de entrada para x turno
-    let hsMin = datMin.getHours();
-    let minMin = datMin.getMinutes();
-    //Verificar que si todavia no llego al horario de salida para x turno
-    let hsMax = datMax.getHours();
-    let minMax = datMax.getMinutes();
+    const now = new Date(); hs = now.getHours(); min = now.getMinutes();
+    let morn ={iniciohs: 7, iniciomin: 20, finhs: 12, finmin: 19};
+    let afnoon = {iniciohs: 12, iniciomin: 20, finhs: 16, finmin: 44};
+    let night ={iniciohs: 16, iniciomin: 45, finhs: 21, finmin: 45};
     let t;
-    if ( (hsMin>=7 && minMin >= 20) && (hsMax<=12 && minMax <=15)){t="morn"}
-    if ( (hsMin>=12 && minMin >= 16) && (hsMax <=16 && minMax <=19)){ t="afnoon"}
-    if ( (hsMin>=16 && minMin >= 20) && (hsMax <=21 && minMax <=45)){ t="night"}
+    if (
+        (hs > morn.iniciohs || (hs === morn.iniciohs && min >= morn.iniciomin)) &&
+        (hs < morn.finhs || (hs === morn.finhs && min <= morn.finmin))
+    ) t="morn"
+    
+    else if(
+        (hs > afnoon.iniciohs || (hs == afnoon.iniciohs && min >= afnoon.iniciomin)) &&
+        (hs < afnoon.finhs || (hs == afnoon.finhs && min <= afnoon.finmin))
+    )t="afnoon"
+    else if(
+        (hs > night.iniciohs || (hs == night.iniciohs && min >= night.iniciomin)) &&
+        (hs < night.finhs || (hs == night.finhs && min <= night.finmin))
+    ) t="night"
+    document.querySelector("#"+t).checked=true;
     return t;
 }
 
@@ -113,9 +120,8 @@ let loadBd={
 function requestToLoadCourses(tr){
     let trn = tr ? tr : getTourn();
     loadBd.body = JSON.stringify({
-        turno: trn
+        "turno": trn
     })
-    
     fetch("/load-courses", loadBd)
     .then(res=>res.json())
     .then(data=>renderCourses(data.couList));
@@ -156,5 +162,5 @@ gruposInp.forEach(g=>{
         if(g.checked)requestToLoadAlumns(g.id);
     })
 })
-
+moduloSel.value = "aula";
 justAsist.addEventListener("change",()=>document.querySelectorAll(".alumn-item .just-asist-alumn").forEach(chk=>chk.checked=justAsist.checked))

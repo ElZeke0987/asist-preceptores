@@ -20,7 +20,7 @@ export async function mySQLConnection(query, dataArray = []){
 }
 
 
-export async function vldExistence(fld, val){
+export async function vldExistence(fld, val){//Valida la existencia de cierto usuario
     let qry=`SELECT * FROM cuenta WHERE ${fld}='${val}'`;
     return await mySQLConnection(async (conn)=>{
         let [err, result] = await conn.execute(qry)
