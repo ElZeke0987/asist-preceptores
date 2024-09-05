@@ -1,24 +1,76 @@
 
 import * as mysql from "mysql2/promise";
+import { QueryTypes, Sequelize } from "sequelize"
 let one = true;
 export async function mySQLConnection(query, dataArray = []){
-    let conn = await mysql.createConnection({
-        host: "127.0.0.1",
-        database: "escuela",
-        user: "root",
-        password: ""
+    
+    let conn = new Sequelize("escuela", "root", "", {
+        host: "localhost",
+        dialect: "mysql"
     })
     try{
-        let [results, fields]=await conn.execute(query, dataArray);
+        const [results, fields]=await conn.query(conn.escape(query), {
+            replacements: getReplacements(dataArray),
+            type: getQueryType(query), 
+            raw: true,
+        });
         if(results)return results;    
     }catch (error){
         throw error
     }
     finally{
-        await conn.end()
+        await conn.close()
     }
 }
 
+const seqConst={
+    "varchar": Sequelize.STRING,
+    "int": Sequelize.INTEGER,
+    "PRI": true,
+    "auto_increment": true,
+}
+
+export async function seqTabletoModel(sequelize, tableName) {
+    sequelize.query(`DESCRIBE ${tableName}`).then(tableColsInfo => {
+        tableColsInfo.forEach(colInfo => {
+          const modelName = tableName.charAt(0).toUpperCase() + tableName.slice(1);
+          const model = sequelize.define(modelName,{
+            id: {
+
+            }
+          });
+          console.log(`Model ${modelName} created`);
+        });
+    });
+}
+
+export async function seqSearch(tabla, campos, filtro){
+    let conn = new Sequelize("escuela", "root", "", {
+        host: "localhost",
+        dialect: "mysql"
+    })
+    seqTablesToModel(sequelize)
+    try{
+        let mdl = conn.model(tabla);
+        let res = await mdl.findAll({
+            attributes: campos,
+            where: filtro
+        })
+    }catch(err){
+        throw err
+    }finally{
+        conn.close()
+    }     
+}
+export async function seqCreate(tabla, datos){
+    let conn = new Sequelize("escuela", "root", "", {
+        host: "localhost",
+        dialect: "mysql"
+    })
+    conn.import(__dirname + "/model").then(m=>console.log(m));
+    const model= conn.model(tabla);
+    const regis = model.create()
+}
 
 export async function vldExistence(fld, val){//Valida la existencia de cierto usuario
     let qry=`SELECT * FROM cuenta WHERE ${fld}='${val}'`;

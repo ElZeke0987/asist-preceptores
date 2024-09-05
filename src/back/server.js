@@ -4,10 +4,9 @@ import { body, validationResult } from "express-validator";
 import express from "express";
 import { readFile } from "fs";
 import {join, dirname} from "path";
-import { error, time } from "console";
 import { fileURLToPath } from "url";
 
-let __dirname = dirname(fileURLToPath(import.meta.url))
+export const __dirname = dirname(fileURLToPath(import.meta.url))
 let app = express();
 let publico = join(__dirname, "../public");
 
@@ -77,7 +76,7 @@ app.post("/load-alumns", (req,res)=>loadAlumns(req, res))
 
 app.post("/submit-presence",(req, res)=> submitPresence(req, res))
 
-let PORT=3000;
+let PORT= process.env.PORT || 3000;
 let HOSTNAME="127.0.0.1";
 app.listen(PORT, HOSTNAME, (ERR)=>{
     if(ERR)throw ERR;
