@@ -2,16 +2,28 @@
 import * as mysql from "mysql2/promise";
 import { QueryTypes, Sequelize } from "sequelize"
 let one = true;
-export async function mySQLConnection(query, dataArray = []){
+
+function getQueryType(qry){
+    let queryTypes = {
+        "INSERT": QueryTypes.INSERT,
+        "SELECT": QueryTypes.SELECT,
+        "UPDATE": QueryTypes.UPDATE,
+        "DELETE": QueryTypes.DELETE
+    }
+    return queryTypes[qry.split(" ")[0]]
+}
+
+export async function mySQLConnection(query, dataArray, extraSql){
     
     let conn = new Sequelize("escuela", "root", "", {
         host: "localhost",
         dialect: "mysql"
     })
     try{
-        const [results, fields]=await conn.query(conn.escape(query), {
-            replacements: getReplacements(dataArray),
-            type: getQueryType(query), 
+        const [results, fields]=await conn.query({
+            query,
+            values: dataArray,
+            type: getQueryType(query),
             raw: true,
         });
         if(results)return results;    

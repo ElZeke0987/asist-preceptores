@@ -95,16 +95,16 @@ function getTourn(){
     if (
         (hs > morn.iniciohs || (hs === morn.iniciohs && min >= morn.iniciomin)) &&
         (hs < morn.finhs || (hs === morn.finhs && min <= morn.finmin))
-    ) t="morn"
+    ) t='morn'
     
     else if(
         (hs > afnoon.iniciohs || (hs == afnoon.iniciohs && min >= afnoon.iniciomin)) &&
         (hs < afnoon.finhs || (hs == afnoon.finhs && min <= afnoon.finmin))
-    )t="afnoon"
+    )t='afnoon'
     else if(
         (hs > night.iniciohs || (hs == night.iniciohs && min >= night.iniciomin)) &&
         (hs < night.finhs || (hs == night.finhs && min <= night.finmin))
-    ) t="night"
+    ) t='night'
     document.querySelector("#"+t).checked=true;
     return t;
 }
@@ -120,7 +120,7 @@ let loadBd={
 function requestToLoadCourses(tr){
     let trn = tr ? tr : getTourn();
     loadBd.body = JSON.stringify({
-        "turno": trn
+        "turno":  trn
     })
     fetch("/load-courses", loadBd)
     .then(res=>res.json())
