@@ -20,52 +20,11 @@ app.get("/", (req, res)=>{
         res.sendFile(page);
     })
 })
+import { logMiddles, registerMiddles } from "./servMods/endpoints/middles.js";
+import { logPoint, regPoint } from "./servMods/endpoints/accountPoints.js";
 
-app.post("/login-account",[
-    body("userOEmail").notEmpty().withMessage("Usuario o email faltante"),
-    body("password").notEmpty().withMessage("Campo de contraseña vacio")
-],(req, res)=>{
-    let dataBody = req.body;
-    let errors = validationResult(req);
-    res.setHeader("Content-Type", "application/json");
-    if(!errors.isEmpty()){
-        return res.status(400).json({errors: errors.array()});
-    }
-    let queryLog = `
-    SELECT * FROM cuenta 
-    WHERE username = ?
-    OR email = ? 
-    AND password = ?`;
-    mySQLConnection(queryLog, [dataBody.userOEmail, dataBody.userOEmail, dataBody.password])
-})
-
-app.post("/register-account",
-    [
-    body("username", "Username required").not().isEmpty(),
-    body("email", "email is required").not().isEmpty(),
-    body("email", "Write correctly the email").isEmail(),
-    body("tel", "tel number is required").not().isEmpty(),
-    body("pass", "Password required").not().isEmpty(),
-    body("rPass", "Repeat password please").not().isEmpty(),
-    body("rPass", "Both password fields will be the same").custom((value, { req })=>{
-        if(value != req.body.pass){throw new Error("Passwords do not match");return false;}
-        return true;
-    }),
-    body("username", "username already exists").custom(value=> {console.log("Verificacion de usuario existente: ",vldExistence("username", value))}),
-    body("email", "email already exists").custom(value=>{console.log("Verificacion de email existente: ",vldExistence("email", value))}),
-    ],
-    (req, res)=>{
-        let body = req.body;
-        let errors = validationResult(req);
-        res.setHeader("Content-Type", "application/json");
-        if(!errors.isEmpty()){return res.status(400).json({errors: errors.array()})}
-        let telNumber = body.tel != "" ? body.tel:"NULL";
-        let queryIns=`
-        INSERT INTO cuenta (id, username, email, password, reg_date, telefono,imagen) 
-        VALUES (NULL, ?, ?, ?, current_timestamp(), 
-        ?, NULL)`
-        mySQLConnection(queryIns, [body.username, body.email, body.pass, telNumber])
-})
+app.post("/login-account", logMiddles,(req, res)=>logPoint(req, res));
+app.post("/register-account",registerMiddles,(req, res)=>regPoint(req, res));
 
 import { loadCourses, loadAlumns } from "./servMods/endpoints/loadPoints.js";
 import { submitPresence } from "./servMods/endpoints/presencePoints.js";
