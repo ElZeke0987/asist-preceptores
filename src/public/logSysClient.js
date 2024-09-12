@@ -43,12 +43,17 @@ regBut.addEventListener("click",()=>{
         body: JSON.stringify(regValues)
     })
     .then( res => {
-        if(res.status==400){return res.json()}
-        else{window.location.href="./index.html"}
+        console.log(res.status);
+        return res.json()
     })
     .then( dataRes =>{
-        if(dataRes==undefined)return;
-        if(dataRes.errors==undefined)return;
+        console.log("SHAME")
+        if(dataRes==undefined){return};
+        if(dataRes.errors==undefined){
+            window.location.href="./index.html";
+            console.log("Cambiando pagina");//1234%t&6eE
+            return
+        };
         dataRes.errors.forEach(err=>alert("Error al ingresar datos de registro: "+err.msg));
 
     })

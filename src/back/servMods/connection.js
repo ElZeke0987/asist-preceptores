@@ -11,7 +11,7 @@ function getQueryType(qry){
     return queryTypes[qry.split(" ")[0]]
 }
 
-export async function mySQLConnection(query, dataArray, extraSql){
+export async function mySQLConnection(query, dataArray){
     
     let conn = new Sequelize("escuela", "root", "", {
         host: "localhost",
