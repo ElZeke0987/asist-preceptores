@@ -1,3 +1,4 @@
+import { body } from "express-validator";
 
 async function vldExistence(fld, val){//Valida la existencia de cierto usuario
     let qry=`SELECT * FROM cuenta WHERE ${fld}='${val}'`;

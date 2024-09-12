@@ -1,3 +1,5 @@
+import { validationResult } from "express-validator";
+
 export function logPoint(req, res){
     let dataBody = req.body;
     let errors = validationResult(req);

@@ -1,5 +1,5 @@
 import * as mysql from "mysql2/promise";
-import { mySQLConnection, vldExistence } from "./servMods/connection.js";
+import { mySQLConnection } from "./servMods/connection.js";
 import { body, validationResult } from "express-validator";
 import express from "express";
 import { readFile } from "fs";
