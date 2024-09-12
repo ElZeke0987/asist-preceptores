@@ -6,7 +6,7 @@ let checkAll = document.querySelector(".check-all input");
 let moduloSel = document.querySelector(".modulo");
 let justAsist = document.querySelector(".just-asist input");
 let gruposInp= grupoTaller.querySelectorAll("input");
-
+moduloSel.value="aula";
 function checkAllFunc(alItem){
     let a = alItem?  alItem.querySelector("input[type='checkbox']"):document.querySelectorAll(".alumn-item .pres-alumn");
     if(alItem)a.checked=checkAll.checked;
@@ -146,7 +146,11 @@ function requestToLoadAlumns(group){
     fetch("/load-alumns", alumnReq).then(res=>res.json()).then(data=>renderAlumns(data.alumnsList))
 }
 
-function grpOpts (){if(moduloSel.value=="taller"){grupoTaller.style.display = "flex"; return}grupoTaller.style.display = "none"; requestToLoadAlumns()}
+function grpOpts (){
+    if(moduloSel.value=="taller"){grupoTaller.style.display = "flex"; return}
+    grupoTaller.style.display = "none"; 
+    requestToLoadAlumns()
+}
 grpOpts();
 
 moduloSel.addEventListener("change", ()=>{
