@@ -12,6 +12,7 @@ let publico = join(__dirname, "../public");
 
 app.use(express.static(publico));
 app.use(express.json());
+app.use( cors )
 
 app.get("/", (req, res)=>{
     fs.readFile(join(publico, "index.html"), (err, page)=>{

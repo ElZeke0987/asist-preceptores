@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "server": "vite node ./src/back/server.js",
+    "server": "vite build ,node ./src/back/server.js",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
