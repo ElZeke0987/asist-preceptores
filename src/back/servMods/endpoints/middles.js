@@ -1,22 +1,34 @@
 import { body } from "express-validator";
 import { mySQLConnection } from "../connection.js";
 
+function userValues(){
+    return{
+        id: 1,
+        username: res[0].username,
+        email: res[0].email,
+        tel: res[0].telefono,
+        rol: res[0].rol,
+        imagenUrl: res[0].imagen,
 
+    }
+}
 
 async function vldExistence(fld, val){//Valida la existencia de cierto usuario en base a cierta condicion
     let qry=fld[1]?`SELECT * FROM cuentas WHERE ${fld[0]}=? OR ${fld[1]}=?`:`SELECT * FROM cuentas WHERE ${fld}=?`;//Dinamico entre arrays (varias condiciones) y solo una condi.
     let rep = fld[1]?[val, val]:[val];
-    let toRet;
-    await mySQLConnection(qry, rep).then(res=>toRet = res[0] == undefined);//Si no hay nada de lo que buscaste devuelve true
+    let res = await mySQLConnection(qry, rep);//Si no hay nada de lo que buscaste devuelve true
     //console.log(" Validating unexistence of "+fld+" "+val+": "+toRet);
-    return toRet;
+    if(res[0]==undefined) return true;
+    return userValues(res);
 }
 
 async function validPass(pass, userOEmail) {
     let qry=`SELECT * FROM cuentas WHERE (username=? OR email=?) AND password=?`;
     let rep= [userOEmail, userOEmail, pass];
     let res = await mySQLConnection(qry, rep);
-    return res[0]==undefined;//Si no hay coincidencias la verificacion de contraseña falla
+    if (res[0]==undefined) return true;
+    return userValues(res)
+    //Si no hay coincidencias la verificacion de contraseña falla
     //true por que fallo, false si no hubo errores.
 }
 //1234%t&6eE
@@ -37,14 +49,13 @@ export const registerMiddles = [
         return true;
     }),
     body("username", "username already exists").custom(async value=> {
-        let toRet;
-        await vldExistence(["username"], value).then(dt=>toRet=dt);
-        if(!toRet)throw new Error("Username already exists");
+        let res = await vldExistence(["username"], value);
+        if(!res && !res.username)throw new Error("Username already exists");
     }),
-    body("email", "email already exists").custom(async value=>{
-        let toRet;
-        await vldExistence(["email"], value).then(dt=>toRet=dt);
-        if(!toRet)throw new Error("Email already exists");
+    body("email", "email already exists").custom(async (value, {req})=>{
+        let res = await vldExistence(["email"], value);
+        if(!res && !res.username)throw new Error("Email already exists");
+        req.body.userBody = res;
     }),
 ]
 export const logMiddles = [
@@ -57,9 +68,8 @@ export const logMiddles = [
     }),
     body("password").custom(async (pass, { req })=>{
         if(!req.body.userOEmail||!pass||req.body.existUser==false){return};
-        let verified=await validPass(pass, req.body.userOEmail);
-        console.log("Incon2: ",verified);
-        if( verified ){throw new Error("Password isn't correct")};
-
-    }),
+        let userBody=await validPass(pass, req.body.userOEmail);
+        if( userBody.validation ){throw new Error("Password isn't correct")};
+        req.body.userBody = userBody;
+    }),//A futuro hacer el middleware mas avanzado y que si ingresa muchas veces una contraseña poner cooldown
 ];

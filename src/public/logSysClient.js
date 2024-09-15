@@ -1,3 +1,5 @@
+import { readWriteOnly } from "./clientMods/indexedDBmods";
+
 let logBut = document.querySelector(".l-button");
 let logUsEm = document.querySelector(".l-useroemail");
 let logPass = document.querySelector(".l-password");
@@ -9,11 +11,16 @@ let regTel = document.querySelector(".r-tel");
 let regPass = document.querySelector(".r-password");
 let regRepPass = document.querySelector(".r-rep-password");
 
+let postDestination = "./account.html";
+
+
+
 logBut.addEventListener("click",()=>{
     let logValues={
         userOEmail: logUsEm.value,
         password: logPass.value,
         existUser: true,
+        userBody: undefined,
     }
     fetch("/login-account",{
         method: "POST",
@@ -24,8 +31,9 @@ logBut.addEventListener("click",()=>{
     .then(data => {
         if(data==undefined)return;
         if(data.errors==undefined){//zona post logeo
-            window.location.href="./index.html";
+            window.location.href=postDestination;
             console.log("Logged as: "+logUsEm.value+" pass: "+logPass.value)
+            readWriteOnly("readwrite", data.body.userBody)
             return
         };
         data.errors.forEach(err => alert("Error: "+err.msg));//zona de manejo de errores
@@ -38,7 +46,8 @@ regBut.addEventListener("click",()=>{
         email: regEmail.value,
         tel: regTel.value,
         pass: regPass.value,
-        rPass: regRepPass.value
+        rPass: regRepPass.value,
+        userBody: undefined,
     };
     fetch("/register-account",{
         method: "POST",
@@ -53,8 +62,9 @@ regBut.addEventListener("click",()=>{
         console.log("SHAME")
         if(dataRes==undefined){return};
         if(dataRes.errors==undefined){//zona post registro
-            window.location.href="./index.html";
+            window.location.href=postDestination;
             console.log("Cambiando pagina");//1234%t&6eE
+            readWriteOnly("readwrite", data.userBody)
             return
         };
         dataRes.errors.forEach(err=>alert("Error al ingresar datos de registro: "+err.msg));//zona de manejo de errores
