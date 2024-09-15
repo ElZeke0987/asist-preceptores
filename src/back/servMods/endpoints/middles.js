@@ -1,7 +1,7 @@
 import { body } from "express-validator";
 import { mySQLConnection } from "../connection.js";
 
-function userValues(){
+function userValues(res){
     return{
         id: 1,
         username: res[0].username,
@@ -17,17 +17,15 @@ async function vldExistence(fld, val){//Valida la existencia de cierto usuario e
     let qry=fld[1]?`SELECT * FROM cuentas WHERE ${fld[0]}=? OR ${fld[1]}=?`:`SELECT * FROM cuentas WHERE ${fld}=?`;//Dinamico entre arrays (varias condiciones) y solo una condi.
     let rep = fld[1]?[val, val]:[val];
     let res = await mySQLConnection(qry, rep);//Si no hay nada de lo que buscaste devuelve true
-    //console.log(" Validating unexistence of "+fld+" "+val+": "+toRet);
-    if(res[0]==undefined) return true;
-    return userValues(res);
+    //console.log(" Validating unexistence of "+fld+" "+val+": ", res[0]==undefined ?true:userValues(res));
+    return res[0]==undefined ?true:userValues(res);
 }
 
 async function validPass(pass, userOEmail) {
     let qry=`SELECT * FROM cuentas WHERE (username=? OR email=?) AND password=?`;
     let rep= [userOEmail, userOEmail, pass];
     let res = await mySQLConnection(qry, rep);
-    if (res[0]==undefined) return true;
-    return userValues(res)
+    return res[0]==undefined?true: userValues(res);
     //Si no hay coincidencias la verificacion de contraseña falla
     //true por que fallo, false si no hubo errores.
 }
@@ -58,18 +56,22 @@ export const registerMiddles = [
         req.body.userBody = res;
     }),
 ]
+//1234%t&6eE
 export const logMiddles = [
     body("userOEmail").notEmpty().withMessage("Usuario o email faltante"),
     body("password").notEmpty().withMessage("Campo de contraseña vacio"),
     body("userOEmail").custom( async (value, { req })=>{
         if(!value||!req.body.password)return;
         let toRet=await vldExistence(["username", "email"], value);
-        if(toRet){req.body.existUser=false; throw new Error("Username or email doesn't exist")}
+        //console.log("toRet: ",toRet);
+        if(toRet==true){req.body.existUser=false; throw new Error("Username or email doesn't exist")}
+        req.body.userBody = toRet
     }),
     body("password").custom(async (pass, { req })=>{
         if(!req.body.userOEmail||!pass||req.body.existUser==false){return};
         let userBody=await validPass(pass, req.body.userOEmail);
-        if( userBody.validation ){throw new Error("Password isn't correct")};
+        //console.log(userBody);
+        if( userBody==true ){throw new Error("Password isn't correct")};
         req.body.userBody = userBody;
     }),//A futuro hacer el middleware mas avanzado y que si ingresa muchas veces una contraseña poner cooldown
 ];

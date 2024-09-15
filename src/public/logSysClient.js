@@ -1,4 +1,4 @@
-import { readWriteOnly } from "./clientMods/indexedDBmods";
+import { createDatabase, readWriteOnly } from "./clientMods/indexedDBmods.js";
 
 let logBut = document.querySelector(".l-button");
 let logUsEm = document.querySelector(".l-useroemail");
@@ -13,14 +13,13 @@ let regRepPass = document.querySelector(".r-rep-password");
 
 let postDestination = "./account.html";
 
-
+createDatabase();
 
 logBut.addEventListener("click",()=>{
     let logValues={
         userOEmail: logUsEm.value,
         password: logPass.value,
         existUser: true,
-        userBody: undefined,
     }
     fetch("/login-account",{
         method: "POST",
@@ -28,12 +27,12 @@ logBut.addEventListener("click",()=>{
         body: JSON.stringify(logValues)
     })
     .then(res =>res.json())
-    .then(data => {
+    .then(async data => {
         if(data==undefined)return;
         if(data.errors==undefined){//zona post logeo
             window.location.href=postDestination;
-            console.log("Logged as: "+logUsEm.value+" pass: "+logPass.value)
-            readWriteOnly("readwrite", data.body.userBody)
+            console.log("Logged as: ", data.userBody)
+            await readWriteOnly("readwrite", data.userBody)
             return
         };
         data.errors.forEach(err => alert("Error: "+err.msg));//zona de manejo de errores
@@ -58,13 +57,12 @@ regBut.addEventListener("click",()=>{
         console.log(res.status);
         return res.json()
     })
-    .then( dataRes =>{
-        console.log("SHAME")
+    .then( async dataRes =>{
         if(dataRes==undefined){return};
         if(dataRes.errors==undefined){//zona post registro
             window.location.href=postDestination;
-            console.log("Cambiando pagina");//1234%t&6eE
-            readWriteOnly("readwrite", data.userBody)
+            //1234%t&6eE
+            await readWriteOnly("readwrite", data.userBody)
             return
         };
         dataRes.errors.forEach(err=>alert("Error al ingresar datos de registro: "+err.msg));//zona de manejo de errores
