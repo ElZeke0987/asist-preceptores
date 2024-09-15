@@ -12,7 +12,8 @@ let regRepPass = document.querySelector(".r-rep-password");
 logBut.addEventListener("click",()=>{
     let logValues={
         userOEmail: logUsEm.value,
-        password: logPass.value
+        password: logPass.value,
+        existUser: true,
     }
     fetch("/login-account",{
         method: "POST",
@@ -22,10 +23,12 @@ logBut.addEventListener("click",()=>{
     .then(res =>res.json())
     .then(data => {
         if(data==undefined)return;
-        if(data.errors==undefined)return;
-        data.errors.forEach(err => console.log("Error: "+err.msg));
-        return 
-        console.log(data);
+        if(data.errors==undefined){//zona post logeo
+            window.location.href="./index.html";
+            console.log("Logged as: "+logUsEm.value+" pass: "+logPass.value)
+            return
+        };
+        data.errors.forEach(err => alert("Error: "+err.msg));//zona de manejo de errores
     });
 })
 
@@ -49,12 +52,12 @@ regBut.addEventListener("click",()=>{
     .then( dataRes =>{
         console.log("SHAME")
         if(dataRes==undefined){return};
-        if(dataRes.errors==undefined){
+        if(dataRes.errors==undefined){//zona post registro
             window.location.href="./index.html";
             console.log("Cambiando pagina");//1234%t&6eE
             return
         };
-        dataRes.errors.forEach(err=>alert("Error al ingresar datos de registro: "+err.msg));
+        dataRes.errors.forEach(err=>alert("Error al ingresar datos de registro: "+err.msg));//zona de manejo de errores
 
     })
 })

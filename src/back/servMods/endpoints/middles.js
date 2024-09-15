@@ -3,13 +3,23 @@ import { mySQLConnection } from "../connection.js";
 
 
 
-async function vldExistence(fld, val){//Valida la existencia de cierto usuario
-    let qry=`SELECT * FROM cuentas WHERE ${fld}=?`;
+async function vldExistence(fld, val){//Valida la existencia de cierto usuario en base a cierta condicion
+    let qry=fld[1]?`SELECT * FROM cuentas WHERE ${fld[0]}=? OR ${fld[1]}=?`:`SELECT * FROM cuentas WHERE ${fld}=?`;//Dinamico entre arrays (varias condiciones) y solo una condi.
+    let rep = fld[1]?[val, val]:[val];
     let toRet;
-    await mySQLConnection(qry, [val]).then(res=>toRet = res[0] == undefined);
+    await mySQLConnection(qry, rep).then(res=>toRet = res[0] == undefined);//Si no hay nada de lo que buscaste devuelve true
+    //console.log(" Validating unexistence of "+fld+" "+val+": "+toRet);
     return toRet;
 }
 
+async function validPass(pass, userOEmail) {
+    let qry=`SELECT * FROM cuentas WHERE (username=? OR email=?) AND password=?`;
+    let rep= [userOEmail, userOEmail, pass];
+    let res = await mySQLConnection(qry, rep);
+    return res[0]==undefined;//Si no hay coincidencias la verificacion de contraseña falla
+    //true por que fallo, false si no hubo errores.
+}
+//1234%t&6eE
 export const registerMiddles = [
     body("username", "Username required").not().isEmpty(),
     body("username", "username should have at least one letter").matches(/[a-zA-Z]/),
@@ -28,16 +38,28 @@ export const registerMiddles = [
     }),
     body("username", "username already exists").custom(async value=> {
         let toRet;
-        await vldExistence("username", value).then(dt=>toRet=dt);
+        await vldExistence(["username"], value).then(dt=>toRet=dt);
         if(!toRet)throw new Error("Username already exists");
     }),
     body("email", "email already exists").custom(async value=>{
         let toRet;
-        await vldExistence("email", value).then(dt=>toRet=dt);
+        await vldExistence(["email"], value).then(dt=>toRet=dt);
         if(!toRet)throw new Error("Email already exists");
     }),
 ]
 export const logMiddles = [
     body("userOEmail").notEmpty().withMessage("Usuario o email faltante"),
-    body("password").notEmpty().withMessage("Campo de contraseña vacio")
+    body("password").notEmpty().withMessage("Campo de contraseña vacio"),
+    body("userOEmail").custom( async (value, { req })=>{
+        if(!value||!req.body.password)return;
+        let toRet=await vldExistence(["username", "email"], value);
+        if(toRet){req.body.existUser=false; throw new Error("Username or email doesn't exist")}
+    }),
+    body("password").custom(async (pass, { req })=>{
+        if(!req.body.userOEmail||!pass||req.body.existUser==false){return};
+        let verified=await validPass(pass, req.body.userOEmail);
+        console.log("Incon2: ",verified);
+        if( verified ){throw new Error("Password isn't correct")};
+
+    }),
 ];
