@@ -23,7 +23,7 @@ export function readWriteOnly (method, logInfo){
             const obj = trn.objectStore("logInfo");
             let req;
             if(method=="readonly"){req=obj.get(1)}
-            else if(method=="readwrite"){logInfo.id=1; req=obj.add(logInfo)}
+            else if(method=="readwrite"){logInfo.id=1; req=obj.put(logInfo)}
             else{ req = obj.delete(1)}
             req.onsuccess=(ev)=>{
                 resolve(ev.target.result);
