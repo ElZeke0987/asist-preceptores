@@ -11,10 +11,11 @@ function renderCourses(courseList){
 let loadBd={
     method: "POST",
     headers: {"Content-Type": "application/json"},
-    body:JSON.stringify({
+    body: {
         turno: getTourn()
-    })
+    }
 }
+console.log("turno a renderizar ", loadBd.body.turno);
 
 export function requestToLoadCourses(tr){
     let trn = tr ? tr : getTourn();
@@ -23,7 +24,7 @@ export function requestToLoadCourses(tr){
     })
     fetch("/load-courses", loadBd)
     .then(res=>res.json())
-    .then(data=>renderCourses(data.couList));
+    .then(data=>{console.log("Respuesta: "); renderCourses(data.couList)});
 }
 
 export function requestToLoadAlumns(group, courseListOpts){

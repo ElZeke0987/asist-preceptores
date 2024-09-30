@@ -21,7 +21,7 @@ export default function Nav(){
                 </div>
             </nav>
             <Routes>
-                <Route path="/src/public/index.html" element={<Navigate to="/"/>}/>
+                <Route path="/index.html" element={<Navigate to="/"/>}/>
                 <Route path="/" element={<IndexPage/>}/>
                 <Route path="/asistenter" element={<AsistenterPage/>}/>
                 <Route path="/login" element={<Login/>}/>

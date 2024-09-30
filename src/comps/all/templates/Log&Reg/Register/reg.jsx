@@ -2,7 +2,7 @@ export default function Register(){
     return (
         <>
             <h1>Registrarse</h1>
-        <form class="init-form register">
+        <form className="init-form register">
             <label>Username</label>
             <input className="r-username" required placeholder="max 100 chars"/>
 
@@ -19,7 +19,7 @@ export default function Register(){
             
             
         </form>
-        <button class="r-button">Registrarse</button>
+        <button className="r-button">Registrarse</button>
         </>
     )
 }

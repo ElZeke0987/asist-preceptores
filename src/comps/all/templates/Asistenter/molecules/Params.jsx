@@ -2,13 +2,12 @@
 import { requestToLoadAlumns, requestToPostInform, requestToLoadCourses} from './mods/Reqs.js';
 import { ChangeModuleSel, ChangeTourn, SelGroupTaller} from './mods/EvListeners.js';
 import { grpOpts, getTourn, searchTalSelGrp, checkAllFunc} from './mods/Mods.js';
-
-
-console.log("Rendering courses");
+import { useState } from 'react';
 
 requestToLoadCourses();
 
 export default function Params(){
+    let [checked, setChecked] = useState();
     return (
         <div className="general-params">
             <div className="tourn-params">
@@ -25,10 +24,7 @@ export default function Params(){
                 </div>
                 <select className="course-list">
                     <option></option>
-                </select>
-                
-                
-                
+                </select> 
             </div>
             <div className="course-params">
                 <select className="modulo" onChange={grpOpts}>
@@ -37,7 +33,7 @@ export default function Params(){
                     <option value="aula">Aula</option>
                     <option value="edu_fis">Educacion fisica</option>
                 </select>
-                <div className="grupo-taller" style="display:none">
+                <div className="grupo-taller" style={{display: 'none'}}>
                     <label>
                         <input type="radio" id="a" name="group" onClick={SelGroupTaller}/> Grupo A
                     </label>
@@ -50,11 +46,11 @@ export default function Params(){
                 </div>
                 <div className="check-all">
                     <label>Check all fields</label>
-                    <input type="checkbox" checked={true} onChange={checkAllFunc()}/>
+                    <input type="checkbox" defaultChecked={true} onChange={checkAllFunc()}/>
                 </div>
                 <div className="prof-asist">
                     <label>Asistio el profe?</label>
-                    <input type="checkbox" checked={true}/>
+                    <input type="checkbox" defaultChecked={true}/>
                 </div>
                 <div className="just-asist">
                     <label>Falta justificada al curso entero</label>
@@ -64,14 +60,7 @@ export default function Params(){
                     <input type="text" placeholder="Buscar alumno..."/>
                 </div>
             </div>
-            <div className="alumn-list">
-                <div className='list'>
-
-                </div>
-                <div class="submit-presence">
-                    <button onClick={requestToPostInform}>Enviar informe</button>
-                </div>
-            </div>
+            
         </div>
     )
 }

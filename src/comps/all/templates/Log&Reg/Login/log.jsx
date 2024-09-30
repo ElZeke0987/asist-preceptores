@@ -4,7 +4,7 @@ export default function Login(){
     return(
         <>
             <h1>Iniciar sesion</h1>
-            <form class="init-form login">
+            <form className="init-form login">
                 <label>Username/email</label>
                 <input className="l-useroemail" placeholder="can only one of them"/>
 

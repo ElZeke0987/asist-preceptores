@@ -1,5 +1,5 @@
-import { checkAllFunc, grpOpts } from "./Mods";
-import { requestToLoadAlumns } from "./Reqs";
+import { grpOpts } from "./Mods";
+import { requestToLoadAlumns, requestToLoadCourses } from "./Reqs";
 
 
 export function ChangeModuleSel(){
@@ -9,7 +9,7 @@ export function ChangeModuleSel(){
 }
 
 export function SelGroupTaller(e){
-    if(e.target.checked)requestToLoadAlumns(e.target.id);
+    if(e.target.checked) requestToLoadAlumns(e.target.id);
 }
 
 export function ChangeTourn(e){
