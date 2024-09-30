@@ -1,4 +1,5 @@
 export function getTourn(e){
+    console.log(e);
     const ele=e.target;
     const aho = new Date(); const hs = aho.getHours(); const min = aho.getMinutes();
     let morn ={iniciohs: 7, iniciomin: 20, finhs: 12, finmin: 19};
