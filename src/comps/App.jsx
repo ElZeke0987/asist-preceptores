@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Nav from './all/molecules/Nav/Nav.jsx';
+import './vars.scss';
 
 
 function App() {

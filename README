@@ -1,0 +1,12 @@
+How to init code?
+
+--TERMINAL 1--
+raiz>npm run dev
+
+Para la pagina React (front end)
+
+--TERMINAL 2--
+
+raiz>npm run server
+
+Para el back end

@@ -7,10 +7,14 @@ import Register from "../../templates/Log&Reg/Register/reg.jsx"
 export default function Nav(){
     return(
         <Router>
-            <nav>
-                <Link to="/">Home</Link>
-                <Link to="/login"> Iniciar sesion </Link>
-                <Link to="/register"> Registrarse </Link>
+            <nav className="ap-nav">
+                <div className="ap-nav-cont">
+                    <Link to="/" >Home</Link>
+                </div>
+                <div className="ap-nav-cont">
+                    <Link to="/login"> Iniciar sesion </Link>
+                    <Link to="/register"> Registrarse </Link>
+                </div>
             </nav>
             <Routes>
                 <Route path="/src/public/index.html" element={<Navigate to="/"/>}/>
