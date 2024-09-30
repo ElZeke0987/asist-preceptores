@@ -1,6 +1,6 @@
-export function CheckAlumnsHandler(){
-    checkAll.addEventListener("change",()=>checkAllFunc())
-}
+import { checkAllFunc, grpOpts } from "./Mods";
+import { requestToLoadAlumns } from "./Reqs";
+
 
 export function ChangeModuleSel(){
     moduloSel.addEventListener("change", ()=>{
@@ -8,16 +8,11 @@ export function ChangeModuleSel(){
     })
 }
 
-export function SelCourse(){
-    gruposInp.forEach(g=>{
-        g.addEventListener("click",()=>{
-            if(g.checked)requestToLoadAlumns(g.id);
-        })
-    })
+export function SelGroupTaller(e){
+    if(e.target.checked)requestToLoadAlumns(e.target.id);
 }
 
-export function ChangeTourn(){
-    tournSelect.forEach(inp=>{
-        inp.addEventListener("change", ()=>requestToLoadCourses(inp.id))
-    })
+export function ChangeTourn(e){
+    requestToLoadCourses(e.target.id)
+
 }

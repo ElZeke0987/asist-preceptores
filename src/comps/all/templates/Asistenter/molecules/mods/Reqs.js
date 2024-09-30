@@ -1,3 +1,13 @@
+import { getTourn } from "./Mods.js";
+
+let renderTag= "option"
+function renderCourses(courseList){
+    courseListOpts.innerHTML = "";
+    courseList.forEach(cOpt=>{
+        courseListOpts.innerHTML += `<${renderTag} value=${cOpt.id}>${cOpt.curso}</${renderTag}>`
+    })
+}
+
 let loadBd={
     method: "POST",
     headers: {"Content-Type": "application/json"},
@@ -22,7 +32,7 @@ export function requestToLoadAlumns(group, courseListOpts){
     let alumnReq={
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body:JSON.stringify({
+        body: JSON.stringify({
             grupo: grp,
             courseId: courseListOpts.value,
         })

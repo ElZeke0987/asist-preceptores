@@ -8,7 +8,7 @@ let justAsist = document.querySelector(".just-asist input");
 let gruposInp= grupoTaller.querySelectorAll("input");
 moduloSel.value="aula";
 function checkAllFunc(alItem){
-    let a = alItem?  alItem.querySelector("input[type='checkbox']"):document.querySelectorAll(".alumn-item .pres-alumn");
+    let a = alItem ?  alItem.querySelector("input[type='checkbox']"):document.querySelectorAll(".alumn-item .pres-alumn");
     if(alItem)a.checked=checkAll.checked;
     else a.forEach(alu=>alu.checked=checkAll.checked);
 }
