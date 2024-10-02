@@ -8,22 +8,23 @@ requestToLoadCourses();
 
 export default function Params(){
     let [checked, setChecked] = useState();
+    let [courses, setCourses] = useState([]);
     return (
         <div className="general-params">
             <div className="tourn-params">
                 <div className="tourn-select">
                     <label>
-                        <input type="radio" id='morn' name="tourn" onChange={ChangeTourn} onLoad={getTourn} /> T.M.
+                        <input type="radio" id='morn' name="tourn" onChange={(e)=>ChangeTourn(e, setCourses)} onLoad={getTourn} /> T.M.
                     </label>
                     <label>
-                        <input type="radio" id='afnoon' name="tourn" onChange={ChangeTourn} onLoad={getTourn}/> T.T.
+                        <input type="radio" id='afnoon' name="tourn" onChange={(e)=>ChangeTourn(e, setCourses)} onLoad={getTourn}/> T.T.
                     </label>
                     <label>
-                        <input type="radio" id='night' name="tourn" onChange={ChangeTourn} onLoad={getTourn}/> T.V.
+                        <input type="radio" id='night' name="tourn" onChange={(e)=>ChangeTourn(e, setCourses)} onLoad={getTourn}/> T.V.
                     </label>
                 </div>
                 <select className="course-list">
-                    <option></option>
+                        {courses.map(c=>{return (<option id={c.id}>{c.curso}</option>)})}
                 </select> 
             </div>
             <div className="course-params">

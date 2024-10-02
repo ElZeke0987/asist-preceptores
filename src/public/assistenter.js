@@ -57,9 +57,10 @@ function requestToPostInform(){
 
 let renderTag= "option"
 function renderCourses(courseList){
-    courseListOpts.innerHTML = "";
+    let coursesOpts= document.querySelector(".course-list");
+    coursestOpts.innerHTML = "";
     courseList.forEach(cOpt=>{
-        courseListOpts.innerHTML += `<${renderTag} value=${cOpt.id}>${cOpt.curso}</${renderTag}>`
+        coursesOpts.innerHTML += `<${renderTag} value=${cOpt.id}>${cOpt.curso}</${renderTag}>`
     })
 }
 

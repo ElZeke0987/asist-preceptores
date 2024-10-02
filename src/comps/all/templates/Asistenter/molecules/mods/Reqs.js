@@ -2,6 +2,7 @@ import { getTourn } from "./Mods.js";
 
 let renderTag= "option"
 function renderCourses(courseList){
+    let courseListOpts = document.querySelector(".course-list");
     courseListOpts.innerHTML = "";
     courseList.forEach(cOpt=>{
         courseListOpts.innerHTML += `<${renderTag} value=${cOpt.id}>${cOpt.curso}</${renderTag}>`
@@ -17,14 +18,17 @@ let loadBd={
 }
 console.log("turno a renderizar ", loadBd.body.turno);
 
-export function requestToLoadCourses(tr){
+export async function requestToLoadCourses(tr){
     let trn = tr ? tr : getTourn();
+    let toRet;
     loadBd.body = JSON.stringify({
         "turno":  trn
     })
-    fetch("/load-courses", loadBd)
+    await fetch("/load-courses", loadBd)
     .then(res=>res.json())
-    .then(data=>{console.log("Respuesta: "); renderCourses(data.couList)});
+    .then(data=>{ toRet=data.couList});
+    console.log("Var toRet: ", toRet);
+    return toRet;
 }
 
 export function requestToLoadAlumns(group, courseListOpts){
