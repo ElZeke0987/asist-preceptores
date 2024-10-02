@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 requestToLoadCourses();
 
-export default function Params(){
+export default function Params({setAlumnsList}){
     let [checked, setChecked] = useState();
     let [courses, setCourses] = useState([]);
     return (

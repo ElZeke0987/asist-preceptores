@@ -1,4 +1,4 @@
-export default function AlumnItem(){
+export default function AlumnItem({almn}){
     return(
         <div className="alumn-item" id="${almn.id}">
             <label>Presente:<input className="pres-alumn" type="checkbox" checked={true}/></label><br/>
