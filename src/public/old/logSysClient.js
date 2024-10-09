@@ -1,4 +1,4 @@
-import { createDatabase, readWriteOnly } from "./clientMods/indexedDBmods.js";
+import { createDatabase, readWriteOnly } from "../clientMods/indexedDBmods.js";
 
 let logBut = document.querySelector(".l-button");
 let logUsEm = document.querySelector(".l-useroemail");

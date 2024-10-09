@@ -1,3 +1,5 @@
+import { requestToLoadAlumns } from "./Reqs";
+
 export function getTourn(e){
     const ele=e?e.target:undefined;
     const aho = new Date(); 
@@ -21,14 +23,15 @@ export function getTourn(e){
         (hs < night.finhs || (hs == night.finhs && min <= night.finmin))
     ) t='night'
     if(ele && ele.id==t){ele.checked=true; return "Checked automatically tourn"};
-    console.log(t);
     return t || "no tourn";
 }
 
-export function grpOpts (){//Es para cuando se elija si hay taller o no
+export function grpOpts (setAlumnsList){//Es para cuando se elija si hay taller o no
+    let moduloSel = document.querySelector(".modulo");
+    let grupoTaller = document.querySelector(".grupo-taller");
     if(moduloSel.value=="taller"){grupoTaller.style.display = "flex"; return}
     grupoTaller.style.display = "none"; 
-    requestToLoadAlumns()
+    requestToLoadAlumns(setAlumnsList);
 }
 
 export function checkAllFunc(alItem){

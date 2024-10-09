@@ -11,9 +11,9 @@ export function loadAlumns(req,res){
     let alumnsParamsBody = req.body;
     res.setHeader("Content-Type", "application/json");
     let searchAlumns= alumnsParamsBody.grupo ?
-    `SELECT * FROM alumnos WHERE curso_id= ? AND grupo_tal= ?`
+    `SELECT * FROM alumnos WHERE curso= ? AND grupo_tal= ?`
     :
-    `SELECT * FROM alumnos WHERE curso_id= ?`;
+    `SELECT * FROM alumnos WHERE curso= ?`;
     let replacements = alumnsParamsBody.grupo ? [alumnsParamsBody.courseId, alumnsParamsBody.grupo] : [alumnsParamsBody.courseId];
-    mySQLConnection(searchAlumns, replacements).then(v=>res.send({alumnsList: v}));
+    mySQLConnection(searchAlumns, replacements).then(v=>{res.send({alumnsList: v})});
 }

@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import { Navigate } from 'react-router-dom'
 
 const PORT = 3000;
-console.log("Abriendo server React, Puerto: ", PORT);
+console.log("Abriendo server React, Puerto: ", PORT, "; linea 6 vite.config.js");
 
 export default defineConfig({
 

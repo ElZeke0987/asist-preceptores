@@ -23,12 +23,12 @@ export default function Params({setAlumnsList}){
                         <input type="radio" id='night' name="tourn" onChange={(e)=>ChangeTourn(e, setCourses)} onLoad={getTourn}/> T.V.
                     </label>
                 </div>
-                <select className="course-list">
-                        {courses.map(c=>{return (<option id={c.id}>{c.curso}</option>)})}
+                <select className="course-list" onChange={()=>grpOpts(setAlumnsList)}>
+                    {courses.map(c=>{return (<option id={c.id}>{c.curso}</option>)})}
                 </select> 
             </div>
             <div className="course-params">
-                <select className="modulo" onChange={grpOpts}>
+                <select className="modulo" onChange={()=>grpOpts(setAlumnsList)}>
                     <option value="taller">Taller</option>
                     <option value="5to_mod">5to Modulo</option>
                     <option value="aula">Aula</option>
@@ -36,13 +36,13 @@ export default function Params({setAlumnsList}){
                 </select>
                 <div className="grupo-taller" style={{display: 'none'}}>
                     <label>
-                        <input type="radio" id="a" name="group" onClick={SelGroupTaller}/> Grupo A
+                        <input type="radio" id="a" name="group" onClick={(e)=>SelGroupTaller(e,setAlumnsList)}/> Grupo A
                     </label>
                     <label>
-                        <input type="radio" id="b" name="group" onClick={SelGroupTaller}/> Grupo B
+                        <input type="radio" id="b" name="group" onClick={(e)=>SelGroupTaller(e,setAlumnsList)}/> Grupo B
                     </label>
                     <label>
-                        <input type="radio" id="both" name="group" onClick={SelGroupTaller}/> Ambos
+                        <input type="radio" id="both" name="group" onClick={(e)=>SelGroupTaller(e,setAlumnsList)}/> Ambos
                     </label>
                 </div>
                 <div className="check-all">

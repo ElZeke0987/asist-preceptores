@@ -9,6 +9,10 @@ function renderCourses(courseList){
     })
 }
 
+function renderAlumns(alumnsList, setter){
+
+}
+
 let loadBd={
     method: "POST",
     headers: {"Content-Type": "application/json"},
@@ -27,11 +31,11 @@ export async function requestToLoadCourses(tr){
     await fetch("/load-courses", loadBd)
     .then(res=>res.json())
     .then(data=>{ toRet=data.couList});
-    console.log("Var toRet: ", toRet);
     return toRet;
 }
 
-export function requestToLoadAlumns(group, courseListOpts){
+export function requestToLoadAlumns(setAlumnsList, group){
+    let courseListOpts = document.querySelector(".course-list");
     let grp=group ? group : undefined;
     if(grp=="both")grp=undefined;
     let alumnReq={
@@ -42,7 +46,8 @@ export function requestToLoadAlumns(group, courseListOpts){
             courseId: courseListOpts.value,
         })
     }
-    fetch("/load-alumns", alumnReq).then(res=>res.json()).then(data=>renderAlumns(data.alumnsList))
+    console.log("Body Req parameters: ", alumnReq)
+    fetch("/load-alumns", alumnReq).then(res=>res.json()).then(data=>{console.log("setting alumns list: ", data.alumnsList);setAlumnsList(data.alumnsList)})//renderAlumns(data.alumnsList, setAlumnsList))
 }
 
 export function requestToPostInform(){

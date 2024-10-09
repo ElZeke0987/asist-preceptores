@@ -11,6 +11,7 @@ export default function AsistenterPage(){
             <div className="alumn-list">
                 <div className='list'>
                     {
+                        
                         alumnsList.map(a=>{return(<AlumnItem almn={a}/>)})
                     }
                 </div>
