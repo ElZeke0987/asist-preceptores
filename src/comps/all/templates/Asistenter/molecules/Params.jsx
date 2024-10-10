@@ -41,11 +41,11 @@ export default function Params({setAlumnsList}){
                         </label>
                     </div>
                 </div>
-                <CustomSelect className="course-list" opts={courses} onChange={()=>grpOpts(setAlumnsList)}/>
+                <CustomSelect clases="course-list" opts={courses} onChange={()=>grpOpts(setAlumnsList)}/>
                 
             </div>
             <div className="modulo-sty">
-                <CustomSelect className="modulo" opts={modulosArr} onChange={()=>grpOpts(setAlumnsList)}/>
+                <CustomSelect clases="modulo" opts={modulosArr} onChange={()=>grpOpts(setAlumnsList)}/>
                 
                 <div className="grupo-taller" style={{display: 'none'}}>
                     <div className="gro-opt" onClick={handleStyleCheckTourn}>

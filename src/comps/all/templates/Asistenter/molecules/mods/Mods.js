@@ -1,6 +1,6 @@
 import { requestToLoadAlumns } from "./Reqs";
 
-export function getTourn(e){
+export function getTourn(e) {
     const ele=e?e.target:undefined;
     const aho = new Date(); 
     const hs = aho.getHours(); 
@@ -29,7 +29,7 @@ export function getTourn(e){
 export function grpOpts (setAlumnsList){//Es para cuando se elija si hay taller o no
     let moduloSel = document.querySelector(".modulo");
     let grupoTaller = document.querySelector(".grupo-taller");
-    if(moduloSel.value=="taller"){grupoTaller.style.display = "flex"; return}
+    if(moduloSel.dataset.value=="taller"){grupoTaller.style.display = "flex"; return}
     grupoTaller.style.display = "none"; 
     requestToLoadAlumns(setAlumnsList);
 }
