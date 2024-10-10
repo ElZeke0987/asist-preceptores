@@ -1,0 +1,31 @@
+
+
+.cus-select-wrapper{
+    position: relative;
+    width: 200px;
+}
+
+.cus-select{
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    padding: 10px;
+    background-color: $cusSelectBg;
+    width: 10vw;
+}
+
+.cus-select-options{
+    position: absolute;
+    width: 100%;
+    top: 100%;
+    left: 0%;
+    z-index: 99;
+    background: $cusSelOptsContBg;
+}
+.cus-select-option{
+    background: $cusSelOptsContBg;
+    padding: 20px;
+    &:hover{
+        background-color: $cusSelOptsContHoverBg;
+    }
+}

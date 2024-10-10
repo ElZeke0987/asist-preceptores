@@ -1,0 +1,63 @@
+
+.background-asist{
+    background-color: $asistenterBg;
+
+    padding: 10px 100px;
+    
+}
+.asistenter-cont{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    background-color: $asistenterCentralBg;
+    .general-params{
+        display: flex;
+        justify-content: space-around;
+        width: $generalParamsWX;
+        .tourn-params{
+            margin: 10px;
+            display: flex;
+            .tourn-select .in-tourn{
+                padding: 20px 80px;
+            }
+            .checked-opt{
+                transition: background 300ms;
+
+                background-color: $tournCheckedBg;
+            }
+            .course-list{
+
+            }
+        }
+        .modulo-sty{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin: 10px;
+            .grupo-taller{
+                flex-direction: column;
+                .checked-opt{
+                    transition: background 300ms;
+                    background-color: #eee;
+                }
+                .gro-opt{
+                    padding: 10px;
+                }
+            }
+            select{
+                width: 100%;
+                height: 25%;
+                border: none;
+                box-shadow: none;
+                outline: none;
+                border: 1px #222 solid;
+                &:focus{
+                    border: 2px solid blue;
+                    box-shadow: none;
+                    outline: none;
+                }
+            }
+        }
+    }
+}
