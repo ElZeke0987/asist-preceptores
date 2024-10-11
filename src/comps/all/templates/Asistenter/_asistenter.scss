@@ -5,36 +5,48 @@
     padding: 10px 100px;
     
 }
+
+.pars-cont{
+    width: 100%;
+    margin-bottom: 10px;
+    border-bottom: $borderInParams $widthBorderY solid;
+    display: flex;
+    justify-content: center;
+}
+
 .asistenter-cont{
     display: flex;
     flex-direction: column;
     align-items: center;
-    
     background-color: $asistenterCentralBg;
     .general-params{
         display: flex;
-        justify-content: space-around;
+        justify-content: center;
         width: $generalParamsWX;
+        height: 100%;
         .tourn-params{
-            margin: 10px;
+            
+            padding: 10px;
             display: flex;
+            flex-direction: row-reverse;
+            border-right: $widthBorderX $borderInParams solid;
             .tourn-select .in-tourn{
-                padding: 20px 80px;
+                padding: $paddingInTourYX;
             }
             .checked-opt{
                 transition: background 300ms;
 
                 background-color: $tournCheckedBg;
             }
-            .course-list{
-
-            }
+            
         }
         .modulo-sty{
             display: flex;
             flex-direction: column;
             justify-content: center;
-            margin: 10px;
+            
+            padding: 10px $moduloStyPaddingX;
+            border-right: $widthBorderX $borderInParams solid;
             .grupo-taller{
                 flex-direction: column;
                 .checked-opt{
@@ -45,19 +57,106 @@
                     padding: 10px;
                 }
             }
-            select{
-                width: 100%;
-                height: 25%;
+            
+        }
+        .just-falta{
+            width: $justFaltaWidth;
+            .just-opt{
+                transition: background 0;
+                padding: $justOptPadding;
+                &:hover{
+                transition: background 400ms;
+                background-color: $justFaltaBgHover;
+                }
+            }
+            .checked-opt{
+                border-left: $justFaltaBorderChecked 4px solid;
+            }
+        }
+    }
+    .searcher{
+        $radius1: 35px;
+        $radius2: 35px;
+        
+        
+        width: $searcherWidth;
+        height: 25px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50px;
+        overflow: hidden;
+        border: #222 3px solid;
+        input{
+            &:focus{
                 border: none;
-                box-shadow: none;
                 outline: none;
-                border: 1px #222 solid;
-                &:focus{
-                    border: 2px solid blue;
-                    box-shadow: none;
-                    outline: none;
+                background-color: $searchInpFocusBg;
+                transition-duration: $searchInpFocusMS;
+                &::placeholder{
+                    color: $searchInpPlaceCol;
+                }
+            }
+            transition: all 300ms;
+            &:active{
+                background-color: $searchInpClickBg;
+                transition-duration: $searchInpClickMS;
+            }
+            border: none;
+            width: 70%;
+            height: 100%;
+            padding: 7px;
+        }
+        .submit-search{
+            width: 30%;
+            height: 100%;
+            border: none;
+            cursor: pointer;
+            background-color: $searchBtnBg;
+            transition: all ;
+            &:hover{
+                transition-duration: $searchBtnHoverMS;
+                background-color: $searchBtnHoverBg;
+            }
+            &:active{
+                transition-duration: $searchBtnClickMS;
+                background-color: $searchBtnClickBg;
+            }
+        }
+    }
+    .alumn-list{
+        width: 100%;
+        
+    }
+    .list{
+        padding: 10px;
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax($minAlumnItemWidth, 1fr));
+        /*grid-auto-rows: 400px;
+        grid-auto-flow: column;*/
+        gap: $alumnItemsGridGap;
+        .alumn-item{
+            padding: 10px;
+            border-radius: 15px;
+            overflow: hidden;
+            background: $alumnItemBg;
+            .pres-check{
+                padding: 10px;
+            }
+            .presence-cont{
+                
+                .alumn-checked{
+                    background-color: #91e75c;
+                }
+            }
+            .justas-cont{
+                
+                .alumn-checked{
+                    background-color: #3177cc;
                 }
             }
         }
     }
 }
+

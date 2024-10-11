@@ -33,7 +33,6 @@ export default function CustomSelect(
                             return (Eleme===DefaultOptElem?
                             <Eleme key={i} text={opt.txt} value={opt.val} onClick={()=>{handleSelect(opt).then(()=>onChange())}} />:
                             <Eleme className="cus-select-option" key={i} onClick={()=>{handleSelect(opt).then(()=>onChange())}} />)
-
                             })}
                         </div>)
                         }

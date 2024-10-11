@@ -24,8 +24,13 @@
 }
 .cus-select-option{
     background: $cusSelOptsContBg;
-    padding: 20px;
+    padding: 5px;
     &:hover{
         background-color: $cusSelOptsContHoverBg;
+    }
+}
+.modulo{
+    .cus-select-option{
+        padding: 10px;
     }
 }

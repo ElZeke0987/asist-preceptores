@@ -4,9 +4,39 @@ $asistenterCentralBg: #ddd;
 $asistenterBg: #c5bbbb;
 $tournCheckedBg: $asistenterBg;
 
-$generalParamsWX: 70%;
+$generalParamsWX: 100%;
+
+$moduloStyPaddingX: 5vw;
+$paddingInTourYX: 20px 80px;
 
 $cusSelectBg: #3f82f7;
 $cusSelOptsContBg: #a0aed1;
 $cusSelOptsContHoverBg: #7d98dd;
 
+$borderInParams: #9b9b9b;
+$widthBorderX: 4px;
+$widthBorderY: 4px;
+
+$justFaltaBgHover: #a7a7a7;
+$justFaltaBorderChecked: #7cd8a6;
+$justFaltaWidth: 350px;
+$justOptPadding: 7px;
+
+$searcherWidth: 50%;
+$searchInpFocusBg: #928a8a;
+$searchInpPlaceCol: #333;
+$searchInpClickBg: #73a8d1;
+
+$searchBtnBg: #eee;
+$searchBtnHoverBg: #b5b2b2;
+$searchBtnClickBg: #73a8d1;
+
+$searchBtnHoverMS: 300ms;
+$searchInpMS: 300ms;
+$searchBtnClickMS: 500ms;
+$searchInpClickMS: 500ms;
+$searchInpFocusMS: 400ms;
+
+$alumnItemBg: #4068bf;
+$minAlumnItemWidth: 15vw;
+$alumnItemsGridGap: 10px;

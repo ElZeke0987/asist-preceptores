@@ -21,11 +21,68 @@ export default function AsistenterPage(){
         "inasistencias": "29",
         "dni": "48220979"
     },
+    {
+        "id": 3,
+        "nombre": "EJFJF",
+        "apellido": "Teran",
+        "grupo_tal": "A",
+        "inasistencias": "29",
+        "dni": "48220979"
+    },
+    {
+        "id": 4,
+        "nombre": "EJFJF",
+        "apellido": "Teran",
+        "grupo_tal": "A",
+        "inasistencias": "29",
+        "dni": "48220979"
+    },
+    {
+        "id": 5,
+        "nombre": "EJFJF",
+        "apellido": "Teran",
+        "grupo_tal": "A",
+        "inasistencias": "29",
+        "dni": "48220979"
+    },
+    {
+        "id": 6,
+        "nombre": "EJFJF",
+        "apellido": "Teran",
+        "grupo_tal": "A",
+        "inasistencias": "29",
+        "dni": "48220979"
+    },
+    {
+        "id": 7,
+        "nombre": "EJFJF",
+        "apellido": "Teran",
+        "grupo_tal": "A",
+        "inasistencias": "29",
+        "dni": "48220979"
+    },
+    {
+        "id": 2,
+        "nombre": "EJFJF",
+        "apellido": "Teran",
+        "grupo_tal": "A",
+        "inasistencias": "29",
+        "dni": "48220979"
+    },
 ]);
     return(
         <div className="background-asist">
             <div className="asistenter-cont">
                 <Params setAlumnsList={setAlumnsList}/>
+                
+                <div className="searcher">
+                    <input type="text" placeholder="Buscar alumno..."/>
+                    <button className="submit-search">
+                        {">"}
+                    </button>
+                </div>
+                    
+                    
                 <div className="alumn-list">
                     <div className='list'>
                         {
