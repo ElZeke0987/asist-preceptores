@@ -91,7 +91,12 @@ export default function AsistenterPage(){
                         }
                     </div>
                     <div className="submit-presence">
-                        <button onClick={requestToPostInform}>Enviar informe</button>
+                        <button onClick={requestToPostInform}>
+                            <div className="button-cont">
+                                <div className="text-submit">Enviar informe</div>
+                                <div className="point-down-animation">{">"}</div>
+                            </div>
+                        </button>
                     </div>
                 </div>
             </div>
