@@ -8,10 +8,12 @@ export default function AlumnItem({almn}){
     const handleStyleCheckTourn = (e) => {
         // Si se hace click sobre el checkbox de la presencia
         if (e.target.parentElement.classList.contains('presence-cont')) {
+        setJustifiedChecked(false)
         setPresenceChecked(!presenceChecked);
         }
         // Si se hace click sobre el checkbox de falta justificada
         if (e.target.parentElement.classList.contains('justas-cont')) {
+            setPresenceChecked(false);
         setJustifiedChecked(!justifiedChecked);
         }
     };
