@@ -145,6 +145,12 @@
             background: $alumnItemBg;
             .pres-check{
                 padding: 10px;
+                &:hover{
+                    background-color: $checkersHoverBg;
+                }
+                input:checked{
+                    background-color: $checkersCheckedBg;
+                }
             }
             .presence-cont{
                 
