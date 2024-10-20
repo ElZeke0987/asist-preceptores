@@ -62,7 +62,7 @@ export default function AsistenterPage(){
         "dni": "48220979"
     },
     {
-        "id": 2,
+        "id": 8,
         "nombre": "EJFJF",
         "apellido": "Teran",
         "grupo_tal": "A",

@@ -1,32 +1,45 @@
-import { handleAlumnClick, handleStyleCheckTourn } from "../../../../styling";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
+import Params from "./Params";
 
 export default function AlumnItem({almn}){
     const [presenceChecked, setPresenceChecked] = useState(true);
     const [justifiedChecked, setJustifiedChecked] = useState(false);
+    useEffect(()=>{
+      let elem = document.querySelector("#almn-"+almn.id);
+      if(justifiedChecked){
+        elem.classList.remove("alumn-item-check");
+        elem.classList.toggle("alumn-item-just");
+        return
+      }
+      elem.classList.remove("alumn-item-just");
+      elem.classList.toggle("alumn-item-check");
+    }, [justifiedChecked, presenceChecked])
 
-    const handleStyleCheckTourn = (e) => {
+    async function handleStyleCheckTourn (e, setters){
         // Si se hace click sobre el checkbox de la presencia
-        if (e.target.parentElement.classList.contains('presence-cont')) {
+        if (e.target.parentElement.classList.contains('presence-cont')||e.target.classList.contains('presence-cont')) {
           setJustifiedChecked(false)
           setPresenceChecked(!presenceChecked);
+
         }
         // Si se hace click sobre el checkbox de falta justificada
-        if (e.target.parentElement.classList.contains('justas-cont')) {
+        if (e.target.parentElement.classList.contains('justas-cont')||e.target.classList.contains('justas-cont')) {
           setPresenceChecked(false);
           setJustifiedChecked(!justifiedChecked);
+
         }
     };
 
-  const handleAlumnClick = (e) => {
-    // Solo click para alternar el checkbox de presence-cont
-    if(e.target.parentElement.classList.contains('presence-cont')||e.target.classList.contains('justas-cont')) {
-        console.log("e.target  ", e.target)
-        
+  async function handleAlumnClick (e) {
+    if(e.target.parentElement.classList.contains('presence-cont')||e.target.classList.contains('justas-cont')||
+    e.target.parentElement.classList.contains('justas-cont')||e.target.classList.contains('presence-cont')) {// Si son los inputs mismos cambiar ahi
+        console.log("Click on inputs");   
     }else{
-        if (e.detail === 1) {
-            setPresenceChecked(!presenceChecked);
+        if (e.type === "click") {// Solo click para alternar el checkbox de presence-cont
             setJustifiedChecked(false);
+            setPresenceChecked(!presenceChecked);
+
         }
         // Doble click para alternar el checkbox de justas-cont
         if (e.type === "dblclick") {
@@ -36,15 +49,28 @@ export default function AlumnItem({almn}){
     }
   };
 
+
+  //useEffect(()=>console.log("Presence or justified changed: \n p: ", presenceChecked, "\n j: ", justifiedChecked, "\n"), [presenceChecked, justifiedChecked])
+  
+  
+  let paramsHandler=[
+    {
+      ["setJAs"]: setJustifiedChecked,
+      ["setPAs"]: setPresenceChecked
+    },
+    {
+      ["varJAs"]: justifiedChecked,
+      ["varPAs"]: presenceChecked
+    }
+  ] 
   return (
-    <div className="alumn-item" id={almn.id} onDoubleClick={handleAlumnClick} onClick={handleAlumnClick}>
-      <div className="pres-check presence-cont" onClick={handleStyleCheckTourn}>
+    <div className="alumn-item alumn-item-check" id={"almn-"+almn.id} onDoubleClick={handleAlumnClick} onClick={handleAlumnClick}>
+      <div className="pres-check presence-cont" onClick={(e)=>handleStyleCheckTourn(e, paramsHandler[0], paramsHandler[1])}>
         <label>Presente:</label>
         <input
           className="pres-alumn"
           type="checkbox"
           checked={presenceChecked}
-          onChange={() => setPresenceChecked(!presenceChecked)}
         />
       </div>
 
@@ -53,13 +79,12 @@ export default function AlumnItem({almn}){
       <div>DNI: {almn.dni}</div>
       <div>Inasistencias: {almn.inasistencias}</div>
 
-      <div className="pres-check justas-cont" onClick={handleStyleCheckTourn}>
+      <div className="pres-check justas-cont" onClick={(e)=>handleStyleCheckTourn(e, paramsHandler[0], paramsHandler[1] )}>
         <label>Falta justificada:</label>
         <input
           className="just-asist-alumn"
           type="checkbox"
           checked={justifiedChecked}
-          onChange={() => setJustifiedChecked(!justifiedChecked)}
         />
       </div>
     </div>

@@ -27,14 +27,22 @@
         width: $generalParamsWX;
         height: 100%;
         .tourn-params{
-            
+            width: 33%;
             padding: 10px;
             display: flex;
             flex-direction: row-reverse;
             border-right: $widthBorderX $borderInParams solid;
-            .tourn-select .in-tourn{
-                padding: $paddingInTourYX;
+            justify-content: space-between;
+
+            .tourn-select {
+                border-radius: 10px;
+                overflow: hidden;
+                .in-tourn{
+                    padding: $paddingInTourYX;
+                    
+                }
             }
+            
             .checked-opt{
                 transition: background 300ms;
 
@@ -138,22 +146,39 @@
         /*grid-auto-rows: 400px;
         grid-auto-flow: column;*/
         gap: $alumnItemsGridGap;
+        .alumn-item-check{
+            background-color: $alumnPresenteBg !important;
+        }
+        .alumn-item-just{
+            background-color: $alumnJustificadaBg !important;
+        }
         .alumn-item{
+            transition: background $alumnMSBgAnim;
             padding: 10px;
             border-radius: 15px;
             overflow: hidden;
             background: $alumnItemBg;
             .pres-check{
-                padding: 10px;
+                padding: 10px; 
+                border-radius: 10px;
+                cursor: pointer;
+                transition: filter 0.2s;
+                *{
+                    cursor: pointer;
+                }
                 &:hover{
-                    background-color: $checkersHoverBg;
+                    background-color: inherit; /* Hereda el color del padre */
+                    filter: brightness(70%); /* Oscurece el fondo en un 30% */
+                    label{
+                        color: white;
+                        filter: brightness(0);
+                    }
                 }
                 input:checked{
                     background-color: $checkersCheckedBg;
                 }
             }
             .presence-cont{
-                
                 & > .alumn-checked{
                     background-color: #91e75c;
                 }
