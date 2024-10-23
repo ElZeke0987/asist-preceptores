@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function DefaultOptElem({text, value, onClick}){
     return (<div data-value={value} className="cus-select-option" onClick={onClick}>{text}</div>)
@@ -12,17 +12,18 @@ let defaultOptions=[
 
 export default function CustomSelect(
     {defaults=false, defaultValue="none",defaultText="Seleccione una opcion", 
-        opts=defaultOptions, Eleme=DefaultOptElem, 
+        opts, Eleme=DefaultOptElem, 
         onSelect, onChange, clases}){
     if(opts==[]){return}
     let [isOpen, setIsOpen]=useState(false);
-    let [selOpt, setSelOpt]=useState(defaults?{val: defaultValue, txt: defaultText}:opts[0]);
+    let [selOpt, setSelOpt]=useState(opts==[]?{val: defaultValue, txt: defaultText}:opts[0]);
     async function handleSelect(opt){
         await setSelOpt(opt);
         await setIsOpen(false);
         if(onSelect)onSelect(opt);
     }
-    
+    console.log("Loading courses...", opts)
+
     return(
         <div className={`cus-selec-wrapper ${clases||clases.join(" ")}`} data-value={selOpt?selOpt.val:""} >
             <div className="cus-select">

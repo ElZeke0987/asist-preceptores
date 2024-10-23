@@ -73,7 +73,6 @@ let defaultAlmsn=[
 
 export default function AsistenterPage(){
     let [alumnsList, setAlumnsList]=useState([]);
-    console.log("ALUMNS ARRAY RENDERED");
     return(
         <div className="background-asist">
             <div className="asistenter-cont">
