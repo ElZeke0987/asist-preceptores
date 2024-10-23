@@ -1,10 +1,12 @@
 .init-cont-ex{
     display: flex;
-    width: 100vw;
+    width: $initExWidth;
+    height: $initExHeight;
     justify-content: center;
-    padding-top: 10vh;
+    padding: 10vh 0;
     background-color: $initExBg;
     .init-cont-in{
+        height: $initInHeight;
         display: flex;
         justify-content: center;
         flex-direction: column;
@@ -18,6 +20,7 @@
             width: 100%;
             justify-content: center;
             font-size: $initTitleSize;
+            color: $initTitleColor;
         }
         .init-form{
             display: flex;
@@ -33,6 +36,7 @@
                 width: $initInpWidth;
                 label{
                     font-size: $initLabSize;
+                    color: $initLabColor;
                 }
                 input{
                     border: none;

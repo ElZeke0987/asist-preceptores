@@ -52,18 +52,22 @@ $submitBgAnimMS: 800ms;
 $submitArrowAnimMs: 600ms;
 $submitArrowYAnim: 5px;
 
+$initExWidth: 100vw;
+$initExHeight: auto;
 $initExBg: #031744;
 
+$initInHeight: 100%;
 $initInWidth: 35vw;
-$initInBg: none;
+$initInBg: #030f2b;
 
 $initTitleSize: 50px;
-
+$initTitleColor: #ebebeb;
 
 $initMarginBottom: 40px;
 $initInPadding: 50px;
 
 $initLabSize: 35px;
+$initLabColor: $initTitleColor;
 
 $initInpWidth: 80%;
 $initInpBrdrBg: #2e4a87;
