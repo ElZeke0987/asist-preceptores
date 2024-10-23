@@ -11,7 +11,7 @@ export default function Nav(){
         <Router>
             <nav className="ap-nav">
                 <div className="ap-nav-cont logo-nav">
-                    <Link to="/"><img src="./logo.png"/></Link>
+                    <Link to="/"><img src="./logo.jpg"/></Link>
                 </div>
                 <div className="ap-nav-cont home-it">
                     <Link to="/">Home</Link>

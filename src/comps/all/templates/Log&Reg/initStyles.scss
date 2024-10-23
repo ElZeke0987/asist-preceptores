@@ -1,0 +1,96 @@
+.init-cont-ex{
+    display: flex;
+    width: 100vw;
+    justify-content: center;
+    padding-top: 10vh;
+    .init-cont-in{
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        background-color: $initInBg;
+        border-radius: 10px;
+        padding: $initInPadding;
+        width: $initInWidth;
+        .init-title{
+            padding-bottom: 15px;
+            display: flex;
+            width: 100%;
+            justify-content: center;
+            font-size: $initTitleSize;
+        }
+        .init-form{
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            
+            .init-inp-item{
+                display: flex;
+                flex-direction: column;
+                margin-bottom: $initMarginBottom;
+                position: relative;
+                z-index: 1;
+                width: $initInpWidth;
+                label{
+                    font-size: $initLabSize;
+                }
+                input{
+                    border: none;
+                    //background-color: $initInBg !important;
+                    width: auto;
+                    font-size: $initInpSize;
+                    padding: $initInpPadding;
+                    &:focus{
+                        outline: none;
+                    }
+                    
+                }
+                &::after{
+                    transition: all 0.4s;
+                    content: '';
+                    position: absolute;
+                    top: 100%;
+                    left: 0;
+                    width: 0;
+                    height: 3px;
+                    background-color: $initInpBrdrBg;
+                    z-index: -1;
+                }
+                &:hover::after{
+                    transition: all $initInpBrdrAnimMS $initInpAnimBeizier;
+                    width: 100%;
+                }
+                
+            }
+            .init-inp-focus{
+                &::after{
+                    transition: none;
+                    background-color: $initInpBrdrFocusBg;
+                    width: 100%;
+                }
+                &:hover::after{
+                    transition: none;
+                }
+            }
+        }
+        .init-button{
+            
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            button{
+                transition: all 0.35s;
+                width: $initButtonWidth;
+                border: none;
+                padding: 30px 0;
+                font-size: $initButtSize;
+                &:hover{
+                    background-color: $initButtHoverBg;
+                }
+                &:active{
+                    background-color: $initButtActiveBg;
+                    outline: none;
+                }
+            }
+        }
+    }
+}

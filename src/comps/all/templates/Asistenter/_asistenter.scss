@@ -30,7 +30,7 @@
             width: 33%;
             padding: 10px;
             display: flex;
-            flex-direction: row-reverse;
+            flex-direction: column-reverse;
             border-right: $widthBorderX $borderInParams solid;
             justify-content: space-between;
 
@@ -39,7 +39,6 @@
                 overflow: hidden;
                 .in-tourn{
                     padding: $paddingInTourYX;
-                    
                 }
             }
             

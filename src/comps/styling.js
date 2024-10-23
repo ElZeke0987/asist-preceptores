@@ -59,3 +59,8 @@ export function handleAlumnClick(e){
     
 }
 
+export function handleFocusInp(e){
+    let centralDiv = e.currentTarget.parentElement
+    centralDiv.parentElement.querySelectorAll(".init-inp-focus").forEach(inpCont=>inpCont.classList.remove("init-inp-focus"));
+    centralDiv.classList.toggle("init-inp-focus");
+}

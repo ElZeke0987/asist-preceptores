@@ -80,9 +80,6 @@ export default function Params({setAlumnsList}){
                             <input type="checkbox"/>
                         </div>
                     </div>
-                        
-                    
-                
             </div>
         </div>
     )
