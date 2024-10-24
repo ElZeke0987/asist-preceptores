@@ -14,6 +14,6 @@ export function SelGroupTaller(e, setAlumnsList){
 }
 
 export async function ChangeTourn(e, setCourses){
-    let loadedCourses = await requestToLoadCourses(e.target.id);
+    let loadedCourses = await requestToLoadCourses(e.target.querySelector("input").id);
     setCourses(loadedCourses);
 }
