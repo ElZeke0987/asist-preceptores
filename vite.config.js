@@ -13,13 +13,15 @@ export default defineConfig({
   server:{
     port: PORT,
     host: "127.0.0.1",
-    open: "./index.html",
+    open: "./src/public/dist/index.html",//se abrira en modo dev
     
   },
+  rollupOptions: {
+    input: 'index.html', // construira este archivo, fijate que este conectado al main.jsx
+  },
   build: {
-    rollupOptions: {
-      input: 'index.html', // Se asegura de que Vite use el archivo index.html correcto
-    }
-    },
+    outDir: "./src/public/dist",
+    
+  },
   
 }) 

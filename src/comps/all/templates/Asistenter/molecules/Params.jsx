@@ -2,10 +2,9 @@
 import { requestToLoadAlumns, requestToPostInform, requestToLoadCourses} from './mods/Reqs.js';
 import { ChangeTourn, SelGroupTaller} from './mods/EvListeners.js';
 import { grpOpts, getTourn, searchTalSelGrp, checkAllFunc} from './mods/Mods.js';
-import { useState } from 'react';
+import { useState, useEffect} from 'react';
 import { handleStyleCheckTourn } from '../../../../styling.js';
 import CustomSelect from '../../../molecules/customSelect/customSelect.jsx';
-
 let modulosArr=[
     {val: "taller", txt: "Taller"},
     {val: "5to_mod", txt: "5to modulo"},
@@ -15,9 +14,12 @@ let modulosArr=[
 
 requestToLoadCourses();
 
+let devMode = false;
+
 export default function Params({setAlumnsList}){
     let [checked, setChecked] = useState();
-    let [courses, setCourses] = useState([{ val:"5to5ta", txt:"5to5ta"}, { val:"5to2da", txt:"5to2da(petes)"}]);
+    let [courses, setCourses] = useState(devMode?[{ val:"5to5ta", txt:"5to5ta"}, { val:"5to2da", txt:"5to2da(petes)"}]:[]);
+   
     return (
         <div className='pars-cont'>
             <div className="general-params">
@@ -42,7 +44,7 @@ export default function Params({setAlumnsList}){
                             </label>
                         </div>
                     </div>
-                    <CustomSelect clases="course-list" opts={courses} onChange={()=>grpOpts(setAlumnsList)}/>
+                    <CustomSelect clases="course-list" opts={courses} onChange={()=>grpOpts(setAlumnsList)} />
                     
                 </div>
                 <div className="modulo-sty">
@@ -69,7 +71,7 @@ export default function Params({setAlumnsList}){
                     <div className="just-falta">
                         <div className="check-all just-opt checked-opt" onClick={handleStyleCheckTourn}>
                             <label>Check all fields</label>
-                            <input type="checkbox" defaultChecked={true} onChange={checkAllFunc()}/>
+                            <input type="checkbox" defaultChecked={true} onChange={checkAllFunc}/>
                         </div>
                         <div className="prof-asist just-opt checked-opt" onClick={handleStyleCheckTourn}>
                             <label>Asistio el profe?</label>
