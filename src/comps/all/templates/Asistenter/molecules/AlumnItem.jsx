@@ -12,7 +12,7 @@ export default function AlumnItem({almn, allPresence, setAllPresence , allJustif
     }, [allPresence, allJustified]))
     useEffect(()=>{
       let elem = document.querySelector("#almn-"+almn.id);
-      if(presenceChecked==false)setAllPresence(false);
+      
       if(justifiedChecked){
         elem.classList.remove("alumn-item-check");
         elem.classList.toggle("alumn-item-just");
