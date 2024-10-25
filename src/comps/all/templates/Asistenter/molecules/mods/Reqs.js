@@ -32,7 +32,7 @@ export async function requestToLoadCourses(tr){
     })
     await fetch("/load-courses", loadBd)
     .then(res=>res.json())
-    .then(data=>{ toRet=data.couList});
+    .then(data=>{ toRet=data.couList}); 
     return toRet;
 }
 
