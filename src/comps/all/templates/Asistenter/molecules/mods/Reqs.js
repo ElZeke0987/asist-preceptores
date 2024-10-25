@@ -37,7 +37,8 @@ export async function requestToLoadCourses(tr){
 }
 
 export function requestToLoadAlumns(setAlumnsList, group){
-    let courseListOpts = document.querySelector(".course-list");
+    let courseListOpts = document.querySelector(".course-list .opt-selected");
+    if(!courseListOpts) {console.log("CourseListOpts doesn't exist"); return}
     let grp=group ? group : undefined;
     if(grp=="both")grp=undefined;
     let alumnReq={
@@ -48,7 +49,6 @@ export function requestToLoadAlumns(setAlumnsList, group){
             courseId: courseListOpts.dataset.value,
         })
     }
-    console.log("Body Req parameters: ", alumnReq)
     fetch("/load-alumns", alumnReq).then(res=>res.json()).then(data=>{console.log("setting alumns list: ", data.alumnsList);setAlumnsList(data.alumnsList)})//renderAlumns(data.alumnsList, setAlumnsList))
 }
 

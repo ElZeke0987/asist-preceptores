@@ -2,11 +2,17 @@
 import { useEffect, useState } from "react";
 import Params from "./Params";
 
-export default function AlumnItem({almn}){
+export default function AlumnItem({almn, allPresence, setAllPresence , allJustified, setAllJustified}){
     const [presenceChecked, setPresenceChecked] = useState(true);
     const [justifiedChecked, setJustifiedChecked] = useState(false);
+    useEffect((()=>{
+      setPresenceChecked(allPresence);
+      if(allJustified)setPresenceChecked(false); 
+      setJustifiedChecked(allJustified);
+    }, [allPresence, allJustified]))
     useEffect(()=>{
       let elem = document.querySelector("#almn-"+almn.id);
+      if(presenceChecked==false)setAllPresence(false);
       if(justifiedChecked){
         elem.classList.remove("alumn-item-check");
         elem.classList.toggle("alumn-item-just");
@@ -14,6 +20,7 @@ export default function AlumnItem({almn}){
       }
       elem.classList.remove("alumn-item-just");
       elem.classList.toggle("alumn-item-check");
+
     }, [justifiedChecked, presenceChecked])
 
     async function handleStyleCheckTourn (e, setters){
@@ -39,7 +46,7 @@ export default function AlumnItem({almn}){
         if (e.type === "click") {// Solo click para alternar el checkbox de presence-cont
             setJustifiedChecked(false);
             setPresenceChecked(!presenceChecked);
-
+            
         }
         // Doble click para alternar el checkbox de justas-cont
         if (e.type === "dblclick") {
@@ -47,6 +54,9 @@ export default function AlumnItem({almn}){
             setJustifiedChecked(!justifiedChecked);
         }
     }
+    
+    if(presenceChecked==false)setAllPresence(false);
+    if(justifiedChecked==false)setAllJustified(false);
   };
 
 

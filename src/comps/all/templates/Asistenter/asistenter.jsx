@@ -71,12 +71,15 @@ let defaultAlmsn=[
 },
 ];
 
+
 export default function AsistenterPage(){
+    let [allPresence, setAllPresence]=useState(true);
+    let [allJustified, setAllJustified]=useState(false);
     let [alumnsList, setAlumnsList]=useState([]);
     return(
         <div className="background-asist">
             <div className="asistenter-cont">
-                <Params setAlumnsList={setAlumnsList}/>
+                <Params setAlumnsList={setAlumnsList} setAllPresence={setAllPresence} allPresence={allPresence} setAllJustified={setAllJustified} allJustified={allJustified}/>
                 
                 <div className="searcher">
                     <input type="text" placeholder="Buscar alumno..."/>
@@ -88,8 +91,9 @@ export default function AsistenterPage(){
                     
                 <div className="alumn-list">
                     <div className='list'>
+                        {console.log("alumnlist: ", alumnsList)}
                         {
-                            alumnsList.map(a=>{return(<AlumnItem almn={a} key={a.id}/>)})
+                            alumnsList.map(a=>{return(<AlumnItem almn={a} key={a.id} setAllPresence={setAllPresence} allPresence={allPresence} setAllJustified={setAllJustified} allJustified={allJustified}/>)})
                         }
                     </div>
                     <div className="submit-presence">

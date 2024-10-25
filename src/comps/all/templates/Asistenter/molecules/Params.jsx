@@ -16,7 +16,7 @@ requestToLoadCourses();
 
 let devMode = false;
 
-export default function Params({setAlumnsList}){
+export default function Params({setAlumnsList, setAllPresence, allPresence, setAllJustified, allJustfied}){
     let [checked, setChecked] = useState();
     let [courses, setCourses] = useState(devMode?[{ val:"5to5ta", txt:"5to5ta"}, { val:"5to2da", txt:"5to2da(petes)"}]:[]);
    
@@ -44,11 +44,11 @@ export default function Params({setAlumnsList}){
                             </label>
                         </div>
                     </div>
-                    <CustomSelect clases="course-list" opts={courses} onChange={()=>grpOpts(setAlumnsList)} />
+                    <CustomSelect clases="course-list" opts={courses} onChange={()=>grpOpts(setAlumnsList)} onSelect={requestToLoadAlumns(setAlumnsList)} propVal={"id"} propTxt={"curso"} defaultText='Select Course'/>
                     
                 </div>
                 <div className="modulo-sty">
-                    <CustomSelect clases="modulo" opts={modulosArr} onChange={()=>grpOpts(setAlumnsList)}/>
+                    <CustomSelect clases="modulo" opts={modulosArr} onChange={()=>grpOpts(setAlumnsList)} onSelect={requestToLoadAlumns(setAlumnsList)} defaultText='Select module'/>
                     
                     <div className="grupo-taller" style={{display: 'none'}}>
                         <div className="gro-opt" onClick={handleStyleCheckTourn}>
@@ -69,15 +69,15 @@ export default function Params({setAlumnsList}){
                     
                     </div>
                     <div className="just-falta">
-                        <div className="check-all just-opt checked-opt" onClick={handleStyleCheckTourn}>
+                        <div className="check-all just-opt checked-opt" onClick={()=>{handleStyleCheckTourn();setAllPresence(!allPresence)}} >
                             <label>Check all fields</label>
                             <input type="checkbox" defaultChecked={true} onChange={checkAllFunc}/>
                         </div>
-                        <div className="prof-asist just-opt checked-opt" onClick={handleStyleCheckTourn}>
+                        <div className="prof-asist just-opt checked-opt" onClick={()=>{handleStyleCheckTourn();setAllJustified(!allJustified)}}>
                             <label>Asistio el profe?</label>
                             <input type="checkbox" defaultChecked={true}/>
                         </div>
-                        <div className="just-asist just-opt" onClick={handleStyleCheckTourn}>
+                        <div className="just-asist just-opt" onClick={()=>{handleStyleCheckTourn();setAllJustified(!allJustified)}}>
                             <label>Falta justificada al curso entero</label>
                             <input type="checkbox"/>
                         </div>
