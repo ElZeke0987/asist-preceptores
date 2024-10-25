@@ -23,7 +23,9 @@ let loadBd={
 console.log("turno a renderizar ", loadBd.body.turno);
 
 export async function requestToLoadCourses(tr){
+    
     let trn = tr ? tr : getTourn();
+    console.log("trn: ", trn, "tr: ", tr);
     let toRet;
     loadBd.body = JSON.stringify({
         "turno":  trn
