@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Params from "./molecules/Params"
 import { requestToPostInform } from "./molecules/mods/Reqs"
 import AlumnItem from "./molecules/AlumnItem";
@@ -76,6 +76,16 @@ export default function AsistenterPage(){
     let [allPresence, setAllPresence]=useState(true);
     let [allJustified, setAllJustified]=useState(false);
     let [alumnsList, setAlumnsList]=useState([]);
+
+    useEffect(()=>{
+        console.log("Change in all pres and just");
+        document.querySelectorAll(".alumn-item").forEach((inp)=>{
+            if(allPresence)inp.querySelector(".pres-alumn").checked=true;
+            if(allJustified)inp.querySelector(".just-asist-alumn").checked=true;
+        }
+            
+    )
+    },[allPresence, allJustified])
     return(
         <div className="background-asist">
             <div className="asistenter-cont">
@@ -91,8 +101,8 @@ export default function AsistenterPage(){
                     
                 <div className="alumn-list">
                     <div className='list'>
-                        {console.log("alumnlist: ", alumnsList)}
                         {
+
                             alumnsList.map(a=>{return(<AlumnItem almn={a} key={a.id} setAllPresence={setAllPresence} allPresence={allPresence} setAllJustified={setAllJustified} allJustified={allJustified}/>)})
                         }
                     </div>

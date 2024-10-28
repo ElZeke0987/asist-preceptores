@@ -22,6 +22,7 @@ export default function CustomSelect(
     async function handleSelect(opt){
         await setSelOpt(opt);
         await setIsOpen(false);
+        console.log("Handling select");
         if(onSelect)onSelect(opt);
     }
     return(

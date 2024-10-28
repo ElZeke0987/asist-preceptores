@@ -49,7 +49,7 @@ export function requestToLoadAlumns(setAlumnsList, group){
             courseId: courseListOpts.dataset.value,
         })
     }
-    fetch("/load-alumns", alumnReq).then(res=>res.json()).then(data=>{console.log("setting alumns list: ", data.alumnsList);setAlumnsList(data.alumnsList)})//renderAlumns(data.alumnsList, setAlumnsList))
+    fetch("/load-alumns", alumnReq).then(res=>res.json()).then(data=>{setAlumnsList(data.alumnsList)})//renderAlumns(data.alumnsList, setAlumnsList))
 }
 
 export function requestToPostInform(){

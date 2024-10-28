@@ -44,7 +44,7 @@ export default function Params({setAlumnsList, setAllPresence, allPresence, setA
                             </label>
                         </div>
                     </div>
-                    <CustomSelect clases="course-list" opts={courses} onChange={()=>grpOpts(setAlumnsList)} onSelect={requestToLoadAlumns(setAlumnsList)} propVal={"id"} propTxt={"curso"} defaultText='Select Course'/>
+                    <CustomSelect clases="course-list" opts={courses} onChange={()=>grpOpts(setAlumnsList)} onSelect={(opt)=>requestToLoadAlumns(setAlumnsList)} propVal={"id"} propTxt={"curso"} defaultText='Select Course'/>
                     
                 </div>
                 <div className="modulo-sty">
