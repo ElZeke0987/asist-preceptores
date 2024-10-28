@@ -22,21 +22,21 @@ export default function CustomSelect(
     async function handleSelect(opt){
         await setSelOpt(opt);
         await setIsOpen(false);
-        console.log("Handling select");
         if(onSelect)onSelect(opt);
     }
     return(
         <div className={`cus-selec-wrapper ${clases||clases.join(" ")}`} data-value={selOpt?selOpt[propVal]:defaultValue} >
             <div className="cus-select">
                 <div className="cus-select-selected opt-selected" data-value={selOpt?selOpt[propVal]:defaultValue} onClick={()=>{setIsOpen(!isOpen)}}>
-                        {selOpt?selOpt[propTxt]:defaultText}
+                    {selOpt?selOpt[propTxt]:defaultText}
+                    {console.log("selOpt ", selOpt)}
                 </div>
                 {isOpen&&
                     (<div className="cus-select-options">
                         {opts.map((opt, i)=>{
                             return (Eleme===DefaultOptElem?
                             <Eleme key={i} text={opt[propTxt]} value={opt[propVal]} onClick={()=>{handleSelect(opt).then(()=>onChange())}} />:
-                            <Eleme className="cus-select-option" key={i} onClick={()=>{handleSelect(opt).then(()=>onChange())}} />)
+                            <Eleme className="cus-select-option" key={i} onClick={()=>{handleSelect(opt[propVal]).then(()=>onChange())}} />)
                         })}
                     </div>)
                 }

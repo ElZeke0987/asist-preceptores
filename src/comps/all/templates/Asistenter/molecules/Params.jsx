@@ -44,11 +44,11 @@ export default function Params({setAlumnsList, setAllPresence, allPresence, setA
                             </label>
                         </div>
                     </div>
-                    <CustomSelect clases="course-list" opts={courses} onChange={()=>grpOpts(setAlumnsList)} onSelect={(opt)=>requestToLoadAlumns(setAlumnsList)} propVal={"id"} propTxt={"curso"} defaultText='Select Course'/>
+                    <CustomSelect clases="course-list" opts={courses} onChange={()=>grpOpts(setAlumnsList)} onSelect={(opt)=>{requestToLoadAlumns({setAlumnsList, course: opt}); console.log("Select ", opt)}} propVal={"id"} propTxt={"curso"} defaultText='Select Course'/>
                     
                 </div>
                 <div className="modulo-sty">
-                    <CustomSelect clases="modulo" opts={modulosArr} onChange={()=>grpOpts(setAlumnsList)} onSelect={requestToLoadAlumns(setAlumnsList)} defaultText='Select module'/>
+                    <CustomSelect clases="modulo" opts={modulosArr} onChange={()=>grpOpts(setAlumnsList)} onSelect={(opt)=>requestToLoadAlumns({setAlumnsList, course: opt})} defaultText='Select module'/>
                     
                     <div className="grupo-taller" style={{display: 'none'}}>
                         <div className="gro-opt" onClick={handleStyleCheckTourn}>
