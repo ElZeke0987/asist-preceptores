@@ -30,6 +30,9 @@ async function validPass(pass, userOEmail) {
     //true por que fallo, false si no hubo errores.
 }
 //1234%t&6eE
+export const pageMiddles=[
+    body("userInfo par is empty").not().isEmpty(),
+]
 export const registerMiddles = [
     body("username", "Username required").not().isEmpty(),
     body("username", "username should have at least one letter").matches(/[a-zA-Z]/),

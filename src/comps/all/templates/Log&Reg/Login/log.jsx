@@ -1,4 +1,4 @@
-import { handleFocusInp } from "../../../../styling";
+import { handleFocusInp } from "../../../../../../styling";
 
 export default function Login(){
 

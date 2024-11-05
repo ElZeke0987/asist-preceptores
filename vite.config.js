@@ -17,7 +17,7 @@ export default defineConfig({
     
   },
   rollupOptions: {
-    input: 'index.html', // construira este archivo, fijate que este conectado al main.jsx
+    input: "index.html"
   },
   build: {
     outDir: "./src/public/dist",

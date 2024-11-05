@@ -1,0 +1,15 @@
+@import './_vars.scss';
+
+@import './molecules/_Nav';
+@import './molecules/_customSelectStyles.scss';
+
+@import "./pages/_asistenter.scss";
+@import "./pages/_initStyles.scss";
+
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    overflow-x: hidden;
+}

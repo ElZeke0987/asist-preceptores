@@ -4,7 +4,7 @@ import { body, validationResult } from "express-validator";
 import { readFile } from "fs";
 import express from "express";
 import cors from "cors";
-
+import pagePoints from "./servMods/endpoints/pagepoints.js";
 import {join, dirname} from "path";
 import { fileURLToPath } from "url";
 
@@ -16,11 +16,17 @@ app.use( cors() )
 app.use(express.static(publico));
 app.use(express.json());
 
+const pageArr=[
+    {url: "/", dir: "dist/index.html"},
+]
+
+setListenerPages(app);
 
 app.get("/", (req, res)=>{
     res.setHeader("Content-Type", "text/html")
-    res.sendFile(join(publico, "dist/index.html"));
+    res.sendFile(join("../../pages/index/public", "index.html"));
 })
+
 import { logMiddles, registerMiddles } from "./servMods/endpoints/middles.js";
 import { logPoint, regPoint } from "./servMods/endpoints/accountPoints.js";
 
@@ -29,6 +35,7 @@ app.post("/register-account",registerMiddles,(req, res)=>regPoint(req, res));
 
 import { loadCourses, loadAlumns } from "./servMods/endpoints/loadPoints.js";
 import { submitPresence } from "./servMods/endpoints/presencePoints.js";
+import setListenerPages from "./servMods/endpoints/pagepoints.js";
 
 app.post("/load-courses", (req, res)=>loadCourses(req, res))
 

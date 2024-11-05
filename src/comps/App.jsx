@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import Nav from './all/molecules/Nav/Nav.jsx';
-import './vars.scss';
-import './index.scss';
+import Nav from './molecules/Nav/Nav.jsx';
+//import './index.scss';
 
 
 function App() {

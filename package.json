@@ -4,6 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "proxy": "http:127.0.0.1:3001",
+  "workspaces": [
+    "pages/*"
+  ],
   "scripts": {
     "server": "node ./src/back/server.js",
     "dev": "vite",
