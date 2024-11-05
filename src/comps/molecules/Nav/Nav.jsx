@@ -1,9 +1,7 @@
 
 import { BrowserRouter as Router, Route, Routes, Link, Navigate} from "react-router-dom";
-import IndexPage from "../../../../pages/index/src/ind.jsx";
-import Login from "../../all/templates/Log&Reg/Login/log.jsx";
-import Register from "../../all/templates/Log&Reg/Register/reg.jsx";
-import ReAsistenter from "./otherPages/errorPage.jsx";
+import errorPage from "./otherPages/errorPage.jsx";
+import { reqPage } from "./mods.js";
 
 
 export default function Nav(){
@@ -26,11 +24,11 @@ export default function Nav(){
                 </div>
             </nav>
             <Routes>
-                <Route path="/index.html" element={<Navigate to="/"/>}/>
-                <Route path="/" element={<IndexPage/>}/>
-                <Route path="/asistenter" element={<ReAsistenter/>}/>
-                <Route path="/login" element={<Login/>}/>
-                <Route path="/register" element={<Register/>}/>
+                <Route path="/index.html" element={<errorPage/>}/>
+                <Route path="/" element={<errorPage/>}/>
+                <Route path="/asistenter" element={<errorPage page="asistenter"/>}/>
+                <Route path="/login" element={<errorPage page="login"/>}/>
+                <Route path="/register" element={<errorPage page="register"/>}/>
             </Routes>
         </Router>  
     )

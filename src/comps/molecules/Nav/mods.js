@@ -14,8 +14,12 @@ let bodyReq={
     }
 }
 
-
-export function reqPage(page, user){
+const defUser={
+    username: "elpepe",
+    email: "pepe@gmail.com",
+    pass: "1234%t&6eE",
+}
+export function reqPage(page="", user=defUser){
     
-    fetch("/"+page, bodyReq);
+    return fetch("/"+page, bodyReq);
 }

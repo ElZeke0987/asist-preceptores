@@ -1,10 +1,9 @@
 import {join, dirname} from "path";
 import { fileURLToPath } from "url";
 import { readdir, readFile, stat} from "fs";
-import { join } from "path";
 import express from "express";
-import { pageMiddles } from "./middles";
-import { mySQLConnection } from "../connection";
+import { pageMiddles } from "./middles.js";
+import { mySQLConnection } from "../connection.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 let publico = join(__dirname, "../public");
@@ -16,13 +15,13 @@ export default function setListenerPages(app){
     const baseDir="D:\@ARCHIVOS_USUARIO@\Desktop\Paginas de practica\Asistente para preces\as-pr-v0.6\asist-preceptores\pages";
     readdir(baseDir, (err, fls)=>{
         if(err){
-            console.log("Ocurrio un error: ", err);
+            console.log("Ocurrio un error (l: 18): ", err);
             return
         }
         fls.forEach(page=>{
             console.log("page dir ", page);
             const rutaPublic = join(baseDir, page, "public");
-            const rutaIndex = join(rutaPublic, "index.html");
+            const rutaIndex = join(rutaPublic, "dist/index.html");
 
             app.use(express.static(rutaPublic));
 

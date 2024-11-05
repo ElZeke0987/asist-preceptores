@@ -1,11 +1,7 @@
-export default function reAsistenter(){
+import { reqPage } from "../mods"
 
-    let bodyReq={
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: {
-            
-        }
-    }
-    return(fetch("/asistenter", )||<div>No tienes permisos para ingresar en asistenter</div>)
+export default function errorPage({page}){
+
+    
+    return (reqPage(page)||<div>No tienes permisos para ingresar en esta pagina o no existe</div>)
 }
