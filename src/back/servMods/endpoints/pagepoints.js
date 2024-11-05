@@ -6,22 +6,21 @@ import { pageMiddles } from "./middles.js";
 import { mySQLConnection } from "../connection.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-let publico = join(__dirname, "../public");
+const proyect = join(__dirname, "../../../../");
 
 let pageNoUsed=["login", "", "register"];
 const canAsistance=["prec", "adm"];
 
 export default function setListenerPages(app){
-    const baseDir="D:\@ARCHIVOS_USUARIO@\Desktop\Paginas de practica\Asistente para preces\as-pr-v0.6\asist-preceptores\pages";
+    const baseDir=join(proyect, "pages");
     readdir(baseDir, (err, fls)=>{
         if(err){
             console.log("Ocurrio un error (l: 18): ", err);
             return
         }
         fls.forEach(page=>{
-            console.log("page dir ", page);
-            const rutaPublic = join(baseDir, page, "public");
-            const rutaIndex = join(rutaPublic, "dist/index.html");
+            const rutaPublic = join(baseDir, page, "dist");
+            const rutaIndex = join(rutaPublic, "index.html");
 
             app.use(express.static(rutaPublic));
 
@@ -33,9 +32,12 @@ export default function setListenerPages(app){
                 return
             }
             app.post(`/${page}`, pageMiddles,(req, res)=>{
-                const userInfo = req.body.userInfo
+                console.log("req body: ",req.body.userinfo)
+                let userInfo = req.body.userinfo
+                
                 if(userInfo){
                     mySQLConnection("SELECT * FROM cuentas WHERE username=? AND email=? AND password=?", [userInfo.username, userInfo.email, userInfo.pass]).then(results=>{
+                        console.log("results", results);
                         const user = results[0];
                         console.log("Verificando si es posible que tu cuenta tome asistencia");
                         if (page=="asistenter" && canAsistance.includes(user.rol)){
@@ -44,9 +46,7 @@ export default function setListenerPages(app){
                             return
                         }
                     })
-                    return
-                }
-                console.log("No hay cuenta iniciada, que estas intentando? neandertal");
+                }else console.log("No hay cuenta iniciada, que estas intentando? neandertal");
             })
         })
     })

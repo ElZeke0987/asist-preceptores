@@ -24,7 +24,7 @@ setListenerPages(app);
 
 app.get("/", (req, res)=>{
     res.setHeader("Content-Type", "text/html")
-    res.sendFile(join("../../pages/index/public", "index.html"));
+    res.sendFile(join(__dirname,"../../pages/index/dist/index.html"));
 })
 
 import { logMiddles, registerMiddles } from "./servMods/endpoints/middles.js";
