@@ -13,26 +13,20 @@ let app = express();
 let publico = join(__dirname, "../public");
 const proyect = join(__dirname, "../../");
 const pages = join(proyect, "pages");
+
 app.use( cors() )
 app.use("/",express.static(join(pages, "index/dist")));
 app.use(express.json());
 
-console.log("rutas: ", pages);
-
 const canAsistance=["prec", "adm"];
-const userInfo={
-    username: "elpepe",
-    email: "pepe@gmail.com",
-    pass: "1234%t&6eE",
-}
+
 app.use("/asistenter", (req, res, next)=>{
-    //let userInfo = req.body.userinfo;
+    let userInfo = req.body.userinfo;
     const rutaIndex = join(pages, "asistenter/dist/index.html");
     if(userInfo){
         mySQLConnection("SELECT * FROM cuentas WHERE username=? AND email=? AND password=?", [userInfo.username, userInfo.email, userInfo.pass])
         .then(results=>{
             const user = results[0];
-            
             if (canAsistance.includes(user.rol)){
                 console.log("\n Ruta index: ", join(pages, "asistenter/dist"), `\n`);
                 next()
@@ -43,7 +37,6 @@ app.use("/asistenter", (req, res, next)=>{
 );
 
 app.use("/asistenter", express.static(join(pages, "asistenter/dist")));
-//setListenerPages(app);
 
 app.post("/asistenter", pageMiddles, (req, res)=>{
     res.setHeader("Content-Type", "text/html")
