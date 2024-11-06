@@ -9,17 +9,17 @@ export default function Nav(){
     return(
         <nav className="ap-nav">
             <div className="ap-nav-cont logo-nav">
-                <div onClick={()=>reqPage("")}><img src="./logo.png"/></div>
+                <a  onClick={()=>reqPage("")}><img src="./logo.png"/></a>
             </div>
             <div className="ap-nav-cont home-it">
-                <div onClick={()=>reqPage("")}>Home</div>
+                <a  onClick={()=>reqPage("")}>Home</a>
             </div>
             <div className="ap-nav-cont base-nav-cont">
-                <div onClick={()=>reqPage("asistenter")}>Asistenter</div>
+                <a  onClick={()=>reqPage("asistenter")}>Asistenter</a>
             </div>
             <div className="ap-nav-cont account-it">
-                <div onClick={()=>reqPage("login")}>Iniciar sesion</div>
-                <div onClick={()=>reqPage("register")}>Registrarse</div>
+                <a  onClick={()=>reqPage("login")}>Iniciar sesion</a>
+                <a  onClick={()=>reqPage("register")}>Registrarse</a>
             </div>
         </nav>
     )

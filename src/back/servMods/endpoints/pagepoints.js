@@ -9,9 +9,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const proyect = join(__dirname, "../../../../");
 
 let pageNoUsed=["login", "", "register"];
-const canAsistance=["prec", "adm"];
 
-export default function setListenerPages(app){
+
+function setListenerPages(app){
     const baseDir=join(proyect, "pages");
     readdir(baseDir, (err, fls)=>{
         if(err){
@@ -23,6 +23,10 @@ export default function setListenerPages(app){
             const rutaIndex = join(rutaPublic, "index.html");
 
             app.use(express.static(rutaPublic));
+            app.use((req, res, next)=>{
+                console.log("archivo descargado: ", req.url, rutaPublic);
+                next()
+            })
 
             if(pageNoUsed.includes(page)){
                 app.get(`/${page}`, pageMiddles, (req, res)=>{
@@ -32,14 +36,11 @@ export default function setListenerPages(app){
                 return
             }
             app.post(`/${page}`, pageMiddles,(req, res)=>{
-                console.log("req body: ",req.body.userinfo)
                 let userInfo = req.body.userinfo
-                
                 if(userInfo){
                     mySQLConnection("SELECT * FROM cuentas WHERE username=? AND email=? AND password=?", [userInfo.username, userInfo.email, userInfo.pass]).then(results=>{
-                        console.log("results", results);
                         const user = results[0];
-                        console.log("Verificando si es posible que tu cuenta tome asistencia");
+                        console.log("Ruta index: ", rutaIndex);
                         if (page=="asistenter" && canAsistance.includes(user.rol)){
                             res.setHeader("Content-Type", "text/html")
                             res.sendFile(rutaIndex);
@@ -50,11 +51,42 @@ export default function setListenerPages(app){
             })
         })
     })
-/*
-    pageArr.forEach(page => {
-        app.get(page.url, (req, res)=>{
-            res.setHeader("Content-Type", "text/html")
-            res.sendFile(join(publico, page.dir));
+}
+
+
+export default function postNormals(app){
+    let rutaPage = join(proyect, "pages");
+    const funcJoin=(page, x="dist")=>{return join(rutaPage, page, x)};
+
+    const funcPost=(page, cond=true)=>{
+        const ruta = page==""?"index":page;
+        console.log("ruta public: ", funcJoin(ruta));
+        app.use(`/${page}`,express.static(funcJoin(ruta)));
+        app.post(`/${page}`, pageMiddles,(req, res)=>{
+            app.use(`/${page}`,express.static(funcJoin(ruta)));
+            let userInfo = req.body.userinfo;
+            const rutaIndex = funcJoin(ruta, "dist/index.html");
+            if(userInfo){
+                mySQLConnection("SELECT * FROM cuentas WHERE username=? AND email=? AND password=?", [userInfo.username, userInfo.email, userInfo.pass])
+                .then(results=>{
+                    const user = results[0];
+                    console.log("Ruta index: ", rutaIndex);
+                    if (eval(cond)){
+                        console.log("Devolviendo index.html");
+                        res.setHeader("Content-Type", "text/html")
+                        res.sendFile(rutaIndex);
+                        return
+                    }
+                })
+            }else console.log("No hay cuenta iniciada, que estas intentando? neandertal");
         })
-    });*/
+    }
+
+    app.use((req, res, next)=>{
+        console.log("archivo descargado: ", req.url);
+        next()
+    })
+    funcPost("");
+    funcPost("asistenter");
+    funcPost("account");
 }

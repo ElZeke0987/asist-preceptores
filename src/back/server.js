@@ -4,30 +4,59 @@ import { body, validationResult } from "express-validator";
 import { readFile } from "fs";
 import express from "express";
 import cors from "cors";
-import pagePoints from "./servMods/endpoints/pagepoints.js";
+import postNormals from "./servMods/endpoints/pagepoints.js";
 import {join, dirname} from "path";
 import { fileURLToPath } from "url";
 
 export const __dirname = dirname(fileURLToPath(import.meta.url))
 let app = express();
 let publico = join(__dirname, "../public");
-
+const proyect = join(__dirname, "../../");
+const pages = join(proyect, "pages");
 app.use( cors() )
-app.use(express.static(publico));
+app.use("/",express.static(join(pages, "index/dist")));
 app.use(express.json());
 
-const pageArr=[
-    {url: "/", dir: "dist/index.html"},
-]
+console.log("rutas: ", pages);
 
-setListenerPages(app);
+const canAsistance=["prec", "adm"];
+const userInfo={
+    username: "elpepe",
+    email: "pepe@gmail.com",
+    pass: "1234%t&6eE",
+}
+app.use("/asistenter", (req, res, next)=>{
+    //let userInfo = req.body.userinfo;
+    const rutaIndex = join(pages, "asistenter/dist/index.html");
+    if(userInfo){
+        mySQLConnection("SELECT * FROM cuentas WHERE username=? AND email=? AND password=?", [userInfo.username, userInfo.email, userInfo.pass])
+        .then(results=>{
+            const user = results[0];
+            
+            if (canAsistance.includes(user.rol)){
+                console.log("\n Ruta index: ", join(pages, "asistenter/dist"), `\n`);
+                next()
+            }
+        })
+    }else {console.log("No hay cuenta iniciada, que estas intentando? neandertal")};
+}
+);
+
+app.use("/asistenter", express.static(join(pages, "asistenter/dist")));
+//setListenerPages(app);
+
+app.post("/asistenter", pageMiddles, (req, res)=>{
+    res.setHeader("Content-Type", "text/html")
+    res.sendFile(join(pages, "asistenter/dist/index.html"));
+})
+
 
 app.get("/", (req, res)=>{
     res.setHeader("Content-Type", "text/html")
-    res.sendFile(join(__dirname,"../../pages/index/dist/index.html"));
+    res.sendFile(join(pages,"index/dist/index.html"));
 })
 
-import { logMiddles, registerMiddles } from "./servMods/endpoints/middles.js";
+import { logMiddles, pageMiddles, registerMiddles } from "./servMods/endpoints/middles.js";
 import { logPoint, regPoint } from "./servMods/endpoints/accountPoints.js";
 
 app.post("/login-account", logMiddles,(req, res)=>logPoint(req, res));
