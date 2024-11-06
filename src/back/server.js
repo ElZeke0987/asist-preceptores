@@ -16,6 +16,7 @@ const pages = join(proyect, "pages");
 
 app.use( cors() )
 app.use("/",express.static(join(pages, "index/dist")));
+app.use("/asistenter", express.static(join(pages, "asistenter/dist")));
 app.use(express.json());
 
 const canAsistance=["prec", "adm"];
@@ -29,18 +30,26 @@ app.use("/asistenter", (req, res, next)=>{
             const user = results[0];
             if (canAsistance.includes(user.rol)){
                 console.log("\n Ruta index: ", join(pages, "asistenter/dist"), `\n`);
-                next()
+                next();
+                return
             }
+            res.status(403).send("acceso no autorizado");
+            next()
         })
-    }else {console.log("No hay cuenta iniciada, que estas intentando? neandertal")};
+    }else {console.log("No hay cuenta iniciada, que estas intentando? neandertal"); next()};
 }
 );
 
-app.use("/asistenter", express.static(join(pages, "asistenter/dist")));
+
 
 app.post("/asistenter", pageMiddles, (req, res)=>{
-    res.setHeader("Content-Type", "text/html")
-    res.sendFile(join(pages, "asistenter/dist/index.html"));
+    res.setHeader("Content-Type", "text/html");
+    res.sendFile(join(pages, "asistenter/dist/index.html"),err => {
+        if (err) {
+          console.error('Error sending file:', err);
+          res.status(500).send('Error sending file');
+        }
+      });
 })
 
 
