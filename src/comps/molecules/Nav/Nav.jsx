@@ -15,7 +15,7 @@ export default function Nav(){
                 <a href="/" onClick={()=>reqPage("")}>Home</a>
             </div>
             <div className="ap-nav-cont base-nav-cont">
-                <a href="/asistenter" onClick={()=>reqPage("asistenter")}>Asistenter</a>
+                <a href="/asistenter" onClick={()=>reqPage("asist-get")}>Asistenter</a>
             </div>
             <div className="ap-nav-cont account-it">
                 <a href="/login" onClick={()=>reqPage("login")}>Iniciar sesion</a>

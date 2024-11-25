@@ -1,10 +1,8 @@
 import * as mysql from "mysql2/promise";
 import { mySQLConnection } from "./servMods/connection.js";
 import { body, validationResult } from "express-validator";
-import { readFile } from "fs";
 import express from "express";
 import cors from "cors";
-import postNormals from "./servMods/endpoints/pagepoints.js";
 import {join, dirname} from "path";
 import { fileURLToPath } from "url";
 
@@ -15,13 +13,11 @@ const proyect = join(__dirname, "../../");
 const pages = join(proyect, "pages");
 
 app.use( cors() )
-app.use("/",express.static(join(pages, "index/dist")));
-app.use("/asistenter", express.static(join(pages, "asistenter/dist")));
 app.use(express.json());
 
 const canAsistance=["prec", "adm"];
 
-app.use("/asistenter", (req, res, next)=>{
+function middleRole(req, res, next){
     let userInfo = req.body.userinfo;
     const rutaIndex = join(pages, "asistenter/dist/index.html");
     if(userInfo){
@@ -29,34 +25,52 @@ app.use("/asistenter", (req, res, next)=>{
         .then(results=>{
             const user = results[0];
             if (canAsistance.includes(user.rol)){
-                console.log("\n Ruta index: ", join(pages, "asistenter/dist"), `\n`);
+                console.log("\n url enviada: ", req.path, `\n`);
                 next();
                 return
             }
             res.status(403).send("acceso no autorizado");
             next()
         })
-    }else {console.log("No hay cuenta iniciada, que estas intentando? neandertal"); next()};
+    }else {console.log("\n url no enviada: ", req.path, `\n`); next()};
 }
-);
 
+app.use("/asistenter", (req, res, next)=>{
+    middleRole(req, res, next);
+});
 
+app.get("/", (req, res)=>{
+
+    res.setHeader("Content-Type", "text/html")
+    res.sendFile(join(pages,"index/dist/index.html"));
+})
+
+app.get("/asist-get", (req, res)=>{
+    res.redirect("/asistenter");
+})
 
 app.post("/asistenter", pageMiddles, (req, res)=>{
     res.setHeader("Content-Type", "text/html");
     res.sendFile(join(pages, "asistenter/dist/index.html"),err => {
         if (err) {
           console.error('Error sending file:', err);
-          res.status(500).send('Error sending file');
+
+          res.status(500).send('Error sending file'); 
         }
-      });
+    });
 })
 
 
-app.get("/", (req, res)=>{
-    res.setHeader("Content-Type", "text/html")
-    res.sendFile(join(pages,"index/dist/index.html"));
-})
+app.use("/",express.static(join(pages, "/index/dist")));
+
+app.use("/asistenter",express.static(join(pages, "/asistenter/dist"), 
+{setHeaders:(res, path, stat)=>{
+    console.log("path of this: ", path);
+   // if(path.endsWith(".js"))res.setHeader("Content-Type", "application/javascript");
+}}));
+app.get("/asistenter/*", (req, res) => {
+    console.log("archivo servido: ", req.url);
+});
 
 import { logMiddles, pageMiddles, registerMiddles } from "./servMods/endpoints/middles.js";
 import { logPoint, regPoint } from "./servMods/endpoints/accountPoints.js";
@@ -66,7 +80,6 @@ app.post("/register-account",registerMiddles,(req, res)=>regPoint(req, res));
 
 import { loadCourses, loadAlumns } from "./servMods/endpoints/loadPoints.js";
 import { submitPresence } from "./servMods/endpoints/presencePoints.js";
-import setListenerPages from "./servMods/endpoints/pagepoints.js";
 
 app.post("/load-courses", (req, res)=>loadCourses(req, res))
 
