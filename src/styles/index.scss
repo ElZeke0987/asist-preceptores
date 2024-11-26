@@ -1,7 +1,8 @@
 @import './_vars.scss';
 
-@import './molecules/_Nav';
+@import './molecules/_Nav.scss';
 @import './molecules/_customSelectStyles.scss';
+@import './molecules/errorMsg.scss';
 
 @import "./pages/_asistenter.scss";
 @import "./pages/_initStyles.scss";

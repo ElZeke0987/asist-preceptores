@@ -22,11 +22,5 @@ export function reqPage(page="", user=defUser){//medida de seguridad por si inte
         })
     }
     console.log("Requesting page");
-    fetch(`/${page}`, bodyReq)
-    /*.then(res=>{console.log("res: ", res);res.text()})
-    .then(data=>{
-            console.log("data: ", data); 
-            //window.location.href=`http://127.0.0.1:3001/${page}`
-        }
-    );*/
+    fetch(`/${page}`, bodyReq);
 }

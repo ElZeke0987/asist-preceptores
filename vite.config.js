@@ -8,7 +8,7 @@ console.log("Abriendo server React, Puerto: ", PORT, "; linea 6 vite.config.js")
 export default defineConfig({
 
   plugins: [react()],
-  base:"/",
+  base:"./",
   
   server:{
     port: PORT,

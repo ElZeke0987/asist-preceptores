@@ -40,7 +40,6 @@ app.use("/asistenter", (req, res, next)=>{
 });
 
 app.get("/", (req, res)=>{
-
     res.setHeader("Content-Type", "text/html")
     res.sendFile(join(pages,"index/dist/index.html"));
 })
@@ -51,26 +50,27 @@ app.get("/asist-get", (req, res)=>{
 
 app.post("/asistenter", pageMiddles, (req, res)=>{
     res.setHeader("Content-Type", "text/html");
-    res.sendFile(join(pages, "asistenter/dist/index.html"),err => {
-        if (err) {
-          console.error('Error sending file:', err);
+    res.sendFile(join(pages, "asistenter/dist/index.html"));
+})
 
-          res.status(500).send('Error sending file'); 
-        }
-    });
+app.post("/login", pageMiddles, (req, res)=>{
+    res.setHeader("Content-Type", "text/html");
+    res.sendFile(join(pages, "login/dist/index.html"));
+})
+
+app.post("/register", pageMiddles, (req, res)=>{
+    res.setHeader("Content-Type", "text/html");
+    res.sendFile(join(pages, "register/dist/index.html"));
 })
 
 
 app.use("/",express.static(join(pages, "/index/dist")));
 
-app.use("/asistenter",express.static(join(pages, "/asistenter/dist"), 
-{setHeaders:(res, path, stat)=>{
-    console.log("path of this: ", path);
-   // if(path.endsWith(".js"))res.setHeader("Content-Type", "application/javascript");
-}}));
-app.get("/asistenter/*", (req, res) => {
-    console.log("archivo servido: ", req.url);
-});
+app.use("/asistenter",express.static(join(pages, "/asistenter/dist")));
+
+app.use("/login", express.static(join(pages, "/login/dist")));
+app.use("/register", express.static(join(pages, "/register/dist")));
+
 
 import { logMiddles, pageMiddles, registerMiddles } from "./servMods/endpoints/middles.js";
 import { logPoint, regPoint } from "./servMods/endpoints/accountPoints.js";
