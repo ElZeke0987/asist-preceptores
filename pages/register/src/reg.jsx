@@ -1,9 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { handleFocusInp } from "../../../styling"
-import regRequest from "./mods";
-import ErrorMsg from "../../../src/comps/molecules/errorMsg";
-
-
+import { errorsRender, errsEffect, handleXClick, regRequest} from "../../loremods";
 
 export default function Register(){
     let [username, setUsername]=useState();
@@ -11,31 +8,18 @@ export default function Register(){
     let [tel, setTel]=useState();
     let [pass, setPass]=useState();
     let [rPass, setRPass]=useState();
+    let [err, setErr]=useState([]);
+    const hasMounted = useRef(false)
 
-    let [err, setErr]=useState();
-
-    let [tId, setTId]= useState(null);
-
-    useEffect(()=>{
-        if(err){
-            const errMsg = document.querySelector(".reg .err")
-            errMsg.classList.toggle("err", false);
-            setTId(setTimeout(()=>{errMsg.classList.toggle("err", true); setErr(undefined)}, 10000));
-        }
-        
-        
-    }, [err]);
-    function handleXClick(e){
-        e.target.parentElement.classList.toggle("err", true);
-        setErr(undefined); 
-        clearTimeout(tId); 
-        setTId(null); 
-    }
+    useEffect(()=>errsEffect(hasMounted, err, "reg"), [err]);
+    
     return (
         <div className="init-cont-ex">
             <div className="init-cont-in reg">
                 <div className="init-title">Registrarse</div>
-                <ErrorMsg msg={err} onXClick={e=>handleXClick(e)}/>
+                {
+                    errorsRender(err, setErr)
+                }
                 <form className="init-form register">
                     <div className="init-inp-item">
                         <label>Username</label>

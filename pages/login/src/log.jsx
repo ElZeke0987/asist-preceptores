@@ -1,14 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { handleFocusInp } from "../../../styling";
-import { logRequest } from "./mods";
+import { errorsRender, errsEffect, handleXClick ,logRequest } from "../../loremods";
 
 export default function Login(){
     let [userOEmail, setUserOEmail]=useState();
     let [password, setPassword]=useState();
+    let [err, setErr]=useState();
+    const hasMounted = useRef(false);
+
+    useEffect(()=>errsEffect(hasMounted, err, "log"), [err]);
     return(
         <div className="init-cont-ex">
-            <div className="init-cont-in">
+            <div className="init-cont-in log">
                 <div className="init-title">Iniciar sesion</div>
+                {
+                    errorsRender(err, setErr)
+                }
                 <form className="init-form login">
                     <div className="init-inp-item">
                         <label>Username/email</label>
@@ -19,14 +26,10 @@ export default function Login(){
                         <label>Password</label>
                         <input className="l-password" type="password" placeholder="Insert password" onFocus={handleFocusInp} onChange={e=>setPassword(e.target.value)}/>
                     </div>
-                    
-
-                    
                 </form>
                 <div className="init-button">
-                    <button className="l-button" onClick={e=>logRequest(userOEmail, password)}>Iniciar sesion</button>
+                    <button className="l-button" onClick={e=>logRequest(userOEmail, password, setErr)}>Iniciar sesion</button>
                 </div>
-                    
             </div>
         </div>
     )
