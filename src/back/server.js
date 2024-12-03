@@ -5,6 +5,8 @@ import express from "express";
 import cors from "cors";
 import {join, dirname} from "path";
 import { fileURLToPath } from "url";
+import cookieParser from "cookie-parser";
+
 
 export const __dirname = dirname(fileURLToPath(import.meta.url))
 let app = express();
@@ -14,6 +16,7 @@ const pages = join(proyect, "pages");
 
 app.use( cors() )
 app.use(express.json());
+app.use(cookieParser())
 
 const canAsistance=["prec", "adm"];
 
@@ -80,12 +83,16 @@ app.post("/register-account",registerMiddles,(req, res)=>regPoint(req, res));
 
 import { loadCourses, loadAlumns } from "./servMods/endpoints/loadPoints.js";
 import { submitPresence } from "./servMods/endpoints/presencePoints.js";
+import cookieParser from "cookie-parser";
+import { setInitCookies } from "./servMods/endpoints/cookiePoints.js";
 
 app.post("/load-courses", (req, res)=>loadCourses(req, res))
 
 app.post("/load-alumns", (req,res)=>loadAlumns(req, res))
 
 app.post("/submit-presence",(req, res)=> submitPresence(req, res))
+
+app.get("/set-account-cookies", (req, res)=>setInitCookies(req,res))
 
 let PORT= process.env.PORT || 3001;
 let HOSTNAME="127.0.0.1";

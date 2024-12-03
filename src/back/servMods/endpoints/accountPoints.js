@@ -20,8 +20,8 @@ export function regPoint(req, res){
     if(!errors.isEmpty()){return res.status(400).json({errors: errors.array()})}
     let telNumber = body.tel != "" ? body.tel:"NULL";
     let queryIns=`
-    INSERT INTO cuentas (id, username, email, password, reg_date, telefono,imagen) 
+    INSERT INTO cuentas (id, username, email, password, reg_date, telefono,imagen, rol) 
     VALUES (NULL, ?, ?, ?, current_timestamp(), 
-    ?, NULL)`;
+    ?, NULL, 'visit')`;
     mySQLConnection(queryIns, [body.username, body.email, body.pass, telNumber]).then(r=>res.status(200).json({errors: undefined, userBody: body})).catch(err=>{throw err})
 }
