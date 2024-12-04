@@ -25,7 +25,7 @@ function generateAuthToken(user, role){
         //alg: "none",//para pruebas
     }
     return jwt.sign(payload, clave_finals, options);
-}
+} 
 
 export async function setInitCookies(req, res){
     mySQLConnection('SELECT * FROM cuentas WHERE username = ?', [req.body.username]).then(data=>{
