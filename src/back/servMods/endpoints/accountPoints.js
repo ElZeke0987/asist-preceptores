@@ -1,5 +1,6 @@
 import { validationResult } from "express-validator";
 import { mySQLConnection } from "../connection.js";
+import { setInitCookies } from "./cookiePoints.js";
 
 
 
@@ -23,5 +24,9 @@ export function regPoint(req, res){
     INSERT INTO cuentas (id, username, email, password, reg_date, telefono,imagen, rol) 
     VALUES (NULL, ?, ?, ?, current_timestamp(), 
     ?, NULL, 'visit')`;
-    mySQLConnection(queryIns, [body.username, body.email, body.pass, telNumber]).then(r=>res.status(200).json({errors: undefined, userBody: body})).catch(err=>{throw err})
+    
+    mySQLConnection(queryIns, [body.username, body.email, body.pass, telNumber]).then(r=>{
+        setInitCookies(req, res);
+        //res.status(200).json({errors: undefined, userBody: body})
+    }).catch(err=>{throw err})
 }

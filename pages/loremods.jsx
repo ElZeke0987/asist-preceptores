@@ -12,9 +12,12 @@ export function logRequest(userOEmail, password){
     }
     fetch("/login-account", logBody).then(res=>res.json).then(data=>{
         if(data.errors){
-            setErr(data.errors)
+            setErr(data.errors);
+            console.log("Errors: ", data);
+            return
         }
-        console.log("data: ", data);
+        console.log("data log: ", data);
+        window.location.href="/account";
     })
 }
 
@@ -36,9 +39,12 @@ export function regRequest(username, email, tel, pass, rPass, setErr, ind){
     }
     fetch("/register-account", regBody).then(res=>res.json()).then(data=>{
         if(data.errors){
-            setErr(data.errors)
+            setErr(data.errors);
+            console.log("Errors: ", data);
+            return
         }
         console.log("data reg: ", data)
+        window.location.href="/account";
     })
 }
 

@@ -1,3 +1,3 @@
 
 
-export const regMinified = false;
+export const regMinified = true;

@@ -7,16 +7,15 @@ import {join, dirname} from "path";
 import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
 
-
 export const __dirname = dirname(fileURLToPath(import.meta.url))
 let app = express();
 let publico = join(__dirname, "../public");
 const proyect = join(__dirname, "../../");
 const pages = join(proyect, "pages");
 
-app.use( cors() )
+app.use(cors())
 app.use(express.json());
-app.use(cookieParser())
+app.use(cookieParser());
 
 const canAsistance=["prec", "adm"];
 
@@ -66,33 +65,38 @@ app.post("/register", pageMiddles, (req, res)=>{
     res.sendFile(join(pages, "register/dist/index.html"));
 })
 
+app.get("/account", pageMiddles, (req, res)=>{
+    res.setHeader("Content-Type", "text/html");
+    res.sendFile(join(pages, "account/dist/index.html"));
+})
+
 
 app.use("/",express.static(join(pages, "/index/dist")));
-
 app.use("/asistenter",express.static(join(pages, "/asistenter/dist")));
-
 app.use("/login", express.static(join(pages, "/login/dist")));
 app.use("/register", express.static(join(pages, "/register/dist")));
+app.use("/account", express.static(join(pages, "/account/dist")));
 
 
 import { logMiddles, pageMiddles, registerMiddles } from "./servMods/endpoints/middles.js";
 import { logPoint, regPoint } from "./servMods/endpoints/accountPoints.js";
 
 app.post("/login-account", logMiddles,(req, res)=>logPoint(req, res));
+
 app.post("/register-account",registerMiddles,(req, res)=>regPoint(req, res));
 
 import { loadCourses, loadAlumns } from "./servMods/endpoints/loadPoints.js";
 import { submitPresence } from "./servMods/endpoints/presencePoints.js";
-import cookieParser from "cookie-parser";
-import { setInitCookies } from "./servMods/endpoints/cookiePoints.js";
+import { readAuthCookies } from "./servMods/endpoints/cookiePoints.js";
 
-app.post("/load-courses", (req, res)=>loadCourses(req, res))
+app.get("/read-auth", (req, res)=>readAuthCookies(req, res));
 
-app.post("/load-alumns", (req,res)=>loadAlumns(req, res))
+app.post("/load-courses", (req, res)=>loadCourses(req, res));
 
-app.post("/submit-presence",(req, res)=> submitPresence(req, res))
+app.post("/load-alumns", (req,res)=>loadAlumns(req, res));
 
-app.get("/set-account-cookies", (req, res)=>setInitCookies(req,res))
+app.post("/submit-presence",(req, res)=> submitPresence(req, res));
+
 
 let PORT= process.env.PORT || 3001;
 let HOSTNAME="127.0.0.1";
