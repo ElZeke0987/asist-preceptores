@@ -7,21 +7,27 @@ export default  function AccountPage(){
     }
     let [username, setUsername]=useState();
     fetch("/read-auth", cookieReq).then(r=>r.json()).then(decoded=>{
-        const newData = decd.data
+        const newData = decoded.data
         console.log("Decoded data token: ", newData);
         setUsername(newData.use);
     })
     return <div>
-        <div className="account-pres">
-            <div className="account-icon">
-                <img/>
+        <div>
+            <div className="account-pres">
+                <div className="account-icon">
+                    <img/>
+                </div>
+                <div className="account-hello">
+                    Bienvenido a tu cuenta <span className="account-name">{username}</span>
+                </div>
             </div>
-            <div className="account-hello">
-                Bienvenido a tu cuenta<span className="account-name">{username}</span>
+            <div className="account-role">
+                
             </div>
         </div>
+            
         <div className="prog-options">
-
+            
         </div>
     </div>
 }
