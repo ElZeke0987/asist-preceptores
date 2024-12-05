@@ -19,12 +19,12 @@ export default function Login(){
                 <form className="init-form login">
                     <div className="init-inp-item">
                         <label>Username/email</label>
-                        <input className="l-useroemail" placeholder="can only one of them" onFocus={handleFocusInp} onChange={e=>setUserOEmail(e.target.value)}/>
+                        <input className="l-useroemail" placeholder="can only one of them" onLoad={e=>setUserOEmail(e.target.email)} onFocus={handleFocusInp} onChange={e=>setUserOEmail(e.target.value)}/>
                     </div>
                         
                     <div className="init-inp-item">
                         <label>Password</label>
-                        <input className="l-password" type="password" placeholder="Insert password" onFocus={handleFocusInp} onChange={e=>setPassword(e.target.value)}/>
+                        <input className="l-password" type="password" placeholder="Insert password" onLoad={e=>setPassword(e.target.email)} onFocus={handleFocusInp} onChange={e=>setPassword(e.target.value)}/>
                     </div>
                 </form>
                 <div className="init-button">

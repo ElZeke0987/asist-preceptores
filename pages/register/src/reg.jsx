@@ -23,22 +23,22 @@ export default function Register(){
                 <form className="init-form register">
                     <div className="init-inp-item">
                         <label>Username</label>
-                        <input className="r-username" required placeholder="max 100 chars" onFocus={handleFocusInp} onChange={e=>setUsername(e.target.value)}/>
+                        <input className="r-username" required placeholder="max 100 chars" onLoad={e=>setUsername(e.target.email)} onFocus={handleFocusInp} onChange={e=>setUsername(e.target.value)}/>
                     </div>
                         
                     <div className="init-inp-item">
                         <label>Email</label>
-                        <input className="r-email"  type="email" onFocus={handleFocusInp} onChange={e=>setEmail(e.target.value)}/>
+                        <input className="r-email"  type="email" onLoad={e=>setEmail(e.target.email)} onFocus={handleFocusInp} onChange={e=>setEmail(e.target.value)}/>
                     </div>
 
                     <div className="init-inp-item">
                         <label>Telefono</label>
-                        <input className="r-tel"  type="tel"  onFocus={handleFocusInp} onChange={e=>setTel(e.target.value)}/>
+                        <input className="r-tel"  type="tel" onLoad={e=>setTel(e.target.email)}  onFocus={handleFocusInp} onChange={e=>setTel(e.target.value)}/>
                     </div>
                     
                     <div className="init-inp-item">
                         <label>Password</label>
-                        <input className="r-password" required type="password" placeholder="Insert password" onFocus={handleFocusInp} onChange={e=>setPass(e.target.value)}/>
+                        <input className="r-password" required type="password" onLoad={e=>setPass(e.target.email)} placeholder="Insert password" onFocus={handleFocusInp} onChange={e=>setPass(e.target.value)}/>
                     </div>
 
                     <div className="init-inp-item">

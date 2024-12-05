@@ -65,15 +65,15 @@ app.post("/register", pageMiddles, (req, res)=>{
     res.sendFile(join(pages, "register/dist/index.html"));
 })
 
-app.get("/account", pageMiddles, (req, res)=>{
-    const auth = getAuthCookies(req);
+app.get("/account", pageMiddles, async (req, res)=>{
+    const auth = await getAuthCookies(req);
     console.log("auth decoded: ", auth.decd)
     if(auth.r==false){
         res.redirect("/");
         return
     }
     
-    if(auth.decd.data.use == undefined){
+    if(auth.decd.use == undefined){
         console.log("there is no user registered in cookie");
         res.redirect("/");
         return

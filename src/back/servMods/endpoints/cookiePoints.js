@@ -14,7 +14,7 @@ function generateAuthToken(user, role){
         use: user.username,
         rol: user.rol,
         idr: role.id,
-        table: roleTableNames[user.rol],
+        table: roleTableNames[user.rol]?roleTableNames[user.rol]:"cuentas",
         /*nom: role.nombre,
         ape: role.apellido,//Esto para casos especiales, de ser necesario, al usarse dos veces los datos del rol especialmente (mostrar en la cuenta y la muestra de asistencias)
 */
@@ -27,20 +27,33 @@ function generateAuthToken(user, role){
     return jwt.sign(payload, clave_finals, options);
 } 
 
+
+
 export async function setInitCookies(req, res){
+    function generateCookie(userResult, roleData){
+        const authToken=generateAuthToken(userResult, roleData);//de roleData sacamos roleData.id nada mas
+        res.cookie('authToken', authToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'Strict',
+            maxAge: 3 * 24 * 60 * 60 * 1000, // 3 dias
+            path: '/',
+        });
+        // req.body.auth=authToken;
+        res.status(200).json({errors: undefined, userBody: req.body });
+    }
     mySQLConnection('SELECT * FROM cuentas WHERE username = ?', [req.body.username]).then(data=>{
         const userResult = data[0];
-        mySQLConnection('SELECT * FROM ? WHERE cuenta_id=?', [roleTableNames[userResult.rol], userResult.id]).then(roleData=>{
-            const authToken=generateAuthToken(userResult, roleData[0]);
-            res.cookie('authToken', authToken, {
-                httpOnly: true,
-                secure: true,
-                sameSite: 'Strict',
-                maxAge: 3 * 24 * 60 * 60 * 1000, // 3 dias
-                path: '/',
-            });
-            // req.body.auth=authToken;
-            res.status(200).json({errors: undefined, userBody: req.body });
+        const tableRepl= roleTableNames[userResult.rol]?roleTableNames[userResult.rol]: 'cuentas';
+        if(!roleTableNames[userResult.rol]){
+            generateCookie(userResult, {id: userResult.id})
+            return
+        }
+       
+        const queryRepl= roleTableNames[userResult.rol]? `SELECT * FROM ${tableRepl} WHERE cuenta_id=?` : `SELECT * FROM ${tableRepl} WHERE id=?`;
+        
+        mySQLConnection(queryRepl, [userResult.id]).then(roleData=>{
+            generateCookie(userResult, roleData[0])
         })
         
     })
@@ -69,14 +82,15 @@ export function getAuthCookies(req){
         return {r: false, msg: "Token no encontrado"};
     };
     const authToken = req.cookies.authToken;
-    jwt.verify(authToken, clave_finals, (err, decd)=>{
-        if(err){
-            console.log("Token invalido: ", err.message);
-            return {r: false, msg: err.msg}
-        }
-        return {decd, r: true}
-    })
-
+    return new Promise((resolve) => {
+        jwt.verify(authToken, clave_finals, (err, decd) => {
+            if (err) {
+                console.log("Token inválido: ", err.message);
+                return resolve({ r: false, msg: err.message });
+            }
+            resolve({ r: true, decd });
+        });
+    });
 }
 
 export function clearAuthCookie(req, res){
