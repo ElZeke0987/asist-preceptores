@@ -36,7 +36,7 @@ export default  function AccountPage(){
                         <div className="logout-conf">
                             <div className="logout-question">Seguro de cerrar sesion?</div>
                             <div className="logout-conf-buts">
-                                <div className="logout-yes" onClick={()=>sendClearReq(setLogoutBut)}>Si</div>
+                                <div className="logout-yes" onClick={()=>sendClearReq(setLogoutBut, "yes")}>Si</div>
                                 <div className="logout-no"onClick={()=>sendClearReq(setLogoutBut, "no")}>No</div>
                             </div>
                         </div>

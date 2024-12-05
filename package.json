@@ -11,7 +11,7 @@
     "server": "node ./src/back/server.js",
     "dev": "vite",
     "build": "vite build",
-    "build-all": "npm-run-all --parallel build:asistenter build:index build:login build:register build:account build:asistencias build:blog",
+    "build-all": "npm-run-all --parallel build:asistenter build:index build:login build:register build:account build:asistencias build:blog build:roleSetter",
     "build-freq": "npm-run-all --parallel build:asistenter build:index build:login build:register build:account",
     "build:asistenter": "cd pages/asistenter && npm run build",
     "build:index": "cd pages/index && npm run build",
@@ -20,6 +20,7 @@
     "build:account": "cd pages/account && npm run build",
     "build:asistencias": "cd pages/asistencias && npm run build",
     "build:blog": "cd pages/blog && npm run build",
+    "build:roleSetter": "cd pages/role-setter && npm run build",
     "lint": "eslint .",
     "preview": "vite preview"
   },

@@ -37,9 +37,10 @@ function middleRole(req, res, next){
     }else {console.log("\n url no enviada: ", req.path, `\n`); next()};
 }
 
-app.use("/asistenter", (req, res, next)=>{
-    middleRole(req, res, next);
-});
+
+
+app.use("/asistenter", (req, res, next)=>middleRole(req, res, next));
+app.use("/role-setter", (req, res, next)=>middleRole(req, res, next));
 
 app.get("/", (req, res)=>{
     res.setHeader("Content-Type", "text/html")
@@ -50,9 +51,14 @@ app.get("/asist-get", (req, res)=>{
     res.redirect("/asistenter");
 })
 
-app.post("/asistenter", pageMiddles, (req, res)=>{
+app.post("/asistenter", pageMiddles, (req, res)=>{//Verificacion de roles ya hecha en el middleRole
     res.setHeader("Content-Type", "text/html");
     res.sendFile(join(pages, "asistenter/dist/index.html"));
+})
+
+app.post("/asistencias", pageMiddles, (req, res)=>{
+    res.setHeader("Content-Type", "text/html");
+    res.sendFile(join(pages, "asistencias/dist/index.html"));
 })
 
 app.post("/login", pageMiddles, (req, res)=>{
@@ -82,12 +88,19 @@ app.get("/account", pageMiddles, async (req, res)=>{
     
 })
 
+app.post("/role-setter", async (req, res)=>{
+    const auth = await getAuthCookies(req);
+    
+})
+
 
 app.use("/",express.static(join(pages, "/index/dist")));
-app.use("/asistenter",express.static(join(pages, "/asistenter/dist")));
+app.use("/asistenter", express.static(join(pages, "/asistenter/dist")));
+app.use("/asistencias", express.static(join(pages, "/asistencias/dist")))
 app.use("/login", express.static(join(pages, "/login/dist")));
 app.use("/register", express.static(join(pages, "/register/dist")));
 app.use("/account", express.static(join(pages, "/account/dist")));
+app.use("/role-setter", express.static(join(pages, "/role-setter/dist")));
 
 
 import { logMiddles, pageMiddles, registerMiddles } from "./servMods/endpoints/middles.js";

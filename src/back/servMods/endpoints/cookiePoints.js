@@ -95,7 +95,7 @@ export function getAuthCookies(req){
 }
 
 export function clearAuthCookie(req, res){
-
+    console.log("Clearing token")
     res.clearCookie('authToken', {
         httpOnly: true,
         secure: true,
@@ -103,5 +103,5 @@ export function clearAuthCookie(req, res){
         //maxAge: 3 * 24 * 60 * 60 * 1000, // 3 dias
         path: '/',
     });
-    res.redirect("/");
+    res.status(200).json({msg: "Server Response: fully cleared token"});
 }
