@@ -13,12 +13,13 @@ function userValues(res){
     }
 }
 
-async function vldExistence(fld, val){//Valida la existencia de cierto usuario en base a cierta condicion
+async function vldExistence(fld, val, lore){//Valida la existencia de cierto usuario en base a cierta condicion
     let qry=fld[1]?`SELECT * FROM cuentas WHERE ${fld[0]}=? OR ${fld[1]}=?`:`SELECT * FROM cuentas WHERE ${fld}=?`;//Dinamico entre arrays (varias condiciones) y solo una condi.
     let rep = fld[1]?[val, val]:[val];
     let res = await mySQLConnection(qry, rep);//Si no hay nada de lo que buscaste devuelve true
-    //console.log(" Validating unexistence of "+fld+" "+val+": ", res[0]==undefined ?true:userValues(res));
-    return res[0]==undefined ?true:userValues(res);
+    console.log(" Validating existence of "+fld+" "+val+": ", !(res[0]==undefined ))//?true:userValues(res));
+    console.log("res: ", res[0])
+    return !(res[0]==undefined )//?true:userValues(res);
 }
 
 async function validPass(pass, userOEmail) {
@@ -33,6 +34,7 @@ async function validPass(pass, userOEmail) {
 export const pageMiddles=[
     body("userInfo par is empty").not().isEmpty(),
 ];
+//true da el afirmativo de que paso el middle
 export const registerMiddles = [
     body("username", "Username required").not().isEmpty(),
     body("username", "username should have at least one letter").matches(/[a-zA-Z]/),
@@ -50,13 +52,20 @@ export const registerMiddles = [
         return true;
     }),
     body("username", "username already exists").custom(async value=> {
-        let res = await vldExistence(["username"], value);
-        if(!res && !res.username)throw new Error("Username already exists");
+        console.log("Validated existence of username");
+        await vldExistence(["username"], value, "re").then(res=>{
+            if(res==true){throw new Error("Username already exist")}
+            
+        })
+        return true
     }),
     body("email", "email already exists").custom(async (value, {req})=>{
-        let res = await vldExistence(["email"], value);
-        if(!res && !res.username)throw new Error("Email already exists");
-        req.body.userBody = res;
+        await vldExistence(["email"], value).then(res=>{
+            if(res==true){throw new Error("Email is already in use")}
+            req.body.userBody = res;
+            
+        })
+        return true
     }),
 ]
 //1234%t&6eE

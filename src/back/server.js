@@ -61,13 +61,26 @@ app.post("/login", pageMiddles, (req, res)=>{
 })
 
 app.post("/register", pageMiddles, (req, res)=>{
-    res.setHeader("Content-Type", "text/html");
+    res.setHeader("Content-Type", "text/nhtml");
     res.sendFile(join(pages, "register/dist/index.html"));
 })
 
 app.get("/account", pageMiddles, (req, res)=>{
+    const auth = getAuthCookies(req);
+    console.log("auth decoded: ", auth.decd)
+    if(auth.r==false){
+        res.redirect("/");
+        return
+    }
+    
+    if(auth.decd.data.use == undefined){
+        console.log("there is no user registered in cookie");
+        res.redirect("/");
+        return
+    }
     res.setHeader("Content-Type", "text/html");
     res.sendFile(join(pages, "account/dist/index.html"));
+    
 })
 
 
@@ -87,9 +100,11 @@ app.post("/register-account",registerMiddles,(req, res)=>regPoint(req, res));
 
 import { loadCourses, loadAlumns } from "./servMods/endpoints/loadPoints.js";
 import { submitPresence } from "./servMods/endpoints/presencePoints.js";
-import { readAuthCookies } from "./servMods/endpoints/cookiePoints.js";
+import { readAuthCookies, clearAuthCookie, getAuthCookies } from "./servMods/endpoints/cookiePoints.js";
 
 app.get("/read-auth", (req, res)=>readAuthCookies(req, res));
+
+app.get("/clear-auth", (req, res)=>clearAuthCookie(req, res));
 
 app.post("/load-courses", (req, res)=>loadCourses(req, res));
 

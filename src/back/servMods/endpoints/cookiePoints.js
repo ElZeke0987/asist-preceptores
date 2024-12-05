@@ -64,3 +64,28 @@ export function readAuthCookies(req, res){
     })
 
 }
+export function getAuthCookies(req){
+    if (!req.cookies.authToken){
+        return {r: false, msg: "Token no encontrado"};
+    };
+    const authToken = req.cookies.authToken;
+    jwt.verify(authToken, clave_finals, (err, decd)=>{
+        if(err){
+            console.log("Token invalido: ", err.message);
+            return {r: false, msg: err.msg}
+        }
+        return {decd, r: true}
+    })
+
+}
+
+export function clearAuthCookie(req, res){
+    res.clearCookie('authToken', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'Strict',
+        //maxAge: 3 * 24 * 60 * 60 * 1000, // 3 dias
+        path: '/',
+    });
+    //res.send(200).json({msg:"Auth token succesfully deleted and loged out"});
+}
