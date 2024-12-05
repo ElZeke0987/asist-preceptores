@@ -30,8 +30,10 @@ function generateAuthToken(user, role){
 
 
 export async function setInitCookies(req, res){
+    console.log("Starting to search user or email")
     function generateCookie(userResult, roleData){
         const authToken=generateAuthToken(userResult, roleData);//de roleData sacamos roleData.id nada mas
+        console.log("Generating cookie: ", userResult, " - ", roleData);
         res.cookie('authToken', authToken, {
             httpOnly: true,
             secure: true,
@@ -40,9 +42,10 @@ export async function setInitCookies(req, res){
             path: '/',
         });
         // req.body.auth=authToken;
-        res.status(200).json({errors: undefined, userBody: req.body });
+        res.redirect("/account")
     }
-    mySQLConnection('SELECT * FROM cuentas WHERE username = ?', [req.body.username]).then(data=>{
+    
+    mySQLConnection('SELECT * FROM cuentas WHERE username = ? OR email = ?', [req.body.username||req.body.userOemail, req.body.username||req.body.userOemail]).then(data=>{
         const userResult = data[0];
         const tableRepl= roleTableNames[userResult.rol]?roleTableNames[userResult.rol]: 'cuentas';
         if(!roleTableNames[userResult.rol]){
@@ -94,6 +97,7 @@ export function getAuthCookies(req){
 }
 
 export function clearAuthCookie(req, res){
+
     res.clearCookie('authToken', {
         httpOnly: true,
         secure: true,
@@ -101,5 +105,5 @@ export function clearAuthCookie(req, res){
         //maxAge: 3 * 24 * 60 * 60 * 1000, // 3 dias
         path: '/',
     });
-    //res.send(200).json({msg:"Auth token succesfully deleted and loged out"});
+    res.redirect("/");
 }

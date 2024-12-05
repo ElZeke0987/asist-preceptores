@@ -11,7 +11,10 @@ export function logPoint(req, res){
     if(!errors.isEmpty()){
         return res.status(400).json({errors: errors.array()});
     }
-    res.status(200).json({errors: undefined, userBody: dataBody.userBody})
+    setInitCookies(req, res)
+
+    //res.status(200).json({errors: undefined, userBody: dataBody.userBody})
+
 }
 //1234%t&6eE
 export function regPoint(req, res){

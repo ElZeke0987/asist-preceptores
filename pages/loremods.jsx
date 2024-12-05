@@ -54,6 +54,7 @@ export function handleXClick(e,setErr, err, ind){
     
 }
 export function errorsRender(err, setErr){
+    if(!err){return}
     return err!=[]&&err.map((msg, ind)=>{
             
             return <ErrorMsg msg={msg.msg} onXClick={e=>handleXClick(e, setErr, err, ind)} key={ind}/>

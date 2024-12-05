@@ -67,7 +67,6 @@ app.post("/register", pageMiddles, (req, res)=>{
 
 app.get("/account", pageMiddles, async (req, res)=>{
     const auth = await getAuthCookies(req);
-    console.log("auth decoded: ", auth.decd)
     if(auth.r==false){
         res.redirect("/");
         return
