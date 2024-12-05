@@ -30,10 +30,8 @@ function generateAuthToken(user, role){
 
 
 export async function setInitCookies(req, res){
-    console.log("Starting to search user or email")
     function generateCookie(userResult, roleData){
         const authToken=generateAuthToken(userResult, roleData);//de roleData sacamos roleData.id nada mas
-        console.log("Generating cookie: ", userResult, " - ", roleData);
         res.cookie('authToken', authToken, {
             httpOnly: true,
             secure: true,
@@ -44,8 +42,8 @@ export async function setInitCookies(req, res){
         // req.body.auth=authToken;
         res.redirect("/account")
     }
-    
-    mySQLConnection('SELECT * FROM cuentas WHERE username = ? OR email = ?', [req.body.username||req.body.userOemail, req.body.username||req.body.userOemail]).then(data=>{
+    const replacements= req.body.username?req.body.username:req.body.userOEmail;
+    mySQLConnection('SELECT * FROM cuentas WHERE username = ? OR email = ?', [replacements, replacements]).then(data=>{
         const userResult = data[0];
         const tableRepl= roleTableNames[userResult.rol]?roleTableNames[userResult.rol]: 'cuentas';
         if(!roleTableNames[userResult.rol]){

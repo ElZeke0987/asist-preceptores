@@ -8,11 +8,12 @@ export function logPoint(req, res){
     let dataBody = req.body;
     let errors = validationResult(req);
     res.setHeader("Content-Type", "application/json");
-    if(!errors.isEmpty()){
-        return res.status(400).json({errors: errors.array()});
+    if(errors.isEmpty()==false){
+        console.log("errors in loggin: ", errors)
+        res.status(400).json({errors: errors.array()});
+        return
     }
     setInitCookies(req, res)
-
     //res.status(200).json({errors: undefined, userBody: dataBody.userBody})
 
 }
