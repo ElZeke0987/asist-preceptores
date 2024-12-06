@@ -26,11 +26,9 @@ const cookieReq={
             <div className="ap-nav-cont home-it">
                 <a href="/" onClick={()=>reqPage("")}>Home</a>
             </div>
-            {
-                (rol=="prec"||rol=="adm")&&<div className="ap-nav-cont base-nav-cont">
-                    <a href="/role-setter" onClick={()=>reqPage("role-setter")}>Asistencias</a>
-                </div>
-            }
+            {(rol=="prec"||rol=="adm")&&<div className="ap-nav-cont base-nav-cont">
+                <a href="/role-setter" onClick={()=>reqPage("role-setter")}>Set Roles</a>
+            </div>}
             {(rol=="prec"||rol=="adm")&&<div className="ap-nav-cont base-nav-cont">
                 <a href="/asistenter" onClick={()=>reqPage("asist-get")}>Asistenter</a>
             </div>}

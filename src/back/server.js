@@ -19,11 +19,12 @@ app.use(cookieParser());
 
 const canAsistance=["prec", "adm"];
 
-function middleRole(req, res, next){
-    let userInfo = req.body.userinfo;
+async function middleRole(req, res, next){
+    let cookie = await getAuthCookies(req);
+    let userInfo = cookie.decd
     const rutaIndex = join(pages, "asistenter/dist/index.html");
     if(userInfo){
-        mySQLConnection("SELECT * FROM cuentas WHERE username=? AND email=? AND password=?", [userInfo.username, userInfo.email, userInfo.pass])
+        mySQLConnection("SELECT * FROM cuentas WHERE username=?", [userInfo.use])
         .then(results=>{
             const user = results[0];
             if (canAsistance.includes(user.rol)){
@@ -90,7 +91,8 @@ app.get("/account", pageMiddles, async (req, res)=>{
 
 app.post("/role-setter", async (req, res)=>{
     const auth = await getAuthCookies(req);
-    
+    res.setHeader("Content-Type", "text/html");
+    res.sendFile(join(pages, "role-setter/dist/index.html"));
 })
 
 
@@ -100,7 +102,7 @@ app.use("/asistencias", express.static(join(pages, "/asistencias/dist")))
 app.use("/login", express.static(join(pages, "/login/dist")));
 app.use("/register", express.static(join(pages, "/register/dist")));
 app.use("/account", express.static(join(pages, "/account/dist")));
-app.use("/role-setter", express.static(join(pages, "/role-setter/dist")));
+app.use("/role-setter", express.static(join(pages, "./role-setter/dist")));
 
 
 import { logMiddles, pageMiddles, registerMiddles } from "./servMods/endpoints/middles.js";

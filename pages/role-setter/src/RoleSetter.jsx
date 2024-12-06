@@ -1,8 +1,18 @@
 import { useState } from 'react'
+import CustomSelect from '../../../src/comps/molecules/customSelect/customSelect.jsx';
 
 export default function RoleSetter() {
-  const [results, setResults] = useState([])
-  const [menu, setMenu] = useState("searcher");
+  let [results, setResults] = useState([])
+  let [menu, setMenu] = useState("searcher");
+  let [courses, setCourses] = useState([]);
+  let [cOpts, setCOpt]=useState();
+  fetch("/load-courses").then(r=>r.json()).then(data=>{
+    console.log(data.couList);
+  });
+  function handleSelect(opt){
+    setCOpt(opt);
+    
+  }
   return (
     <div className='role-setter-cont'>
         <div className='searcher-accounts'>
@@ -16,7 +26,7 @@ export default function RoleSetter() {
                 <div className='right-edge'>Peticiones</div>
             </div>
             <div className='par-courses'>
-
+                <CustomSelect opts={courses} onSelect={handleSelect} propVal={"id"} propTxt={"curso"} defaultText='Select Course'/>
             </div>
             <div className='par-role'>
 
