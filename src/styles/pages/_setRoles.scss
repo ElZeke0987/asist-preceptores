@@ -1,0 +1,13 @@
+.searcher-accounts{
+    display: flex;
+    flex-direction: row;
+    .search-pars{
+        display: flex;
+    }
+    .par-menu{
+        display: flex;
+        .selected{
+            background-color: $RoSeParMenuBGSel;
+        }
+    }
+}

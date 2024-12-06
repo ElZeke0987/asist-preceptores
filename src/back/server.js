@@ -41,7 +41,7 @@ async function middleRole(req, res, next){
 
 
 app.use("/asistenter", (req, res, next)=>middleRole(req, res, next));
-app.use("/role-setter", (req, res, next)=>middleRole(req, res, next));
+//app.use("/role-setter", (req, res, next)=>middleRole(req, res, next));
 
 app.get("/", (req, res)=>{
     res.setHeader("Content-Type", "text/html")
@@ -91,6 +91,10 @@ app.get("/account", pageMiddles, async (req, res)=>{
 
 app.post("/role-setter", async (req, res)=>{
     const auth = await getAuthCookies(req);
+    if(auth.decd.rol!="adm"||auth.decd.rol!="prec"){
+        res.status(401).json({msg: "access unauthorized"});
+        return;
+    }
     res.setHeader("Content-Type", "text/html");
     res.sendFile(join(pages, "role-setter/dist/index.html"));
 })
@@ -102,7 +106,7 @@ app.use("/asistencias", express.static(join(pages, "/asistencias/dist")))
 app.use("/login", express.static(join(pages, "/login/dist")));
 app.use("/register", express.static(join(pages, "/register/dist")));
 app.use("/account", express.static(join(pages, "/account/dist")));
-app.use("/role-setter", express.static(join(pages, "./role-setter/dist")));
+app.use("/role-setter", express.static(join(pages, "/role-setter/dist")));
 
 
 import { logMiddles, pageMiddles, registerMiddles } from "./servMods/endpoints/middles.js";
