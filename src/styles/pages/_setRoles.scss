@@ -10,4 +10,13 @@
             background-color: $RoSeParMenuBGSel;
         }
     }
+    .linked-opt{
+        .linked-true{
+            background-color: $RoSeLinkedYBG;
+        }
+        .linked-false{
+            background-color: $RoSeLinkedNBG;
+        }
+        
+    }
 }

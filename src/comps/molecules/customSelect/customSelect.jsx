@@ -14,7 +14,7 @@ let defaultOptions=[
 export default function CustomSelect(
     {defaults=false, defaultValue="none",defaultText="Seleccione una opcion", 
         opts, Eleme=DefaultOptElem, 
-        onSelect, onChange, clases,
+        onSelect, onChange, onOpen,clases,
         propTxt="txt", propVal="val"}){
     if(opts==[]){return}
     let [isOpen, setIsOpen]=useState(false);
@@ -24,10 +24,15 @@ export default function CustomSelect(
         await setIsOpen(false);
         if(onSelect)onSelect(opt);
     }
+    async function handleOpen(e) {
+        await onOpen(e);
+        await setIsOpen(!isOpen)
+        
+    }
     return(
         <div className={`cus-selec-wrapper ${clases||clases.join(" ")}`} data-value={selOpt?selOpt[propVal]:defaultValue} >
             <div className="cus-select">
-                <div className="cus-select-selected opt-selected" data-value={selOpt?selOpt[propVal]:defaultValue} onClick={()=>{setIsOpen(!isOpen)}}>
+                <div className="cus-select-selected opt-selected" data-value={selOpt?selOpt[propVal]:defaultValue} onClick={()=>{handleOpen()}}>
                     {selOpt?selOpt[propTxt]:defaultText}
                     {console.log("selOpt ", selOpt)}
                 </div>
