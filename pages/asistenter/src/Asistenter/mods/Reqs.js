@@ -16,9 +16,9 @@ function renderAlumns(alumnsList, setter){
 let loadBd={
     method: "POST",
     headers: {"Content-Type": "application/json"},
-    body: {
+    body: JSON.stringify({
         turno: getTourn()
-    }
+    })
 }
 console.log("turno a renderizar ", loadBd.body.turno);
 

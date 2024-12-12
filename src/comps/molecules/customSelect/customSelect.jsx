@@ -25,7 +25,7 @@ export default function CustomSelect(
         if(onSelect)onSelect(opt);
     }
     async function handleOpen(e) {
-        if(onOpen)await onOpen(e);
+        if(onOpen)await onOpen(e);  
         await setIsOpen(!isOpen)
         
     }

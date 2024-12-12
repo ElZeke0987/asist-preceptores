@@ -116,7 +116,7 @@ app.post("/login-account", logMiddles,(req, res)=>logPoint(req, res));
 
 app.post("/register-account",registerMiddles,(req, res)=>regPoint(req, res));
 
-import { loadCourses, loadAlumns } from "./servMods/endpoints/loadPoints.js";
+import { loadCourses, loadAlumns, loadAccountsRoSe, loadPetitionsRoSe, loadAccountsRoSe, loadPetitionsRoSe } from "./servMods/endpoints/loadPoints.js";
 import { submitPresence } from "./servMods/endpoints/presencePoints.js";
 import { readAuthCookies, clearAuthCookie, getAuthCookies } from "./servMods/endpoints/cookiePoints.js";
 
@@ -129,6 +129,8 @@ app.post("/load-courses", (req, res)=>loadCourses(req, res));
 app.post("/load-alumns", (req,res)=>loadAlumns(req, res));
 
 app.post("/submit-presence",(req, res)=> submitPresence(req, res));
+
+app.post("/load-to-set-roles", (req, res)=>req.body.type=="account"?loadAccountsRoSe(req, res): loadPetitionsRoSe(req, res))
 
 
 let PORT= process.env.PORT || 3001;
