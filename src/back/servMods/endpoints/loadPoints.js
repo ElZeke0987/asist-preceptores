@@ -25,15 +25,28 @@ export function loadAlumns(req,res){
 export function loadAccountsRoSe(req, res){
     let body= req.body;
     res.setHeader("Content-Type", "application/json");
-    let queryToUse=body.search==""?"SELECT * FROM cuentas": "SELECT * FROM cuentas WHERE username=?"
-    let replsToUse=body.search==""?[]:[body.search]
-    mySQLConnection(queryToUse, replsToUse).then(v=> res.send({resList: v}));
+    /*const search = body.search;
+    // Verifica que no esté vacío
+    if (!search || typeof search !== 'string' || search.trim() === '') {
+        throw new Error('El término de búsqueda no es válido.');
+    }
+    
+    let queryToUse=search==""?"SELECT * FROM cuentas": "SELECT * FROM cuentas WHERE username LIKE ?"
+    let replsToUse=search==""?[]:[`%{${search}}%`]*/
+    mySQLConnection("SELECT * FROM cuentas", []).then(v=> res.send({resList: v}));
 }
 
 export function loadPetitionsRoSe(req, res){
     let body= req.body;
     res.setHeader("Content-Type", "application/json");
-    let queryToUse=body.search==""?"SELECT * FROM cuentas": "SELECT * FROM cuentas WHERE username=?"
-    let replsToUse=body.search==""?[]:[body.search]
-    mySQLConnection(queryToUse, replsToUse).then(v=> res.send({resList: v}));
+    /*const search = body.search;
+    // Verifica que no esté vacío
+    if (!search || typeof search !== 'string' || search.trim() === '') {
+        throw new Error('El término de búsqueda no es válido.');
+    }
+    
+    let queryToUse=search==""?"SELECT * FROM cuentas": "SELECT * FROM cuentas WHERE username LIKE ?"
+    let replsToUse=search==""?[]:[`%{${search}}%`]*/
+    mySQLConnection("SELECT * FROM role_petitions", []).then(v=> res.send({resList: v}));
+    
 }
