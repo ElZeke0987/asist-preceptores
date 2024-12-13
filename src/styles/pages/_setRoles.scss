@@ -20,3 +20,10 @@
         
     }
 }
+.menu-results{
+    background-color: $RoSeResultsListBG;
+    .result-item{
+        background-color: $RoSeResultItemBG;
+        padding: 20px;
+    }
+}

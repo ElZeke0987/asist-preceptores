@@ -19,9 +19,7 @@ export default function RoleSetter() {
     })
   }
   
-  function handleSelect(opt){
-    setCOpt(opt);
-  }
+
   useEffect(()=>{
     fetch("/load-courses", coursesReq).then(r=>r.json()).then(data=>{
       console.log("couList: ",data.couList);
@@ -56,7 +54,7 @@ export default function RoleSetter() {
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
             //search: inpVal,//parametro inpVal
-            type: menuVal,
+            type: menuVal ,
         })
       }
       fetch("/load-to-set-roles", SearchReq).then(r=> r.json()).then(data=>{
@@ -77,7 +75,7 @@ export default function RoleSetter() {
                 <div className='right-edge' id="petitions" onClick={async e=>await parMenuHandleClick(e)}>Peticiones</div>
             </div>
             <div className='par-courses'>
-                <CustomSelect opts={courses} onSelect={handleSelect} propVal={"id"} propTxt={"curso"} defaultText='Select Course' clases="par-select" />
+                <CustomSelect opts={courses} onSelect={setCOpt} propVal={"id"} propTxt={"curso"} defaultText='Select Course' clases="par-select" />
             </div>
             <div className='par-role'>
 
@@ -105,7 +103,7 @@ export default function RoleSetter() {
           {
             results.map((v, i)=>{
               return (
-                <ResultUser alumnItem={v} key={i} />
+                <ResultUser alumnItem={v} key={i} courses={courses} itemId={v.id}/>
               )
             })
           }

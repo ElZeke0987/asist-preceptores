@@ -19,7 +19,7 @@ export default function CustomSelect(
     if(opts==[]){return}
     let [isOpen, setIsOpen]=useState(false);
     let [selOpt, setSelOpt]=useState(opts==[]?{val: defaultValue, txt: defaultText}:opts[0]);
-    async function handleSelect(opt){
+    async function handleSelect(opt){//ACORDARSE QUE ESTO NO ES TIPO EVENTO QUE TE DEVUELVE UN OBJETO EVENT, DEVOLVERA LA OPCION SELECCIONADA EN EL PRIMER PARAMETRO
         await setSelOpt(opt);
         await setIsOpen(false);
         if(onSelect)onSelect(opt);
