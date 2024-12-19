@@ -41,7 +41,8 @@ async function middleRole(req, res, next){
 
 
 app.use("/asistenter", (req, res, next)=>middleRole(req, res, next));
-//app.use("/role-setter", (req, res, next)=>middleRole(req, res, next));
+app.use("/role-setter", (req, res, next)=>middleRole(req, res, next));
+app.use("/set-role", (req, res, next)=>middleRole(req, res, next));
 
 app.get("/", (req, res)=>{
     res.setHeader("Content-Type", "text/html")
