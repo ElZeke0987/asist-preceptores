@@ -12,13 +12,13 @@ let defaultOptions=[
 ];
 
 export default function CustomSelect(
-    {defaults=false, defaultValue="none",defaultText="Seleccione una opcion", 
+    {defaults=false, defaultValue="none",defaultText="Seleccione una opcion", overDefaults=true,
         opts, Eleme=DefaultOptElem, 
         onSelect, onChange, onOpen,clases,
         propTxt="txt", propVal="val"}){
     if(opts==[]){return}
     let [isOpen, setIsOpen]=useState(false);
-    let [selOpt, setSelOpt]=useState(opts==[]?{val: defaultValue, txt: defaultText}:opts[0]);
+    let [selOpt, setSelOpt]=useState((opts[0]==undefined||overDefaults)?{[propVal]: defaultValue||"none", [propTxt]: defaultText||"Seleccione una opcion"}:opts[0]);
     async function handleSelect(opt){//ACORDARSE QUE ESTO NO ES TIPO EVENTO QUE TE DEVUELVE UN OBJETO EVENT, DEVOLVERA LA OPCION SELECCIONADA EN EL PRIMER PARAMETRO
         await setSelOpt(opt);
         await setIsOpen(false);
@@ -29,12 +29,20 @@ export default function CustomSelect(
         await setIsOpen(!isOpen)
         
     }
+    /*Defaults
+        --Agarra el defaultText o defaultValue
+        --SelOpt es lo seleccionado
+        --prop* son propiedades definidas, custom digamos
+        --overDefaults define si se usaran los ddefaults
+    */
+    /*let valFinal=overDefaults?defaultValue: (selOpt?selOpt[propVal]:defaultValue);
+    let txtFinal=overDefaults? defaultText: (selOpt?selOpt[propTxt]:defaultText);
+    let [mounted, setMounted]=useState(true);*/
     return(
-        <div className={`cus-selec-wrapper ${clases||clases.join(" ")}`} data-value={selOpt?selOpt[propVal]:defaultValue} >
+        <div className={`cus-selec-wrapper ${clases||clases.join(" ")}`} data-value={selOpt[propVal]} >
             <div className="cus-select">
-                <div className="cus-select-selected opt-selected" data-value={selOpt?selOpt[propVal]:defaultValue} onClick={()=>{handleOpen()}}>
-                    {selOpt?selOpt[propTxt]:defaultText}
-                    {console.log("selOpt ", selOpt)}
+                <div className="cus-select-selected opt-selected" data-value={selOpt[propVal]} onClick={()=>{handleOpen()}}>
+                    {selOpt[propTxt]}
                 </div>
                 {isOpen&&
                     (<div className="cus-select-options">
@@ -47,5 +55,6 @@ export default function CustomSelect(
                 }
             </div>
         </div>
+        
     )
 }

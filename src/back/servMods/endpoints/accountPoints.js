@@ -22,7 +22,10 @@ export function regPoint(req, res){
     let body = req.body;
     let errors = validationResult(req);
     res.setHeader("Content-Type", "application/json");
-    if(!errors.isEmpty()){return res.status(400).json({errors: errors.array()})}
+    if(!errors.isEmpty()){
+        res.status(400).json({errors: errors.array()})
+        return
+    }
     let telNumber = body.tel != "" ? body.tel:"NULL";
     let queryIns=`
     INSERT INTO cuentas (id, username, email, password, reg_date, telefono,imagen, rol) 

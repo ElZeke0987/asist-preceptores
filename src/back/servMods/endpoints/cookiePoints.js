@@ -8,7 +8,7 @@ const roleTableNames={
 }
 const clave_finals='clave_finals';//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-------------------------------------- preguntar y cambiar dependiendo el cliente
 //Procura siempre una clave fuerte
-function generateAuthToken(user, role){
+function generateAuthToken(user, role){//Esto siempre se debe cambiar si es que hay un cambio en la cuenta, ya sea eliminacion de la cookie en general o cambio en los parametros del usuario
     const payload = {
         id: user.id,
         use: user.username,
@@ -40,7 +40,8 @@ export async function setInitCookies(req, res){
             path: '/',
         });
         // req.body.auth=authToken;
-        res.redirect("/account")
+        console.log("Redirecting to account");
+        res.status(200).json({msg: "server msg: succesfully registered"});
     }
     const replacements= req.body.username?req.body.username:req.body.userOEmail;
     mySQLConnection('SELECT * FROM cuentas WHERE username = ? OR email = ?', [replacements, replacements]).then(data=>{
@@ -55,6 +56,7 @@ export async function setInitCookies(req, res){
         
         mySQLConnection(queryRepl, [userResult.id]).then(roleData=>{
             generateCookie(userResult, roleData[0])
+            return
         })
         
     })

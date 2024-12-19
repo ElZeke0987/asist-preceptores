@@ -3,9 +3,8 @@ import CustomSelect from '../../../src/comps/molecules/customSelect/customSelect
 import ResultUser from './resultsComp.jsx';
 
 export default function RoleSetter() {
-  let [results, setResults] = useState([])
+  let [results, setResults] = useState({resList: [], type: "account"})
   let [menu, setMenu] = useState("account");
-  let prevMenu = useRef(null);
   let [courses, setCourses] = useState([]);
   let [cOpt, setCOpt]=useState();
   let [linked, setLinked]=useState(false);
@@ -22,25 +21,21 @@ export default function RoleSetter() {
 
   useEffect(()=>{
     fetch("/load-courses", coursesReq).then(r=>r.json()).then(data=>{
-      console.log("couList: ",data.couList);
       setCourses(data.couList)
     });
     handleSearch();
   }, [])
-  useEffect(()=>{
+  let [fullMenuLoad, setFullMenuLoad]=useState(false)
 
-    if(prevMenu.current){  
-      document.querySelector("#"+prevMenu.current).classList.remove("selected");
-      document.querySelector("#"+menu).classList.add("selected"); 
-    }
-      
-    prevMenu.current=menu;
-    
-  }, [menu])
+  
   async function parMenuHandleClick(e){
-    await setMenu(e.target.id);
-    console.log("menu: ", menu, " e.target.id: ", e.target.id);
-    handleSearch(e.target.id)
+    setFullMenuLoad(false);
+    console.log("to change menu test value: ", e.target.id)
+    //await setMenu(e.target.id);
+    console.log("menu state: ", menu)
+    await handleSearch(e.target.id)
+    
+    
   }
 
   function handleLinkedOpt(e, toBool){
@@ -58,8 +53,8 @@ export default function RoleSetter() {
         })
       }
       fetch("/load-to-set-roles", SearchReq).then(r=> r.json()).then(data=>{
-        console.log("Petitions or Accounts: ", data.resList)
-        setResults(data.resList);
+        setResults({resList: data.resList, type: menuVal});//Usado para reducir y controlar mejor los tiempos de carga
+        setMenu(menuVal);//Aun asi es usado mas tarde
       })
   }
   return (
@@ -71,11 +66,12 @@ export default function RoleSetter() {
           </div>
           <div className='search-pars'>
             <div className='par-menu'>
-                <div className='left-edge selected' id="account" onClick={async e=>await parMenuHandleClick(e)}>Cuentas</div>
-                <div className='right-edge' id="petitions" onClick={async e=>await parMenuHandleClick(e)}>Peticiones</div>
+                <div className={'left-edge '+menu=="account"?"selected":""} id="account" onClick={e=>parMenuHandleClick(e)}>Cuentas</div>
+                <div className={'right-edge '+menu=="petitions"?"selected":""} id="petitions" onClick={e=>parMenuHandleClick(e)}>Peticiones</div>
             </div>
             <div className='par-courses'>
                 <CustomSelect opts={courses} onSelect={setCOpt} propVal={"id"} propTxt={"curso"} defaultText='Select Course' clases="par-select" />
+
             </div>
             <div className='par-role'>
 
@@ -101,9 +97,27 @@ export default function RoleSetter() {
         </div>
         <div className='menu-results'>
           {
-            results.map((v, i)=>{
+            /* Peticiones:
+              -Propiedades: en lo posible, muy similares a las de los objetos de alumnos y demas.
+              -Revisar resultComps.jsx o el objeto ResultUser para ver que propiedades se usaran
+
+            */
+            results.resList.map((v, i)=>{
+              //console.log("testing cOpt ", cOpt, " and testing v: ", v)
+              if(cOpt&&v){
+                if(v.rol!="alum"){
+                  return
+                }
+                
+                if(v.curso_id!=cOpt.id){
+                    return
+                }
+              }
+              if(linked==false&&v.rol!="visit"&&results.type!="petitions"){//Aca se puede dar pie a mostrar un historial de peticiones
+                return
+              }
               return (
-                <ResultUser alumnItem={v} key={i} courses={courses} itemId={v.id}/>
+                <ResultUser alumnItem={v} key={i} courses={courses} itemId={v.id} type={results.type}/>
               )
             })
           }

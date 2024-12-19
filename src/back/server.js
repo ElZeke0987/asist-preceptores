@@ -6,6 +6,7 @@ import cors from "cors";
 import {join, dirname} from "path";
 import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
+import { verifyPermisions } from "./servMods/extraMods.js";
 
 export const __dirname = dirname(fileURLToPath(import.meta.url))
 let app = express();
@@ -24,20 +25,9 @@ async function middleRole(req, res, next){
     let userInfo = cookie.decd
     const rutaIndex = join(pages, "asistenter/dist/index.html");
     if(userInfo){
-        mySQLConnection("SELECT * FROM cuentas WHERE username=?", [userInfo.use])
-        .then(results=>{
-            const user = results[0];
-            if (canAsistance.includes(user.rol)){
-                console.log("\n url enviada: ", req.path, `\n`);
-                next();
-                return
-            }
-            res.status(403).send("acceso no autorizado");
-            next()
-        })
+        verifyPermisions(canAsistance, req, res, userInfo, {next})
     }else {console.log("\n url no enviada: ", req.path, `\n`); next()};
 }
-
 
 
 app.use("/asistenter", (req, res, next)=>middleRole(req, res, next));
@@ -121,6 +111,8 @@ import { loadCourses, loadAlumns, loadAccountsRoSe, loadPetitionsRoSe } from "./
 import { submitPresence } from "./servMods/endpoints/presencePoints.js";
 import { readAuthCookies, clearAuthCookie, getAuthCookies } from "./servMods/endpoints/cookiePoints.js";
 import { setRole } from "./servMods/endpoints/settersRoles.js";
+import { setPetition } from "./servMods/endpoints/setterPetitions.js";
+
 
 app.get("/read-auth", (req, res)=>readAuthCookies(req, res));
 
@@ -133,6 +125,8 @@ app.post("/load-alumns", (req,res)=>loadAlumns(req, res));
 app.post("/submit-presence",(req, res)=> submitPresence(req, res));
 
 app.post("/load-to-set-roles", (req, res)=>req.body.type=="account"?loadAccountsRoSe(req, res): loadPetitionsRoSe(req, res))
+
+app.post("/set-petition", (req, res)=>setPetition(req, res))
 
 app.post("/set-role", (req, res)=>setRole(req, res))
 
