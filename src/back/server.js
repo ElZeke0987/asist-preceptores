@@ -48,7 +48,8 @@ app.post("/asistenter", pageMiddles, (req, res)=>{//Verificacion de roles ya hec
     res.sendFile(join(pages, "asistenter/dist/index.html"));
 })
 
-app.post("/asistencias", pageMiddles, (req, res)=>{
+app.post("/asistencias", (req, res)=>{
+    console.log("")
     res.setHeader("Content-Type", "text/html");
     res.sendFile(join(pages, "asistencias/dist/index.html"));
 })
@@ -107,7 +108,7 @@ app.post("/login-account", logMiddles,(req, res)=>logPoint(req, res));
 
 app.post("/register-account",registerMiddles,(req, res)=>regPoint(req, res));
 
-import { loadCourses, loadAlumns, loadAccountsRoSe, loadPetitionsRoSe } from "./servMods/endpoints/loadPoints.js";
+import { loadCourses, loadAlumns, loadAccountsRoSe, loadPetitionsRoSe, loadCoursesAsistencias, loadAsistencias } from "./servMods/endpoints/loadPoints.js";
 import { submitPresence } from "./servMods/endpoints/presencePoints.js";
 import { readAuthCookies, clearAuthCookie, getAuthCookies } from "./servMods/endpoints/cookiePoints.js";
 import { setRole } from "./servMods/endpoints/settersRoles.js";
@@ -132,6 +133,9 @@ app.post("/set-role", (req, res)=>setRole(req, res))
 
 app.post("/del-petition", (req, res)=>{delPetition(req.body.petiId)})
 
+app.post("/load-courses-asistencias", (req, res)=>loadCoursesAsistencias(req, res));
+
+app.post("/load-asistencias", (req, res)=>loadAsistencias(req, res))
 
 let PORT= process.env.PORT || 3001;
 let HOSTNAME="127.0.0.1";

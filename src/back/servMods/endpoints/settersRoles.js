@@ -20,9 +20,9 @@ let tableQueriesSel={
     ["alum"]: "SELECT * FROM alumnos WHERE dni=?"
 };
 let tableQueriesIns={
-    ["prec"]: "INSERT INTO preceptores (id, claimed, nombre, apellido, dni, cuenta_id) VALUES (NULL, 1, ?, ?, ?, ?)",
-    ["prof"]: "INSERT INTO profesores (id, claimed, nombre, apellido, dni, cuenta_id) VALUES (NULL, 1,?, ?, ?, ?)",
-    ["alum"]: "INSERT INTO alumnos (id, claimed, nombre, apellido, dni, curso, año, division, cuenta_id,curso_id, grupo_tal) VALUES (NULL,1,?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    ["prec"]: "INSERT INTO preceptores (id, nom_comp, claimed, nombre, apellido, dni, cuenta_id) VALUES (NULL, ?, 1, ?, ?, ?, ?)",
+    ["prof"]: "INSERT INTO profesores (id nom_comp,  claimed, nombre, apellido, dni, cuenta_id) VALUES (NULL, ?, 1,?, ?, ?, ?)",
+    ["alum"]: "INSERT INTO alumnos (id nom_comp,  claimed, nombre, apellido, dni, curso, año, division, cuenta_id,curso_id, grupo_tal) VALUES (NULL, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 };
 function insertingAlumn(body, res, role, roleId){
     mySQLConnection("SELECT * FROM cursos WHERE id=?", [body.courseVar.id]).then(course=>{
@@ -32,7 +32,7 @@ function insertingAlumn(body, res, role, roleId){
         }
         //Insercion de alumno
         mySQLConnection("UPDATE cursos SET alumnos=? WHERE id=?", [course[0].alumnos+1,body.courseVar.id])
-        mySQLConnection(tableQueriesIns[role], [body.nom, body.ape, body.dni, body.courseVar.curso, body.courseVar.año, body.courseVar.division, body.accId, body.courseVar.id, body.grp])
+        mySQLConnection(tableQueriesIns[role], [body.nom+" "+body.ape,body.nom, body.ape, body.dni, body.courseVar.curso, body.courseVar.año, body.courseVar.division, body.accId, body.courseVar.id, body.grp])
         .then(insAlum=>{
             if(body.type=="petition")delPetition(body.itemId)//Eliminar residuo o historial, aca se define si habra historial o no, despues se define en la BDD
             //Sea alumno o no, se tiene que cambiar al rol indicado a la cuenta
@@ -61,7 +61,7 @@ function insertingSchooRole(body, req, res, role, userInfo){
         });//Unclaiming
         //Condicion de que si es un alumno o no
         role=="alum"?insertingAlumn(body, res, role)://Insercion de docente (Preceptor o profesor por ahora)
-        mySQLConnection(tableQueriesIns[role], [body.nom, body.ape, body.dni, body.accId]).then(insDocent=>{
+        mySQLConnection(tableQueriesIns[role], [body.nom+" "+body.ape, body.nom, body.ape, body.dni, body.accId]).then(insDocent=>{
 
             if(role=="prec")verifyPermisions(canSetPrecAdm, req, res, userInfo, {handlePermission:(status)=>{
                 if(status){

@@ -1,6 +1,7 @@
 import { mySQLConnection } from "../connection.js";
+import { getAuthCookies } from "./cookiePoints.js";
 
-export function loadCourses(req, res){//Funcion llamada en server.js:74,39
+export async function loadCourses(req, res, returned=false){//Funcion llamada en server.js:74,39
     console.log("Cargando cursos");
     res.setHeader("Content-Type", "application/json");
     let searchCourse=`SELECT * FROM cursos WHERE turno =?`;
@@ -8,7 +9,11 @@ export function loadCourses(req, res){//Funcion llamada en server.js:74,39
     let tournRep = req.body.turno=="all"?allCourses:searchCourse;
     let actualReplacements = req.body.turno=="all"?[]:[req.body.turno];
     console.log("tournRep: ", tournRep, " actualReps", actualReplacements);
-    mySQLConnection(tournRep, actualReplacements).then(v=>res.send({couList: v})) ;
+    let couList = await mySQLConnection(tournRep, actualReplacements)
+    if(returned){
+        return couList;
+    }
+    res.send({couList})
 }
 
 export function loadAlumns(req,res){
@@ -21,6 +26,7 @@ export function loadAlumns(req,res){
     let replacements = alumnsParamsBody.grupo ? [alumnsParamsBody.courseId, alumnsParamsBody.grupo] : [alumnsParamsBody.courseId];
     mySQLConnection(searchAlumns, replacements).then(v=>{res.send({alumnsList: v})});
 }
+
 let tableSel={
     ["prec"]: "SELECT * FROM preceptores WHERE id=?",
     ["prof"]: "SELECT * FROM profesores WHERE id=?",
@@ -110,4 +116,33 @@ export function loadPetitionsRoSe(req, res){
     
     mySQLConnection("SELECT * FROM role_petitions", []).then(petitions=> sendTable(req, res, petitions));
     
+}
+
+export function loadAsistencias(req, res){
+    console.log("AlumnId test", req.body)
+    mySQLConnection("SELECT * FROM asistencias WHERE alumno_id=?", [req.body.alumn_id]).then(listAsistencias=>{
+        res.status(200).json({listAsistencias});
+    })
+}
+
+export async function loadCoursesAsistencias(req, res){
+    const cookie = await getAuthCookies(req);
+    const bodyCookie = cookie.decd;
+    if(bodyCookie.rol=="visit"){
+        //A futuro hacer una tabla de denuncias o errores en la pagina
+        res.status(404).json({msg:"Acceso no autorizado, como llegaste aqui?"});//En caso de intento de entrar de forma anti-natural a este link
+        return
+    }
+    if(bodyCookie.rol=="alum"){
+        let alumnItem = await mySQLConnection("SELECT * FROM alumnos WHERE id=?", [bodyCookie.idr]);
+        let cursoItem = await mySQLConnection("SELECT * FROM cursos WHERE id=?", [alumnItem[0].curso_id])
+        res.status(200).json({courseList: cursoItem, alumnList: alumnItem});
+        return
+    }
+    if(bodyCookie.rol != "prof"){
+        const cursosList = await mySQLConnection("SELECT * FROM cursos");
+        const alumnosList = await mySQLConnection("SELECT * FROM alumnos");
+        res.status(200).json({ courseList: cursosList, alumnList: alumnosList });
+        return
+    }
 }
