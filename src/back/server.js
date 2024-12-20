@@ -111,7 +111,7 @@ import { loadCourses, loadAlumns, loadAccountsRoSe, loadPetitionsRoSe } from "./
 import { submitPresence } from "./servMods/endpoints/presencePoints.js";
 import { readAuthCookies, clearAuthCookie, getAuthCookies } from "./servMods/endpoints/cookiePoints.js";
 import { setRole } from "./servMods/endpoints/settersRoles.js";
-import { setPetition } from "./servMods/endpoints/setterPetitions.js";
+import { delPetition, setPetition } from "./servMods/endpoints/setterPetitions.js";
 
 
 app.get("/read-auth", (req, res)=>readAuthCookies(req, res));
@@ -130,7 +130,7 @@ app.post("/set-petition", (req, res)=>setPetition(req, res))
 
 app.post("/set-role", (req, res)=>setRole(req, res))
 
-app.post("/del-petition", (req, res)=>{})
+app.post("/del-petition", (req, res)=>{delPetition(req.body.petiId)})
 
 
 let PORT= process.env.PORT || 3001;

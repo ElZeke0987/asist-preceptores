@@ -27,28 +27,50 @@ let tableSel={
     ["alum"]: "SELECT * FROM alumnos WHERE id=?"
 };
 
-async function sendTable(res, item){//item puede ser la lista de cuentas o de peticiones, al final del dia, tienen casi las mismas propiedades o todas iguales
+function pushToRetList(toRetList, cuenta){
+    toRetList.push({
+        id: cuenta.id,
+        cuenta_id: cuenta?.cuenta_id,
+        nombre: cuenta.nombre,
+        apellido: cuenta.apellido,
+        dni: cuenta.dni,
+        username: cuenta.username,
+        curso_id: cuenta?.curso_id,//||alu[0]?.curso_id,
+        curso: cuenta?.curso,//||alu?[0]?.curso,
+        año: cuenta?.año,
+        division: cuenta?.division,
+        grupo_tal: cuenta?.grupo_tal,
+        rol: cuenta.rol||cuenta.role,
+        rol_id: cuenta?.rol_id,
+    })
+}
+
+async function sendTable(req, res, item){//item puede ser la lista de cuentas o de peticiones, al final del dia, tienen casi las mismas propiedades o todas iguales
     let toRetList=[];//Devolvemos a cada alumno por separado para mostrar diferentes variables (si es alumno, curso por ejem, cosa que no tienen preceptor y profesor)
     for(const cuenta of item) {
-        console.log("cuenta test", cuenta);
         if(cuenta.rol=="alum"){
-            await mySQLConnection(tableSel[cuenta.rol], [cuenta.rol_id]).then(alu=>{
-                console.log("Testing alu in sql connection: ", alu[0])
-                toRetList.push({
-                    id: cuenta.id,
-                    username: cuenta.username,
-                    rol: cuenta.rol||cuenta.role,
-                    rol_id: cuenta?.rol_id,
-                    curso: alu[0]?.curso,
-                    curso_id: alu[0]?.curso_id
-                })
-            });
+            if(req.body.type=="accounts"){
+                // await mySQLConnection("SELECT * FROM alumnos WHERE id=?", [cuenta.rol_id]).then(alu=>{
+                //     pushToRetList(toRetList, cuenta, alu)
+                // });
+                return
+            }
+            pushToRetList(toRetList, cuenta)
             
         }else{
             
             toRetList.push({
                 id: cuenta.id,
+                cuenta_id: cuenta?.cuenta_id,
+                nombre: cuenta.nombre,
+                apellido: cuenta.apellido,
+                dni: cuenta.dni,
                 username: cuenta.username,
+                curso_id: cuenta?.curso_id,
+                curso: cuenta?.curso,
+                año: cuenta?.año,
+                division: cuenta?.division,
+                grupo_tal: cuenta?.grupo_tal,
                 rol: cuenta.rol||cuenta.role,
                 rol_id: cuenta.rol_id,
             })
@@ -56,7 +78,6 @@ async function sendTable(res, item){//item puede ser la lista de cuentas o de pe
        
         
     }
-    console.log("Test of toRet", toRetList);
     res.send({resList: toRetList})
 }
 
@@ -72,7 +93,7 @@ export function loadAccountsRoSe(req, res){
     let queryToUse=search==""?"SELECT * FROM cuentas": "SELECT * FROM cuentas WHERE username LIKE ?"
     let replsToUse=search==""?[]:[`%{${search}}%`]*/
     const schoolRoles=["prec", "prof", "alum"];
-    mySQLConnection("SELECT * FROM cuentas", []).then(async acc=> {sendTable(res, acc)});//Devolvemos todas las cuenta
+    mySQLConnection("SELECT * FROM cuentas", []).then(async acc=> {sendTable(req, res, acc)});//Devolvemos todas las cuenta
 }
 
 export function loadPetitionsRoSe(req, res){
@@ -87,6 +108,6 @@ export function loadPetitionsRoSe(req, res){
     let queryToUse=search==""?"SELECT * FROM cuentas": "SELECT * FROM cuentas WHERE username LIKE ?"
     let replsToUse=search==""?[]:[`%{${search}}%`]*/
     
-    mySQLConnection("SELECT * FROM role_petitions", []).then(petitions=> sendTable(res, petitions));
+    mySQLConnection("SELECT * FROM role_petitions", []).then(petitions=> sendTable(req, res, petitions));
     
 }

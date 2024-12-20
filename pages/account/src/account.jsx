@@ -45,7 +45,15 @@ export default function AccountPage(){
     /* Manejadores de elementos */
     let [logoutBut, setLogoutBut] = useState(true);
     let [formRole, setFormRole] = useState(false);
-    
+
+    /* Manejo de errores */
+    let [errorInp, setErrorInp]=useState();
+    useEffect(()=>{
+        if(errorInp){
+            setTimeout(()=>setErrorInp(undefined), 5000);
+        }
+    }, [errorInp])
+
     /* Datos del formulario */
     let [nom, setNom] =useState("");
     let [ape, setApe] = useState("");
@@ -66,10 +74,17 @@ export default function AccountPage(){
             grp,
             selRole,
             msgPet,
+
         })
     }
     function sendPetition(){
-        fetch("/set-petition", sendPetReq)
+        fetch("/set-petition", sendPetReq).then((res)=>res.json()).then(data=>{
+            if(data.code!=3){
+                setErrorInp(data.msg);
+                return
+            }
+
+        })
     }
 
     return <div>
@@ -98,9 +113,9 @@ export default function AccountPage(){
                     </div>
                 </div>
                 <div className="account-role">
-                    {console.log("Testing values to request role: loadAuth", loadAuth, " role ",role, " formRole: ",formRole)}
                     {loadAuth&&(role.role=="visit"&&formRole==false) &&<button onClick={()=>setFormRole(true)}>Pedir rol</button>}
                     {formRole&&<div className="form-role">
+                        {errorInp!=undefined&&<div className="result-error">{errorInp}</div>}
                         <CustomSelect opts={roleOpts} onSelect={setSelRole} propVal="val" propTxt="txt" defaultText="Alumno" defaultValue="alum" overDefaults={true} clases={"form-role-select"}/>
                         <div>
                             <label>Nombre</label>
@@ -116,7 +131,7 @@ export default function AccountPage(){
                         </div>
                         {selRole?.val=="alum"&&<>
                                 <CustomSelect opts={coursesList} onSelect={setCourseId} propVal={"id"} propTxt={"curso"} defaultText={"1ro1ra"||'Select Course'} defaultValue={courseId||1} overDefaults={true} clases="form-role-course-select" />
-                                <CustomSelect opts={grpsOpts} onSelect={setGrp} propVal={"val"} defaultText={"Grupo "+grp.toUpperCase()||"Grupo A"||'Select Group'} clases="res-item-select" defaultValue={grp||"a"} overDefaults={true}/>
+                                <CustomSelect opts={grpsOpts} onSelect={setGrp} propVal={"val"} defaultText={"Grupo "+grp=="a"?"A":"B"||"Grupo A"||'Select Group'} clases="res-item-select" defaultValue={grp||"a"} overDefaults={true}/>
                             </>
                         }
                         <div>

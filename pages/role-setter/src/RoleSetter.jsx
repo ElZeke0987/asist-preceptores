@@ -8,6 +8,7 @@ export default function RoleSetter() {
   let [courses, setCourses] = useState([]);
   let [cOpt, setCOpt]=useState();
   let [linked, setLinked]=useState(false);
+  let [coursePar, setCoursePar]=useState(false);
   //let [search, setSearch]=useState("");//Se usa en caso de usar el boton de Search
 
   const coursesReq={
@@ -25,11 +26,9 @@ export default function RoleSetter() {
     });
     handleSearch();
   }, [])
-  let [fullMenuLoad, setFullMenuLoad]=useState(false)
 
   
   async function parMenuHandleClick(e){
-    setFullMenuLoad(false);
     console.log("to change menu test value: ", e.target.id)
     //await setMenu(e.target.id);
     console.log("menu state: ", menu)
@@ -71,7 +70,7 @@ export default function RoleSetter() {
             </div>
             <div className='par-courses'>
                 <CustomSelect opts={courses} onSelect={setCOpt} propVal={"id"} propTxt={"curso"} defaultText='Select Course' clases="par-select" />
-
+                <div onClick={e=>setCoursePar(!coursePar)}>{coursePar?"On":"Off"}</div>
             </div>
             <div className='par-role'>
 
@@ -104,12 +103,12 @@ export default function RoleSetter() {
             */
             results.resList.map((v, i)=>{
               //console.log("testing cOpt ", cOpt, " and testing v: ", v)
-              if(cOpt&&v){
-                if(v.rol!="alum"){
+              if(cOpt&&v&&coursePar){//Esta en un curso
+                if(v.rol!="alum"){//No es alumno: volver
                   return
                 }
                 
-                if(v.curso_id!=cOpt.id){
+                if(v.curso_id!=cOpt.id){//No coinciden en curso y curso del parametro: volver
                     return
                 }
               }

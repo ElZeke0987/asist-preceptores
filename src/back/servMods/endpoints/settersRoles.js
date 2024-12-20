@@ -42,9 +42,9 @@ function insertingAlumn(body, res, role, roleId){
     })
 }
 
-function insertingSchooRole(body, res, role, userInfo){
-    mySQLConnection(tableQueriesSel[role], [parseInt(body.dni)]).then(v=>{
-        console.log("Testing v.length!=0, length: ", v.length, " cond: ", v.length!=0)
+function insertingSchooRole(body, req, res, role, userInfo){
+    console.log("l-46: testing tableQueriesSel: ", tableQueriesSel[role])
+    mySQLConnection(tableQueriesSel[role], [body.dni]).then(v=>{
         if(v[0] || v.length!=0){//Condicion basica para ver si se puede llevar a cabo el setRole
             
             console.log(role," already exist in database ", v);
@@ -77,7 +77,7 @@ function insertingSchooRole(body, res, role, userInfo){
     })
 }
 
-function updatingSchoolRole(body, res, role, subject, userInfo){
+function updatingSchoolRole(body, req, res, role, subject, userInfo){
     mySQLConnection(tableQueriesUpd[role], [1,body.accId, subject.id]).then(updSubject=>{
         if(role=="prec"){
             verifyPermisions(canSetPrecAdm, req, res, userInfo, {handlePermission: (status)=>{//En caso de que le busquen la vuelta al usar un preceptor ya existente o cambiar a un preceptor a un alumno existente
@@ -96,7 +96,8 @@ function updatingSchoolRole(body, res, role, subject, userInfo){
 const schoolRoles=["prec", "prof", "alum"];
 async function setRoleFunc(req, res, userInfo){
     let body=req.body;
-    let role=body.role.role;
+    let role=body.role.role||body.role;
+    console.log("l-100: body test: ", body)
     if(schoolRoles.includes(role)){
         /**Complementacion de role_id
          * Todo se basa en que si ya esta el alumno, preceptor o profesor en la base de datos, coincidendo datos basicos
@@ -108,22 +109,24 @@ async function setRoleFunc(req, res, userInfo){
          * el primero selecciona para verificar despues de que no hayan dos personas iguales (por DNI, que es un numero que no puede ser igual)
          * el segundo selecciona para ver si los datos ingresados en el form, son propios de algun alumno, para asi revincular la cuenta
          */
-        console.log("body test: ", body)
+        
         mySQLConnection(tableQueriesSelByBas[role], [body.nom, body.ape, body.dni]).then(roleSchool=>{
             if(roleSchool[0]){//Si existe el sujeto peticionado
                 if(roleSchool[0].claimed==1){//Si ya esta claimed
                     res.send({msg: role+" ya esta vinculado a otra cuenta", code: 4})
                     return
                 }
-                updatingSchoolRole(body, res, role, roleSchool[0], userInfo);
+                updatingSchoolRole(body, req, res, role, roleSchool[0], userInfo);
+
                 return
             }
-            insertingSchooRole(body, res, role, userInfo);
+            insertingSchooRole(body, req, res, role, userInfo);
         })
     
     }
     else{
         //Punto donde se dividen los roles no pertenecientes a la institucion
+        
         mySQLConnection("UPDATE cuentas SET rol=?, rol_id=NULL WHERE id=?", [role, body.accId]).then((ins)=>{
             res.send({msg: "Inserted other role succesfuly", res: ins, code: 3})
         });

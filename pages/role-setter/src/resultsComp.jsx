@@ -22,7 +22,7 @@ let grps=[
 export default function ResultUser({alumnItem, type="account", courses, itemId}){//ItemId puede ser la id tanto de la cuenta como de la peticion
     let courseObjs = alumnItem.curso_id?{id:alumnItem.curso_id, curso: alumnItem.curso, año: alumnItem.año, division: alumnItem.division}:{id:1, curso: "1ro1ra", año: 1, division: 1}
     let [end, setEnd]=useState(false);
-    let [role, setRole]=useState(alumnItem.rol||alumnItem.role);
+    let [role, setRole]=useState(alumnItem.rol);
     let [form, setForm]=useState(false);
     /*form vars (if type is account)*/
     let [nom,setNom]=useState(alumnItem?.nombre);
@@ -43,6 +43,7 @@ export default function ResultUser({alumnItem, type="account", courses, itemId})
     }
     function handleSend(){
         const actualRole = alumnItem.rol
+        console.log("Testing account id on item, l-46 result comp: ", alumnItem.cuenta_id);
         const setRoleReq={
             method: "POST",
             credentials: "include",
@@ -85,6 +86,7 @@ export default function ResultUser({alumnItem, type="account", courses, itemId})
         }
         fetch("/del-petition", setRoleReq).then(r=>r.json()).then(data=>{
             console.log("Rejected petition succesfuly to: ", alumnItem);
+            setEnd(true);
         })
     }
     function handleForm(){
