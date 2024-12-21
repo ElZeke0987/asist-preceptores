@@ -59,6 +59,7 @@ export async function setPetition(req, res){
         course[0].division, //10(11)
         username, 
         petiBody.grp.val||""]);
+        res.status(200).json({msg: "petition succesfuly made", petiId })  
                 
     }else{
         let PetiIdIns=await mySQLConnection("INSERT INTO role_petitions (id, cuenta_id, rol, nombre, apellido, dni, msg_pet, username) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?)", 
