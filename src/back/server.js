@@ -112,7 +112,7 @@ import { loadCourses, loadAlumns, loadAccountsRoSe, loadPetitionsRoSe, loadCours
 import { submitPresence } from "./servMods/endpoints/presencePoints.js";
 import { readAuthCookies, clearAuthCookie, getAuthCookies } from "./servMods/endpoints/cookiePoints.js";
 import { setRole } from "./servMods/endpoints/settersRoles.js";
-import { delPetition, setPetition } from "./servMods/endpoints/setterPetitions.js";
+import { delPetition, setPetition, verifyPetition } from "./servMods/endpoints/setterPetitions.js";
 
 
 app.get("/read-auth", (req, res)=>readAuthCookies(req, res));
@@ -129,9 +129,11 @@ app.post("/load-to-set-roles", (req, res)=>req.body.type=="account"?loadAccounts
 
 app.post("/set-petition", (req, res)=>setPetition(req, res))
 
+app.get("/verify-petition", (req, res)=>verifyPetition(req, res))
+
 app.post("/set-role", (req, res)=>setRole(req, res))
 
-app.post("/del-petition", (req, res)=>{delPetition(req.body.petiId)})
+app.post("/del-petition", (req, res)=>delPetition(req.body.petiId, req, res))
 
 app.post("/load-courses-asistencias", (req, res)=>loadCoursesAsistencias(req, res));
 

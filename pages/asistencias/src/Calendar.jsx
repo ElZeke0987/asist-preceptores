@@ -35,13 +35,6 @@ export default function Calendar({alumnObjSel, listAsistencias}){
             if (prevDate < 0) return 11;
             return prevDate;
         });
-        // if( actualDate =>12){
-        //     setActualDate(0);
-
-        // }else if(actualDate <= -1){
-        //     setActualDate(11);
-
-        // }
         
     },[actualDate])
 

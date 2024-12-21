@@ -1,8 +1,26 @@
 import { mySQLConnection } from "../connection.js";
 import { getAuthCookies } from "./cookiePoints.js";
 
-export function delPetition(petiId){
-    mySQLConnection("DELETE FROM role_petitions WHERE id=?", [petiId])
+export async function delPetition(petiId, req, res){
+    if(petiId){
+        await mySQLConnection("DELETE FROM role_petitions WHERE id=?", [petiId])
+        
+        return
+    }
+    let cookie = await getAuthCookies(req);
+    await mySQLConnection("DELETE FROM role_petitions WHERE cuenta_id=?", [cookie.decd.id])
+    res.status(200).json({msg: "Deleted succesfuly the petition", code:3});
+}
+
+export async function verifyPetition(req, res){
+    const cookie = await getAuthCookies(req);
+    const cuentaId = cookie.decd.id;
+    let petition = await mySQLConnection("SELECT * FROM role_petitions WHERE cuenta_id=?", [cuentaId])
+    if (petition[0]){
+        res.send({msg: "petition already made", code: 2});
+        return
+    }
+    res.send({code: 3});
 }
 
 export async function setPetition(req, res){
@@ -28,7 +46,7 @@ export async function setPetition(req, res){
             }
         })
     //                                                             2                    5                 7                     10                          13                             5             10    12    
-        await mySQLConnection("INSERT INTO role_petitions (id, cuenta_id, rol, nombre, apellido, dni, msg_pet, curso_id, curso, año, division, username, grupo_tal) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
+        let petiId=await mySQLConnection("INSERT INTO role_petitions (id, cuenta_id, rol, nombre, apellido, dni, msg_pet, curso_id, curso, año, division, username, grupo_tal) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
         [cuentaId, //1(2)
         petRole, 
         petiBody.nom, 
@@ -40,10 +58,12 @@ export async function setPetition(req, res){
         course[0].año||null, 
         course[0].division, //10(11)
         username, 
-        petiBody.grp.val||""])                          
+        petiBody.grp.val||""]);
+                
     }else{
-        await mySQLConnection("INSERT INTO role_petitions (id, cuenta_id, rol, nombre, apellido, dni, msg_pet, username) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?)", 
+        let PetiIdIns=await mySQLConnection("INSERT INTO role_petitions (id, cuenta_id, rol, nombre, apellido, dni, msg_pet, username) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?)", 
         [cuentaId , petRole, petiBody.nom, petiBody.ape, petiBody.dni, null, username]);
+        res.status(200).json({msg: "petition succesfuly made", petiId })  
     }
 }
 

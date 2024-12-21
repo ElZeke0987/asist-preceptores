@@ -1,6 +1,7 @@
 import { useState, useEffect} from "react";
 import { sendClearReq } from "./accountMods";
 import CustomSelect from "../../../src/comps/molecules/customSelect/customSelect";
+import "../../../src/styles/index.scss";
 
 const roleOpts=[
     {val: "alum", txt: "Alumno"}, 
@@ -42,9 +43,11 @@ export default function AccountPage(){
             setCoursesList(data.couList)
         });
     }, [])
+    const [petiId, setPetiId]=useState();
     /* Manejadores de elementos */
-    let [logoutBut, setLogoutBut] = useState(true);
-    let [formRole, setFormRole] = useState(false);
+    const [logoutBut, setLogoutBut] = useState(true);
+    const [formRole, setFormRole] = useState(false);
+    const [petitionVer, setPetitionVer] = useState(true);
 
     /* Manejo de errores */
     let [errorInp, setErrorInp]=useState();
@@ -62,6 +65,7 @@ export default function AccountPage(){
     let [grp, setGrp] = useState("a");
     let [selRole, setSelRole]=useState({val: "alum", txt: "Alumno"});
     let [msgPet, setMsgPet]=useState();
+    
     const sendPetReq={
         method: "POST", 
         credentials: "include",
@@ -77,21 +81,51 @@ export default function AccountPage(){
 
         })
     }
+    const verPetReq={
+        method: "GET", 
+        credentials: "include",
+        headers: {"Content-Type": "application/json"},
+    }
+    const cancelPetReq={
+        method: "POST",
+        credentials: "include",
+        headers: {"COntent-Type": "application/json"},
+        body: JSON.stringify({
+            petiId
+        }),
+    }
+    useEffect(()=>{
+        fetch("/verify-petition", verPetReq).then(r=>r.json()).then(data=>{
+            if(data.code==2){
+                setPetitionVer(false);
+                return
+            }
+            setPetitionVer(true);
+        })
+    },[])
+    
     function sendPetition(){
         fetch("/set-petition", sendPetReq).then((res)=>res.json()).then(data=>{
+            console.log("setted succesfuly the petition: ", data)
             if(data.code!=3){
                 setErrorInp(data.msg);
                 return
             }
+            setPetiId(data.petiId)
+            setFormRole(false);
 
         })
     }
-
+    function cancelPetition(){
+        fetch("/del-petition", cancelPetReq).then(r=>r.json()).then(data=>{
+            setPetitionVer(true);
+        })
+    }
     return <div>
             <div>
                 <div className="account-pres">
                     <div className="account-icon">
-                        <img/>
+                        <img src="" alt="foto de perfil"/>
                     </div>
                     <div className="account-hello">
                         Bienvenido a tu cuenta <span className="account-name">{username}</span>
@@ -113,8 +147,13 @@ export default function AccountPage(){
                     </div>
                 </div>
                 <div className="account-role">
-                    {loadAuth&&(role.role=="visit"&&formRole==false) &&<button onClick={()=>setFormRole(true)}>Pedir rol</button>}
-                    {formRole&&<div className="form-role">
+                    {petitionVer==false&&
+                    <div className="set-petition petition-made">
+                        <div>Peticion ya hecha, espera a que te la acepten</div>
+                        <button onClick={e=>cancelPetition()}>Cancelar</button>
+                    </div>}
+                    {loadAuth&&petitionVer&&(role.role=="visit"&&formRole==false) &&<button onClick={()=>setFormRole(true)} className="set-petition">Pedir rol</button>}
+                    {formRole&&petitionVer&&<div className="form-role">
                         {errorInp!=undefined&&<div className="result-error">{errorInp}</div>}
                         <CustomSelect opts={roleOpts} onSelect={setSelRole} propVal="val" propTxt="txt" defaultText="Alumno" defaultValue="alum" overDefaults={true} clases={"form-role-select"}/>
                         <div>
