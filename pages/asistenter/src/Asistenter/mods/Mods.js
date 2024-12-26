@@ -26,13 +26,7 @@ export function getTourn(e) {
     return t || "no tourn";
 }
 
-export function grpOpts (setAlumnsList){//Es para cuando se elija si hay taller o no
-    let moduloSel = document.querySelector(".modulo");
-    let grupoTaller = document.querySelector(".grupo-taller");
-    if(moduloSel.dataset.value=="taller"){grupoTaller.style.display = "flex"; return}
-    grupoTaller.style.display = "none"; 
-    requestToLoadAlumns(setAlumnsList);
-}
+
 
 export function checkAllFunc(alItem){
     let a = alItem?  alItem.querySelector("input[type='checkbox']"):document.querySelectorAll(".alumn-item .pres-alumn");
@@ -61,7 +55,7 @@ export function filterAlumns(optCourseSel, dataAlumnsList, setAlumnsFinal, alumn
 
                 }
                 
-                if(grpSel.grp=="all"){//Verifica si se selecciono algun grupo en especifico
+                if(grpSel.grp=="both"||grpSel.grp=="all"){//Verifica si se selecciono algun grupo en especifico
                     setAlumnsFinal([...alumnsFinal, aluToAdd])
                     return
                 }

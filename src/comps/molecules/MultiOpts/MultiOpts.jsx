@@ -1,4 +1,4 @@
-export default function MultiOpt({actualValue, shouldBe, checkedClass="checked-opt", onClickHandle, elementId, nameInp, typeInp, labelText, clases}){
+export default function MultiOpt({actualValue, shouldBe=true, checkedClass="checked-opt", onClickHandle, elementId, nameInp, typeInp, labelText, clases}){
     //ShouldBe es lo que deberia ser, para estar chekced
     //Este es un manejador para los estados de la seleccion entre diversas cosas
     return(

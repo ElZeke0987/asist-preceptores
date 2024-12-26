@@ -7,13 +7,8 @@ const stylingDir= `${compsDir}styling.js`;
 console.log("sty", stylingDir);
 const cusSelectDir = `${molsDir}customSelect/customSelect.jsx`;
 
-
-
-import { requestToLoadAlumns} from '../mods/Reqs.js';
-import { SelGroupTaller} from '../mods/EvListeners.js';
-import { grpOpts, getTourn, searchTalSelGrp, checkAllFunc, filterAlumns} from '../mods/Mods.js';
+import { getTourn, filterAlumns} from '../mods/Mods.js';
 import { useState, useEffect} from 'react';
-import { handleStyleCheckTourn } from "../../../../../styling.js";
 import CustomSelect from "../../../../../src/comps/molecules/customSelect/customSelect.jsx";
 import MultiOpt from '../../../../../src/comps/molecules/MultiOpts/MultiOpts.jsx';
 
@@ -34,7 +29,7 @@ export default function Params({setAlumnsList, setAllPresence, allPresence, setA
     const [module, setModule] = useState();
     const [turno, setTurno] = useState(trn||"all");
     const [courseSel, setCourseSel] = useState();
-    const [grpSel, setGrpSel] = useState("all");
+    const [grpSel, setGrpSel] = useState("both");
 
     const [alumnsFinal, setAlumnsFinal] = useState();
 
@@ -55,9 +50,7 @@ export default function Params({setAlumnsList, setAllPresence, allPresence, setA
 
     useEffect(()=>fetchCourses(),[turno])
 
-    useEffect(()=>filterAlumns(courseSel, data?.alumnList), [courseSel])
-
-    useEffect(()=>filterAlumns(courseSel, data?.alumnList, ))
+    useEffect(()=>filterAlumns(courseSel, data?.alumnList, setAlumnsFinal, alumnsFinal,grpSel), [courseSel, grpSel])
 
     
 
@@ -81,37 +74,18 @@ export default function Params({setAlumnsList, setAllPresence, allPresence, setA
                     onSelect={setModule} 
                     defaultText='Select module'/>
                     
-                    <div className="grupo-taller" style={{display: 'none'}}>
-                        <div className={"gro-opt" + checkVal(grpSel, "a")}>
-                            <label>Grupo A</label>
-                            <input type="radio" name="group" onClick={(e)=>setGrpSel("a")} checked={grpSel=="a"}/>
-                        </div>
-                        <div className={"gro-opt" + checkVal(grpSel, "b")}>
-                            <label>Grupo B</label>
-                            <input type="radio" name="group" onClick={(e)=>setGrpSel("b")} checked={grpSel=="both"}/>
-                        </div>
-                        <div className={"gro-opt" + checkVal(grpSel, "both")}>
-                            <label>Ambos</label>
-                            <input type="radio" name="group" onClick={(e)=>setGrpSel("both")} checked={grpSel=="both"}/>
-                        </div>
-                        
-                    </div>
+                    {module=="taller"&&<div className="grupo-taller">
+                        <MultiOpt actualValue={grpSel} shouldBe={"a"} onClickHandle={e=>setGrpSel("a")} typeInp="radio" nameInp="group" labelText="Grupo A" clases="gro-opt"/>
+                        <MultiOpt actualValue={grpSel} shouldBe={"b"} onClickHandle={e=>setGrpSel("b")} typeInp="radio" nameInp="group" labelText="Grupo B" clases="gro-opt"/>
+                        <MultiOpt actualValue={grpSel} shouldBe={"both"} onClickHandle={e=>setGrpSel("both")} typeInp="radio" nameInp="group" labelText="Ambos" clases="gro-opt"/>
+                    </div>}
 
                     
                     </div>
                     <div className="just-falta">
-                        <div className={"check-all just-opt"+checkVal(allPresence, true)} onClick={()=>setAllPresence(!allPresence)} >
-                            <label>Check all fields</label>
-                            <input type="checkbox" checked={allPresence} onChange={checkAllFunc}/>
-                        </div>
-                        <div className={"check-all just-opt"+checkVal(profAsist, true)} onClick={()=>setProfAsist(!profAsist)}>
-                            <label>Asistio el profe?</label>
-                            <input type="checkbox" checked={profAsist}/>
-                        </div>
-                        <div className={"check-all just-opt"+checkVal(allJustfied, true)} onClick={()=>setAllJustified(!allJustified)}>
-                            <label>Falta justificada al curso entero</label>
-                            <input type="checkbox" checked={allJustfied}/>
-                        </div>
+                        <MultiOpt actualValue={allPresence} onClickHandle={e=>setAllPresence(!allPresence)} typeInp="checkbox" labelText="Check all fileds" clases="check-all just-opt"/>
+                        <MultiOpt actualValue={profAsist} onClickHandle={e=>setProfAsist(!profAsist)} typeInp="checkbox" labelText="Asistio el profesor" clases="check-all just-opt"/>
+                        <MultiOpt actualValue={allJustfied} onClickHandle={e=>setAllJustified(!allJustfied)} typeInp="checkbox" labelText="Check all fileds" clases="check-all just-opt"/>
                     </div>
             </div>
         </div>
