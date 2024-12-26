@@ -45,3 +45,30 @@ export function searchTalSelGrp(gruposInp){
     gruposInp.forEach(opt=>{if(opt.checked)ret=opt.id})
     return ret;
 }
+
+export function filterAlumns(optCourseSel, dataAlumnsList, setAlumnsFinal, alumnsFinal, grpSel="all"){
+    dataAlumnsList.forEach((v, i)=>{//Itera sobre todos los alumnos cargados de la base de datos (todos)
+            if(v.curso_id==optCourseSel.id){
+                const aluToAdd={
+                    id: v.id,
+                    nom_comp: v.nom_comp,
+                    nombre: v.nombre,
+                    apellido: v.apellido,
+                    dni: v.dni,
+                    grupo_tal: v.grupo_tal,
+                    cuenta_id: v.cuenta_id,
+                    inasistencias: v.inasistencias,
+
+                }
+                
+                if(grpSel.grp=="all"){//Verifica si se selecciono algun grupo en especifico
+                    setAlumnsFinal([...alumnsFinal, aluToAdd])
+                    return
+                }
+                if(grpSel.grp==v.grupo_tal){
+                    setAlumnsFinal([...alumnsFinal, aluToAdd])
+                    return
+                }
+            }
+    })
+}

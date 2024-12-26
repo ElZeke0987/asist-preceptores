@@ -76,6 +76,7 @@ let defaultAlmsn=[
 
 export default function AsistenterPage(){
     let [allPresence, setAllPresence]=useState(true);
+    const [porfAsist, setProfAsist] = useState(true);
     let [allJustified, setAllJustified]=useState(false);
     let [alumnsList, setAlumnsList]=useState([]);
     
@@ -91,7 +92,10 @@ export default function AsistenterPage(){
     return(
         <div className="background-asist">
             <div className="asistenter-cont">
-                <Params setAlumnsList={setAlumnsList} setAllPresence={setAllPresence} allPresence={allPresence} setAllJustified={setAllJustified} allJustified={allJustified}/>
+                <Params setAlumnsList={setAlumnsList} 
+                setAllPresence={setAllPresence} allPresence={allPresence} 
+                setAllJustified={setAllJustified} allJustified={allJustified}
+                setProfAsist={setProfAsist} profAsist={profAsist}/>
                 
                 <div className="searcher">
                     <input type="text" placeholder="Buscar alumno..."/>
@@ -122,9 +126,3 @@ export default function AsistenterPage(){
             
     )
 }
-/*
-createRoot(document.getElementById('root').render(
-    <StrictMode>
-        <AsistenterPage/>
-    </StrictMode>
-))*/

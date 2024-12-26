@@ -11,6 +11,7 @@ export async function loadCourses(req, res, returned=false){//Funcion llamada en
     console.log("tournRep: ", tournRep, " actualReps", actualReplacements);
     let couList = await mySQLConnection(tournRep, actualReplacements)
     if(returned){
+        
         return couList;
     }
     res.send({couList})

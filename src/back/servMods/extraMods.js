@@ -13,7 +13,6 @@ export async function verifyPermisions(roleTable, req, res, userInfoCookie, {han
         .then(results=>{
             const user = results[0];
             if (roleTable.includes(user.rol)){//Permiso aceptado
-                console.log("\n url enviada: ", req.path, `\n`);
                 handlePermission(true)//Manejador en true
                 next();
                 return

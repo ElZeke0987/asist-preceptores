@@ -2,7 +2,7 @@
 export function handleStyleCheckTourn(e){
     let elem = e.currentTarget;
     let inp = elem.querySelector("input");
-    let checkBox = elem.querySelector("input[type='checkbox'");
+    let checkBox = elem.querySelector("input[type='checkbox']");
 
     if(!checkBox){
         console.log("HOLA");

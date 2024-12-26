@@ -28,13 +28,11 @@ export default function CustomSelect(
     async function handleSelect(opt){//ACORDARSE QUE ESTO NO ES TIPO EVENTO QUE TE DEVUELVE UN OBJETO EVENT, DEVOLVERA LA OPCION SELECCIONADA EN EL PRIMER PARAMETRO
         await setSelOpt(opt);
         await isOpenPar!=undefined?setIsOpenPar(false):setIsOpen(false);
-        console.log("succesfully setted: ", isOpenPar?"isOpenPar": "isOpen")
         if(onSelect)onSelect(opt);
     }
     async function handleOpen(e) {
         if(onOpen)await onOpen(e);  
         await isOpenPar!=undefined?setIsOpenPar(!isOpenPar):setIsOpen(!isOpen)
-        console.log("succesfully setted: ", isOpenPar?"isOpenPar": "isOpen")
     }
     
         useEffect(()=>{//Para manejar el evento de cambio de valor de otras formas
@@ -59,13 +57,13 @@ export default function CustomSelect(
                 <div className="cus-select-selected opt-selected" data-value={selOpt[propVal]} onClick={()=>{handleOpen()}}>
                     {forEffectTxt||selOpt[propTxt]}
                 </div>
-                {isOpen&&
+                {(isOpenPar!=undefined?isOpenPar:isOpen)&&
                     (<div className="cus-select-options">
                         {opts.map((opt, i)=>{
                             
                             return (Eleme===DefaultOptElem?
-                            <Eleme key={i} text={forEffectTxt||opt[propTxt]} value={opt||opt[propVal]} onClick={()=>{handleSelect(opt).then(()=>onChange())}} />:
-                            <Eleme className="cus-select-option" key={i} onClick={()=>{handleSelect(opt||opt[propVal]).then(()=>onChange())}} />)
+                            <Eleme key={i} text={forEffectTxt||opt[propTxt]} value={opt||opt[propVal]} onClick={()=>{handleSelect(opt).then(()=>{/*if(onChange)onChange()*/})}} />:
+                            <Eleme className="cus-select-option" key={i} onClick={()=>{handleSelect(opt||opt[propVal]).then(()=>{/*if(onChange)onChange()*/})}} />)
                         })}
                     </div>)
                 }

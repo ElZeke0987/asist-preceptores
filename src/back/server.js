@@ -26,7 +26,7 @@ async function middleRole(req, res, next){
     const rutaIndex = join(pages, "asistenter/dist/index.html");
     if(userInfo){
         verifyPermisions(canAsistance, req, res, userInfo, {next})
-    }else {console.log("\n url no enviada: ", req.path, `\n`); next()};
+    }else { next()};
 }
 
 

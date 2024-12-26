@@ -10,6 +10,7 @@ const grpList=[
 export default function ParsCourses({setAlumnObjSel}){
     const [alumnsLoadCourse, setAlumnsLoadCourse]=useState([])
     const [alumnsLoadGrp, setAlumnsLoadGrp]=useState([]);
+    const [alumnsLoadFinal, setAlumnsLoadFinal]=useState([])
 
     const [courseOpen, setCourseOpen]=useState(false);
     const [alumnsOpen, setAlumnsOpen]=useState(false);
@@ -17,33 +18,28 @@ export default function ParsCourses({setAlumnObjSel}){
 
     const [alumnIdSel, setAlumnIdSel]=useState();
     const [courseIdSel, setCourseIdSel]=useState({curso: "1ro1ra", id: 1});
-    const [grpSel, setGrpSel]=useState({txt: "Grupo A", grp:"a"});
-
-
-    const loadCoursesReq={
-        method: "POST",
-        credentials: "include",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({turno: "all"})
-      }      
-      let [data, setData]=useState();
-      let [loading, setLoading]=useState(true)
-      async function fetchCourses () {
-        const response = await fetch("/load-courses-asistencias", loadCoursesReq);
-        const dataFetch = await response.json();
-        await setData(dataFetch)
-        await setCourseIdSel({id: dataFetch.courseList[0].id, curso: dataFetch.courseList[0].curso})
+    const [grpSel, setGrpSel]=useState({txt: "Todos", grp: "all"});
+        
+    let [data, setData]=useState();
+    let [loading, setLoading]=useState(true)
+    async function fetchCourses () {
+      const response = await fetch("/load-courses-asistencias", loadCoursesReq);
+      const dataFetch = await response.json();
+      await setData(dataFetch)
+      await setCourseIdSel({id: dataFetch.courseList[0].id, curso: dataFetch.courseList[0].curso})
         
     };
-      useEffect(()=>fetchCourses(),[])//Una vez montado el componente se prosigue con la carga de cursos que seria algo mas asincrono
+    useEffect(()=>fetchCourses(),[])//Una vez montado el componente se prosigue con la carga de cursos que seria algo mas asincrono
 
-      useEffect(()=>alumnIdSelEff(alumnsLoadGrp, setAlumnObjSel, alumnIdSel),[alumnIdSel])//La lista final es la de los grupos
+    useEffect(()=>alumnIdSelEff(alumnsLoadFinal, setAlumnObjSel, alumnIdSel),[alumnIdSel])//La lista final es la de los grupos
 
-      useEffect(()=>courseIdSelEff(data, courseIdSel, setAlumnsLoadCourse, alumnsLoadCourse),[courseIdSel])
+    useEffect(()=>courseIdSelEff(data, courseIdSel, setAlumnsLoadCourse, alumnsLoadCourse, setAlumnsLoadFinal),[courseIdSel])
 
-      useEffect(()=>grpIdSelEff(grpSel||"all", alumnsLoadCourse, alumnsLoadGrp, setAlumnsLoadGrp), [grpSel]);
+    useEffect(()=>grpIdSelEff(grpSel?grpSel.grp:"all", alumnsLoadCourse, alumnsLoadGrp, setAlumnsLoadGrp, setAlumnsLoadFinal), [grpSel]);
 
-      
+    useEffect(()=>setAlumnsLoadFinal(alumnsLoadCourse),[alumnsLoadCourse])
+
+    useEffect(()=>setAlumnsLoadFinal(alumnsLoadGrp),[alumnsLoadGrp])
 
     if(data==undefined){
         return(
@@ -59,13 +55,13 @@ export default function ParsCourses({setAlumnObjSel}){
             setIsOpenPar={setCourseOpen} isOpenPar={courseOpen}/>
 
             <CustomSelect opts={grpList} onSelect={setGrpSel} 
-            defaultText={grpSel.txt} defaultValue={grpSel.grp} overDefaults={true}
+            defaultText={"Todos"} defaultValue={"all"} overDefaults={true}
             propTxt='txt' propVal='grp' clases={"pars-group"} 
             setIsOpenPar={setGrpOpen} isOpenPar={grpOpen}/>
 
-            <CustomSelect opts={alumnsLoadCourse} onSelect={setAlumnIdSel} 
-            defaultText={data?.alumnList[0].nom_comp!=''?data?.alumnList[0].nom_comp:data?.alumnList[0].apellido||"Seleccionar alumno"} 
-            defaultValue={data?.alumnList[0].id||null} overDefaults={true}
+            <CustomSelect opts={alumnsLoadFinal} onSelect={setAlumnIdSel} 
+            defaultText={"Seleccionar alumno"} 
+            defaultValue={null} overDefaults={true}
             propTxt={'nom_comp'||'apellido'} propVal='id'  clases={"pars-alumn"} 
             setIsOpenPar={setAlumnsOpen} isOpenPar={alumnsOpen} />
         
