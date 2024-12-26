@@ -21,8 +21,8 @@ let tableQueriesSel={
 };
 let tableQueriesIns={
     ["prec"]: "INSERT INTO preceptores (id, nom_comp, claimed, nombre, apellido, dni, cuenta_id) VALUES (NULL, ?, 1, ?, ?, ?, ?)",
-    ["prof"]: "INSERT INTO profesores (id nom_comp,  claimed, nombre, apellido, dni, cuenta_id) VALUES (NULL, ?, 1,?, ?, ?, ?)",
-    ["alum"]: "INSERT INTO alumnos (id nom_comp,  claimed, nombre, apellido, dni, curso, año, division, cuenta_id,curso_id, grupo_tal) VALUES (NULL, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    ["prof"]: "INSERT INTO profesores (id, nom_comp,  claimed, nombre, apellido, dni, cuenta_id) VALUES (NULL, ?, 1,?, ?, ?, ?)",
+    ["alum"]: "INSERT INTO alumnos (id, nom_comp,  claimed, nombre, apellido, dni, curso, año, division, cuenta_id,curso_id, grupo_tal) VALUES (NULL, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 };
 function insertingAlumn(body, res, role, roleId){
     mySQLConnection("SELECT * FROM cursos WHERE id=?", [body.courseVar.id]).then(course=>{

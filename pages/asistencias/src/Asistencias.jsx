@@ -4,10 +4,7 @@ import { body } from 'express-validator';
 import ParsCourses from './ParsCourses.jsx';
 import Calendar from './Calendar.jsx';
 
-const grpList=[
-  {txt: "Grupo A", grp: "a"},
-  {txt: "Grupo B", grp: "b"},
-]
+
 
 export default function Asistencias() {
   
@@ -15,24 +12,11 @@ export default function Asistencias() {
   const [cursosList, setCursosList]=useState([]);
   const [alumnosList, setAlumnosList]=useState([]);
   const [listAsistencias, setListAsistencias]=useState([]);
-
-  /* Items seleccionados en los customSelect's */
   
-  const [grpSel, setGrpSel]=useState({txt: "Grupo A", grp:"a"});
-  
-  /* final selection and filtering vars */
-  const [alumnsLoadCourse, setAlumnsLoadCourse]=useState([])
+  /* selection of alumn (the most important) */
   const [alumnObjSel, setAlumnObjSel]=useState({id: 0});
-  const loadCoursesReq={
-    method: "POST",
-    credentials: "include",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({
-      turno: "all"
-    })
-  }
-
   
+
   useEffect(()=>{
     const loadAsistsReq={
       method: "POST",
@@ -49,11 +33,9 @@ export default function Asistencias() {
     <main>
       <section className='pars-select'>
             <div>
-              <ParsCourses setAlumnObjSel={setAlumnObjSel} alumnsLoadCourse={alumnsLoadCourse} setAlumnsLoadCourse={setAlumnsLoadCourse}/>
+              <ParsCourses setAlumnObjSel={setAlumnObjSel}/>
 
-              <CustomSelect opts={grpList} onSelect={setGrpSel} 
-              defaultText={grpSel.txt} defaultValue={grpSel.grp} overDefaults={true}
-              propTxt='txt' propVal='grp' clases={"pars-group"} />
+              
             </div>
       </section>
       {alumnObjSel.id!=0&&<Calendar alumnObjSel={alumnObjSel} listAsistencias={listAsistencias}/>

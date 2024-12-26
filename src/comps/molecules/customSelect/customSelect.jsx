@@ -1,3 +1,4 @@
+import { use } from "react";
 import { useEffect, useState } from "react";
 
 function DefaultOptElem({text, value, onClick}){
@@ -18,20 +19,22 @@ export default function CustomSelect(
         opts, Eleme=DefaultOptElem, 
         onSelect, onChange, onOpen,clases,
         propTxt="txt", propVal="val",//Tener en cuenta esto para ver las propiedades de cada valor seleccionado, ya que son objetos los que seleccionamos, con una propiedad visual y otra funcional (txt e id)
-        forEffectVal, forEffectTxt}){
-    if(opts==[]){return}
+        forEffectVal, forEffectTxt, 
+        isOpenPar, setIsOpenPar}){//Custom handlers de cuando se abra el customSelect
     let [isOpen, setIsOpen]=useState(false);
+    if(opts==[]){return}
     /* Valor seleccionado */
     let [selOpt, setSelOpt]=useState((opts[0]==undefined||overDefaults)?{[propVal]: defaultValue||"none", [propTxt]: defaultText||"Seleccione una opcion"}:opts[0]);
     async function handleSelect(opt){//ACORDARSE QUE ESTO NO ES TIPO EVENTO QUE TE DEVUELVE UN OBJETO EVENT, DEVOLVERA LA OPCION SELECCIONADA EN EL PRIMER PARAMETRO
         await setSelOpt(opt);
-        await setIsOpen(false);
+        await isOpenPar!=undefined?setIsOpenPar(false):setIsOpen(false);
+        console.log("succesfully setted: ", isOpenPar?"isOpenPar": "isOpen")
         if(onSelect)onSelect(opt);
     }
     async function handleOpen(e) {
         if(onOpen)await onOpen(e);  
-        await setIsOpen(!isOpen)
-        
+        await isOpenPar!=undefined?setIsOpenPar(!isOpenPar):setIsOpen(!isOpen)
+        console.log("succesfully setted: ", isOpenPar?"isOpenPar": "isOpen")
     }
     
         useEffect(()=>{//Para manejar el evento de cambio de valor de otras formas

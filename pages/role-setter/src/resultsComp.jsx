@@ -53,7 +53,7 @@ export default function ResultUser({alumnItem, type="account", courses, itemId})
                 nom,
                 ape,
                 dni,
-                grp, 
+                grp: grp?.grp, 
                 type,
                 actualRole,
                 courseVar: couSel,//courseVar tiene: .id, .curso, .año y .division
@@ -132,8 +132,8 @@ export default function ResultUser({alumnItem, type="account", courses, itemId})
                         {
                             role.role=="alum"&&
                             <>
-                                <CustomSelect opts={courses} onSelect={setCouSel} propVal={"id"} propTxt={"curso"} defaultText={alumnItem.curso||"1ro1ra"||'Select Course'} defaultValue={couSel||1} overDefaults={true} clases="res-item-select" />
-                                <CustomSelect opts={grps} onSelect={setGrp} propVal={"grp"} defaultText={"Grupo "+grp.toUpperCase()||"Grupo A"||'Select Group'} clases="res-item-select" defaultValue={grp||"a"} overDefaults={true}/>
+                                <CustomSelect opts={courses} onSelect={setCouSel} propVal={"id"} propTxt={"curso"} defaultText={alumnItem?.curso||"1ro1ra"||'Select Course'} defaultValue={couSel||1} overDefaults={true} clases="res-item-select" />
+                                <CustomSelect opts={grps} onSelect={setGrp} propVal={"grp"} defaultText={"Grupo "+grp?.grp?.toUpperCase()||"Grupo A"||'Select Group'} clases="res-item-select" defaultValue={grp||"a"} overDefaults={true}/>
                             </>
                         }
                         <button onClick={e=>handleSend()}>Enviar datos</button>
