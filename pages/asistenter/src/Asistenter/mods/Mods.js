@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { requestToLoadAlumns } from "./Reqs";
 
 export function getTourn(e) {
@@ -41,8 +42,10 @@ export function searchTalSelGrp(gruposInp){
 }
 
 export function filterAlumns(optCourseSel, dataAlumnsList, setAlumnsFinal, alumnsFinal, grpSel="all"){
+    setAlumnsFinal([])
     dataAlumnsList.forEach((v, i)=>{//Itera sobre todos los alumnos cargados de la base de datos (todos)
             if(v.curso_id==optCourseSel.id){
+
                 const aluToAdd={
                     id: v.id,
                     nom_comp: v.nom_comp,
@@ -52,17 +55,36 @@ export function filterAlumns(optCourseSel, dataAlumnsList, setAlumnsFinal, alumn
                     grupo_tal: v.grupo_tal,
                     cuenta_id: v.cuenta_id,
                     inasistencias: v.inasistencias,
-
+                    pres: true,
+                    just: false, 
                 }
-                
-                if(grpSel.grp=="both"||grpSel.grp=="all"){//Verifica si se selecciono algun grupo en especifico
-                    setAlumnsFinal([...alumnsFinal, aluToAdd])
+                if(grpSel=="both"||grpSel=="all"){//Verifica si se selecciono algun grupo en especifico
+                    setAlumnsFinal(prevVal=>[...prevVal, aluToAdd])
                     return
                 }
-                if(grpSel.grp==v.grupo_tal){
-                    setAlumnsFinal([...alumnsFinal, aluToAdd])
+                if(grpSel==v.grupo_tal){
+                    setAlumnsFinal(prevVal=>[...prevVal, aluToAdd])
                     return
                 }
             }
     })
+}
+
+export async function filterCourses(originalList, setNewList, turno){
+    await setNewList([])
+    if(turno=="all"){
+        await setNewList(originalList);
+        return
+    }
+    originalList.forEach(async v => {
+        
+        if(turno==v.turno){
+            const courseToAdd={
+                id: v.id,
+                curso: v.curso,
+            }
+            setNewList(prevList=>[...prevList, courseToAdd]);
+            return
+        }
+    });
 }

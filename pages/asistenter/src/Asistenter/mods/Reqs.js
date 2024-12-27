@@ -52,37 +52,33 @@ export async function requestToLoadAlumns({setAlumnsList, group, course}){
     fetch("/load-alumns", alumnReq).then(res=>res.json()).then(data=>{setAlumnsList(data.alumnsList)})//renderAlumns(data.alumnsList, setAlumnsList))
 }
 
-export function requestToPostInform(){
+export function requestToPostInform(profAsistVal, moduloVal, courseId, grupo, allAlumns, allJustified){
     console.log("Enviando informe...")
-    let moduloSel = document.querySelector(".modulo");
-    let profAsistVal = document.querySelector(".prof-asist input").checked;
-    let moduloVal = moduloSel.dataset.value;
-    let allAlumns=document.querySelectorAll(".alumn-item");
-    
     let asistenciasObj={
-        courseId: courseListOpts.value ,
+        courseId,
         asistArr: [], 
         presentes: 0, 
         prof_asist: profAsistVal, 
         modv: moduloVal,
-        grupo: moduloSel.dataset.value == "taller" ? searchTalSelGrp() : "NULL",
-        justificada: justAsist.checked//falta justificada para la clase
+        grupo,
+        justificada: allJustified//falta justificada para la clase
     };
     
     allAlumns.forEach(a=>{
+        if(a==undefined)return
         asistenciasObj.asistArr.push({
             id: a.id,
-            nombre_alumno: a.querySelector(".name").innerHTML,
-            presencia: a.querySelector(".pres-alumn").checked,
-            grupo: moduloSel.dataset.value == "taller" ? searchTalSelGrp() : "NULL",
-            justificada: a.querySelector(".just-asist-alumn").checked//Falta justificada para un alumno
+            nombre_alumno: a.nombre+" "+a.apellido,
+            presencia: a.pres,
+            grupo: grupo,
+            justificada: a.just//Falta justificada para un alumno
         })
-        if(a.querySelector(".pres-alumn").checked)asistenciasObj.presentes++;
+        if(a?.pres)asistenciasObj.presentes++;
     })
     let asistBody={
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(asistenciasObj)
     }
-    fetch("/submit-presence",asistBody).then(res=>window.location.href="/index.html")//Modificar por links
+    fetch("/submit-presence",asistBody).then(res=>window.location.href="/" )//Modificar por links
 }

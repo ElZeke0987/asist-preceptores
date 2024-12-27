@@ -17,7 +17,7 @@ let defaultOptions=[
 export default function CustomSelect(
     {defaults=false, defaultValue="none",defaultText="Seleccione una opcion", overDefaults=true,
         opts, Eleme=DefaultOptElem, 
-        onSelect, onChange, onOpen,clases,
+        onSelect, onOpen, clases,
         propTxt="txt", propVal="val",//Tener en cuenta esto para ver las propiedades de cada valor seleccionado, ya que son objetos los que seleccionamos, con una propiedad visual y otra funcional (txt e id)
         forEffectVal, forEffectTxt, 
         isOpenPar, setIsOpenPar}){//Custom handlers de cuando se abra el customSelect
@@ -34,12 +34,12 @@ export default function CustomSelect(
         if(onOpen)await onOpen(e);  
         await isOpenPar!=undefined?setIsOpenPar(!isOpenPar):setIsOpen(!isOpen)
     }
-    
-        useEffect(()=>{//Para manejar el evento de cambio de valor de otras formas
-            if(forEffectVal&&forEffectTxt){
-                setSelOpt(forEffectVal)
-            }
-        },[forEffectVal])
+    console.log("Testing custom effect: ");
+    useEffect(()=>{//Para manejar el evento de cambio de valor de otras formas
+        if(forEffectVal&&forEffectTxt){
+            setSelOpt(forEffectVal)
+        }
+    },[forEffectVal])
     
        
     /*Defaults
@@ -62,8 +62,8 @@ export default function CustomSelect(
                         {opts.map((opt, i)=>{
                             
                             return (Eleme===DefaultOptElem?
-                            <Eleme key={i} text={forEffectTxt||opt[propTxt]} value={opt||opt[propVal]} onClick={()=>{handleSelect(opt).then(()=>{/*if(onChange)onChange()*/})}} />:
-                            <Eleme className="cus-select-option" key={i} onClick={()=>{handleSelect(opt||opt[propVal]).then(()=>{/*if(onChange)onChange()*/})}} />)
+                            <Eleme key={i} text={forEffectTxt||opt[propTxt]} value={opt||opt[propVal]} onClick={()=>handleSelect(opt)} />:
+                            <Eleme className="cus-select-option" key={i} onClick={()=>handleSelect(opt||opt[propVal])} />)
                         })}
                     </div>)
                 }

@@ -1,53 +1,56 @@
 
 import { useEffect, useState } from "react";
-import Params from "./Params";
 
-export default function AlumnItem({almn, allPresence, setAllPresence , allJustified, setAllJustified}){
-    const [presenceChecked, setPresenceChecked] = useState(true);
-    const [justifiedChecked, setJustifiedChecked] = useState(false);
-    // useEffect((()=>{//Efecto de cambio de la variable de todos los checked, la idea es que ponga todos los checked individuales en true, y si uno cambia poner el checked general en false
-    //   if(allPresence!==presenceChecked)setPresenceChecked(allPresence);
-    //   if(allJustified)setPresenceChecked(false); 
-    //   if(allJustified!==justifiedChecked)setJustifiedChecked(allJustified);
-    //   console.log("Effect of changing allPresence and allJustified");
-    // }, [allPresence, allJustified]))
+export default function AlumnItem({almn, ind, allPresence, setAllPresence , allJustified, setAllJustified, profAsist, alumnsList, setAlumnsList}){
+  const [presenceChecked, setPresenceChecked] = useState(true);
+  const [justifiedChecked, setJustifiedChecked] = useState(false);
 
-    useEffect(()=>{//Efecto del cambio de un solo checked
-      console.log("Effect of changing pres and just one's");
-      let elem = document.querySelector("#almn-"+almn.id);
-      if(justifiedChecked){
-        elem.classList.remove("alumn-item-check");
-        elem.classList.toggle("alumn-item-just");
-        return
+  //Efectos de cambio de la variable de todos los checked, la idea es que ponga todos los checked individuales en true, y si uno cambia poner el checked general en false
+  useEffect(()=>{if(allJustified)setJustifiedChecked(true)}, [allJustified])
+  useEffect(()=>{if(allPresence)setPresenceChecked(true)}, [allPresence])
+
+  useEffect(()=>{
+      console.log("Justificando porque el profe falto");
+      if(profAsist==false){
+          setAllJustified(true);
+          return
       }
-      elem.classList.remove("alumn-item-just");
-      elem.classList.toggle("alumn-item-check");
+      setJustifiedChecked(false)
+  },[profAsist])
 
-    }, [justifiedChecked, presenceChecked])
+  useEffect(()=>{//Efecto del cambio de un solo checked
+    if(justifiedChecked==false){
+      setAllJustified(false)
+    }
+    if(presenceChecked==false){
+      setAllPresence(false)
+    }
+    console.log("almn test: ", almn)
+    if(!almn)return
+    alumnsList[ind].pres=presenceChecked;
+    alumnsList[ind].just=justifiedChecked
+    console.log("new alumns list: ", alumnsList)
+    // almn.pres=presenceChecked;
+    // almn.just=justifiedChecked;
+    console.log("Setting this new JC and PC: ", justifiedChecked, presenceChecked)
+  }, [justifiedChecked, presenceChecked])
 
     function handleStyleCheckTourn (e, setters){
         // Si se hace click sobre el checkbox de la presencia
         if (e.target.parentElement.classList.contains('presence-cont')||e.target.classList.contains('presence-cont')) {
-          setJustifiedChecked(false)
           setPresenceChecked(!presenceChecked);
 
         }
         // Si se hace click sobre el checkbox de falta justificada
         if (e.target.parentElement.classList.contains('justas-cont')||e.target.classList.contains('justas-cont')) {
-          setPresenceChecked(false);
           setJustifiedChecked(!justifiedChecked);
 
         }
     };
+
     function handleInputChangePres(e){
       let inp = e.target;
-      if(inp.checked==false)setAllPresence(false);
-      if(allPresence)setPresenceChecked(true);
-    }
-    function handleInputChangeJust(e){
-      let inp = e.target;
-      if(inp.checked==false)setAllJustified(false);
-      if(allJustified)setJustifiedChecked(true);
+      if(allPresence)setPresenceChecked(true);//Tener en cuenta que si allPresence es true, los checked individuales siempre seran true hasta que se cambien
     }
   function handleAlumnClick (e) {
     if(e.target.parentElement.classList.contains('presence-cont')||e.target.classList.contains('justas-cont')||
@@ -55,13 +58,11 @@ export default function AlumnItem({almn, allPresence, setAllPresence , allJustif
         console.log("Click on inputs");   
     }else{
         if (e.type === "click") {// Solo click para alternar el checkbox de presence-cont
-            setJustifiedChecked(false);
             setPresenceChecked(!presenceChecked);
             
         }
         // Doble click para alternar el checkbox de justas-cont
         if (e.type === "dblclick") {
-            setPresenceChecked(false);
             setJustifiedChecked(!justifiedChecked);
         }
     }
@@ -84,8 +85,15 @@ export default function AlumnItem({almn, allPresence, setAllPresence , allJustif
       ["varPAs"]: presenceChecked
     }
   ] 
+  const classString=
+  presenceChecked==false&&justifiedChecked==false?"":""+
+  justifiedChecked&&presenceChecked==false?"alumn-item-just":"" + 
+  presenceChecked&&justifiedChecked==false?"alumn-item-check":"" + 
+  justifiedChecked&&presenceChecked?"alumn-item-just":"" ;
   return (
-    <div className="alumn-item alumn-item-check" id={"almn-"+almn.id} onDoubleClick={handleAlumnClick} onClick={handleAlumnClick}>
+    <div className={"alumn-item " + classString} 
+    id={"almn-"+almn.id} 
+    onDoubleClick={handleAlumnClick} onClick={handleAlumnClick}>
       <div className="pres-check presence-cont" onClick={(e)=>handleStyleCheckTourn(e, paramsHandler[0], paramsHandler[1])}>
         <label>Presente:</label>
         <input
@@ -110,5 +118,6 @@ export default function AlumnItem({almn, allPresence, setAllPresence , allJustif
         />
       </div>
     </div>
+    
   );
 }
