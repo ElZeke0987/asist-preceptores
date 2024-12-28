@@ -34,7 +34,6 @@ export default function CustomSelect(
         if(onOpen)await onOpen(e);  
         await isOpenPar!=undefined?setIsOpenPar(!isOpenPar):setIsOpen(!isOpen)
     }
-    console.log("Testing custom effect: ");
     useEffect(()=>{//Para manejar el evento de cambio de valor de otras formas
         if(forEffectVal&&forEffectTxt){
             setSelOpt(forEffectVal)

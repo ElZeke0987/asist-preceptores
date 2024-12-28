@@ -139,6 +139,7 @@ export async function setRole(req, res){
     let userInfo = cookie.decd;
     let role= req.body.role.role;//Rol pedido
     if(userInfo){
+        console.log("testing userinfo: ", userInfo, " and role: ", req.body.role)
         if(role=="alum"||role=="visit"){
             console.log("Checking if this account can set alumns or another roles")
             verifyPermisions(canSetAlumns, req, res, userInfo, {handlePermission: (status)=>{

@@ -30,8 +30,7 @@ export default function RoleSetter() {
   
   async function parMenuHandleClick(e){
     console.log("to change menu test value: ", e.target.id)
-    //await setMenu(e.target.id);
-    console.log("menu state: ", menu)
+    await setMenu(e.target.id);
     await handleSearch(e.target.id)
     
     
@@ -65,12 +64,13 @@ export default function RoleSetter() {
           </div>
           <div className='search-pars'>
             <div className='par-menu'>
-                <div className={'left-edge '+menu=="account"?"selected":""} id="account" onClick={e=>parMenuHandleClick(e)}>Cuentas</div>
-                <div className={'right-edge '+menu=="petitions"?"selected":""} id="petitions" onClick={e=>parMenuHandleClick(e)}>Peticiones</div>
+                <div className={`left-edge ${menu=="account"?"selected":""}`} id="account" onClick={e=>parMenuHandleClick(e)}>Cuentas</div>
+                <div className={`right-edge ${menu=="petitions"?"selected":""}`} id="petitions" onClick={e=>parMenuHandleClick(e)}>Peticiones</div>
+                {console.log("finalM state: ", menu, " account class: ", menu=="account"?"selected":"", " petitions class: ", menu=="petitions"?"selected":"")}
             </div>
             <div className='par-courses'>
                 <CustomSelect opts={courses} onSelect={setCOpt} propVal={"id"} propTxt={"curso"} defaultText='Select Course' clases="par-select" />
-                <div onClick={e=>setCoursePar(!coursePar)}>{coursePar?"On":"Off"}</div>
+                <div onClick={e=>setCoursePar(!coursePar)} className={`${coursePar?"selected":"unselected"}`}>{coursePar?"On":"Off"}</div>
             </div>
             <div className='par-role'>
 

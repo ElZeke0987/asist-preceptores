@@ -1,3 +1,10 @@
+.selected{
+    background-color: $RoSeParMenuBGSel;
+}
+.unselected{
+    background-color: $RoSeCourseParUnSel;
+}
+
 .searcher-accounts{
     display: flex;
     flex-direction: row;
@@ -6,9 +13,7 @@
     }
     .par-menu{
         display: flex;
-        .selected{
-            background-color: $RoSeParMenuBGSel;
-        }
+        
     }
     .linked-opt{
         .linked-true{

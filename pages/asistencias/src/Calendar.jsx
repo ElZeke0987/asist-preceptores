@@ -25,10 +25,14 @@ const monthList=[
       "Viernes",
   ];
 
-export default function Calendar({alumnObjSel, listAsistencias}){
+export default function Calendar({alumnObjSel}){
     const actualMonthId=new Date().getMonth();
     const [actualDate, setActualDate]=useState(actualMonthId);
-    useEffect(()=>{
+    const [listAsistencias, setListAsistencias]=useState([]);
+    const [listAsistenciasByDate, setListAsistenciasByDate]=useState([]);
+    const [settedLABD, setSettedLABD]=useState(false);
+
+    useEffect(()=>{//Efecto para controlar el limite de meses en el año (enero minimo, diciembre maximo)
         console.log("new month: ", actualDate);
         setActualDate((prevDate) => {
             if (prevDate > 11) return 0;
@@ -38,10 +42,45 @@ export default function Calendar({alumnObjSel, listAsistencias}){
         
     },[actualDate])
 
+    useEffect(async()=>{//Efecto para cargar las asistencias del alumno
+        const loadAsistsReq={
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({
+            alumn_id: alumnObjSel.id,
+          })
+        }
+        await fetch("/load-asistencias", loadAsistsReq).then(r=>r.json()).then(data=>{//Carga las asistencias e inasistencias de un alumno, todas, y solo de un alumno
+            let newListAsistencias=[]
+            data.listAsistencias.forEach((v,i)=>{
+                newListAsistencias[i]={
+                    id:v.id,
+                    fecha:v.fecha,
+                    asistencia:v.asistencia,
+                    actualDateId: v.actualDateId,
+                    presencia: v.presencia,
+                    justificada: v.justificada,
+                    dia:v.dia,
+                    mes:v.mes
+                }
+            })
+            //setListAsistencias(newListAsistencias);
+            let reducedByDate=data?.listAsistencias.reduce((subDiv, asistencia)=>{
+                const id = asistencia.mes+"-"+asistencia.dia//Clave para buscar en el subDiv, (mes(0-11)-numero del dia de la semana(1-7))
+                if(!subDiv[id]){
+                    subDiv[id]=[]//Genera un array vacio para usar el push
+                }
+                subDiv[id].push(asistencia);
+                return subDiv
+            }, {})
+            setListAsistenciasByDate(reducedByDate);
+        })
+      },[alumnObjSel])
     function handleClickMonth(dir){
         console.log("setting this new month", dir=="left"?actualDate-1:actualDate+1, " actualDate: ", actualDate);
         setActualDate(dir=="left"?actualDate-1:actualDate+1)
     }
+    const [cellOpen, setCellOpen]=useState(0)
     return(
         <section className='asist-calendar'>
             <div className='calendar-generals'>
@@ -84,7 +123,9 @@ export default function Calendar({alumnObjSel, listAsistencias}){
                 <div className='calendar-days'>
                     
                     {dayList.map((day, ind)=>{
-                        return(<><CellAsist listAsistencias={listAsistencias} actualDateId={actualDate} day={day} ind={ind} /></>)
+                            const actualPropDate=actualDate+"-"+(ind+1)
+                            
+                            return(listAsistenciasByDate!=[]&&listAsistenciasByDate!=undefined&&<><CellAsist listAsistencias={listAsistenciasByDate[actualPropDate]} actualDateId={actualDate} day={day} ind={ind} setCellOpen={setCellOpen} cellOpen={cellOpen}/></>)
                     })
                     }
                             

@@ -2,9 +2,9 @@ import { useEffect } from "react"
 
 export function alumnIdSelEff(alumnsLoadFinal, setAlumnObjSel, alumnIdSel){//La lista final despues de todos los filtros, seria la de los grupos
 //Hay que probar si dejar que sea en la lista pequeña y filtrada es buena opcion o si usar la lista total de alumnos para buscar al mismo, buscar cual es mas propensa a errores
-    console.log("Testing alumnIdSelEff: ", alumnsLoadFinal);
+    //console.log("Testing alumnIdSelEff: ", alumnsLoadFinal);
     alumnsLoadFinal.forEach(async (v, i)=>{//Cuando se elija un alumno
-        console.log("Testing v.id with selected alumn id: ", v.id, " = ", alumnIdSel.id);
+        //console.log("Testing v.id with selected alumn id: ", v.id, " = ", alumnIdSel.id);
         if(v.id==alumnIdSel.id){
             await setAlumnObjSel(
             {
@@ -27,7 +27,7 @@ export function alumnIdSelEff(alumnsLoadFinal, setAlumnObjSel, alumnIdSel){//La 
 
 //El filtro se aplica aca, cada vez que se va cambiando el curso
 export function courseIdSelEff(data, courseIdSel, setAlumnsLoadCourse, alumnsLoadCourse, setAlumnsLoadFinal){
-    console.log("testing data: ", data)
+    //console.log("testing data: ", data)
     setAlumnsLoadFinal([])
     setAlumnsLoadCourse([])
     data?.alumnList.forEach(async (v, i)=>{//alumnosList se carga una vez;
@@ -48,7 +48,7 @@ export function courseIdSelEff(data, courseIdSel, setAlumnsLoadCourse, alumnsLoa
             };
             
             setAlumnsLoadCourse([...alumnsLoadCourse, objToPush])//Se desestructura el array para crear uno nuevo con el nuevo objeto
-            console.log("new setting of alumnsLoadCourse: ", alumnsLoadCourse)
+            //console.log("new setting of alumnsLoadCourse: ", alumnsLoadCourse)
             return
         }
         
@@ -60,11 +60,11 @@ export function courseIdSelEff(data, courseIdSel, setAlumnsLoadCourse, alumnsLoa
 export function grpIdSelEff(grp, alumnsLoadCourse, alumnsLoadGrp, setAlumnsLoadGrp, setAlumnsLoadFinal){
     setAlumnsLoadFinal([])
     setAlumnsLoadGrp([])
-    console.log("testing grp par of grpIdSelEff: ", grp, " and alumns Loaded by course filter: ", alumnsLoadCourse)
+    //console.log("testing grp par of grpIdSelEff: ", grp, " and alumns Loaded by course filter: ", alumnsLoadCourse)
     alumnsLoadCourse.forEach(async v => {
-        console.log("testing forEach grpIdSelEff");
+        //console.log("testing forEach grpIdSelEff");
         if(grp=="all"||grp==undefined){
-            console.log("Setting new alumnsLoadFinal: ", alumnsLoadCourse)
+            //console.log("Setting new alumnsLoadFinal: ", alumnsLoadCourse)
             await setAlumnsLoadGrp(alumnsLoadCourse)
             return
         }

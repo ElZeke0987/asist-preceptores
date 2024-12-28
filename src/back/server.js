@@ -64,7 +64,9 @@ app.post("/register", pageMiddles, (req, res)=>{
     res.sendFile(join(pages, "register/dist/index.html"));
 })
 
-app.get("/account", pageMiddles, async (req, res)=>{
+app.post("/account", pageMiddles, async (req, res)=>{
+
+    
     const auth = await getAuthCookies(req);
     if(auth.r==false){
         res.redirect("/");
@@ -78,6 +80,7 @@ app.get("/account", pageMiddles, async (req, res)=>{
     }
     res.setHeader("Content-Type", "text/html");
     res.sendFile(join(pages, "account/dist/index.html"));
+ 
     
 })
 

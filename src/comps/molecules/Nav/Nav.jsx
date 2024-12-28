@@ -27,22 +27,22 @@ const cookieReq={
                 <a href="/" onClick={()=>reqPage("")}>Home</a>
             </div>
             {(rol=="prec"||rol=="adm")&&<div className="ap-nav-cont base-nav-cont">
-                <a href="/role-setter" onClick={()=>reqPage("role-setter")}>Set Roles</a>
+                <a href="/role-setter/" onClick={()=>reqPage("role-setter")}>Set Roles</a>
             </div>}
             {(rol=="prec"||rol=="adm")&&<div className="ap-nav-cont base-nav-cont">
-                <a href="/asistenter" onClick={()=>reqPage("asist-get")}>Asistenter</a>
+                <a href="/asistenter/" onClick={()=>reqPage("asist-get")}>Asistenter</a>
             </div>}
             {(rol=="prec"||rol=="adm"||rol=="alum"||rol=="prof")&&<div className="ap-nav-cont base-nav-cont">
-                <a href="/asistencias" onClick={()=>reqPage("asistencias")}>Asistencias</a>
+                <a href="/asistencias/" onClick={()=>reqPage("asistencias")}>Asistencias</a>
             </div>}
             {(username==undefined)?
             <div className="ap-nav-cont account-it">
-                <a href="/login" onClick={()=>reqPage("login")}>Iniciar sesion</a>
-                <a href="/register" onClick={()=>reqPage("register")}>Registrarse</a>
+                <a href="/login/" onClick={()=>reqPage("login")}>Iniciar sesion</a>
+                <a href="/register/" onClick={()=>reqPage("register")}>Registrarse</a>
             </div>:
             <div className="ap-nav-cont account-inited">
                 <img/>
-                <a href="/account" onClick={()=>reqPage("account")}>Cuenta</a>
+                <a href="/account/" onClick={()=>reqPage("account")}>Cuenta</a>
             </div>
             }
         </nav>

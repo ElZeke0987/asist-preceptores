@@ -7,6 +7,11 @@ const grpList=[
   {txt: "Grupo B", grp: "b"},
 ]
 
+const loadCoursesReq={
+    method: "POST",
+    credentials: "include",
+}
+
 export default function ParsCourses({setAlumnObjSel}){
     const [alumnsLoadCourse, setAlumnsLoadCourse]=useState([])
     const [alumnsLoadGrp, setAlumnsLoadGrp]=useState([]);

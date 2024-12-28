@@ -22,14 +22,14 @@ let grps=[
 export default function ResultUser({alumnItem, type="account", courses, itemId}){//ItemId puede ser la id tanto de la cuenta como de la peticion
     let courseObjs = alumnItem.curso_id?{id:alumnItem.curso_id, curso: alumnItem.curso, año: alumnItem.año, division: alumnItem.division}:{id:1, curso: "1ro1ra", año: 1, division: 1}
     let [end, setEnd]=useState(false);
-    let [role, setRole]=useState(alumnItem.rol);
+    let [role, setRole]=useState({role: alumnItem.rol});
     let [form, setForm]=useState(false);
     /*form vars (if type is account)*/
     let [nom,setNom]=useState(alumnItem?.nombre);
     let [ape,setApe]=useState(alumnItem?.apellido);
     let [dni,setDni]=useState(alumnItem?.dni);
     let [couSel,setCouSel]=useState(courseObjs);
-    let [grp,setGrp]=useState(alumnItem?.grupo_tal||"a");
+    let [grp,setGrp]=useState({grp: alumnItem?.grupo_tal||"a"});
     /*---------*/
     let [errorInp, setErrorInp]=useState();
   //let [search, setSearch]=useState("");//Se usa en caso de usar el boton de Search
@@ -104,7 +104,9 @@ export default function ResultUser({alumnItem, type="account", courses, itemId})
            <>
                 <div className="res-item-name">username: {alumnItem.username||alumnItem.cuenta_id}</div>
                 <div className="res-item-role">
-                    <CustomSelect opts={roleOpts} propVal="role" onSelect={opt=>handleSelectRol(opt)} defaultText={roleTxt[alumnItem.rol]} defaultValue={alumnItem.rol} overDefaults={true} clases={"res-item-role-select"}/>
+                    <CustomSelect opts={roleOpts} propVal="role" onSelect={opt=>handleSelectRol(opt)} 
+                    defaultText={roleTxt[alumnItem.rol]} defaultValue={alumnItem.rol} 
+                    overDefaults={true} clases={"res-item-role-select"}/>
                 </div>
                 <div className="res-item-opts">
                     {type=="petitions"&&
@@ -133,7 +135,7 @@ export default function ResultUser({alumnItem, type="account", courses, itemId})
                             role.role=="alum"&&
                             <>
                                 <CustomSelect opts={courses} onSelect={setCouSel} propVal={"id"} propTxt={"curso"} defaultText={alumnItem?.curso||"1ro1ra"||'Select Course'} defaultValue={couSel||1} overDefaults={true} clases="res-item-select" />
-                                <CustomSelect opts={grps} onSelect={setGrp} propVal={"grp"} defaultText={"Grupo "+grp?.grp?.toUpperCase()||"Grupo A"||'Select Group'} clases="res-item-select" defaultValue={grp||"a"} overDefaults={true}/>
+                                <CustomSelect opts={grps} onSelect={setGrp} propVal={"grp"} defaultText={"Grupo "+grp?.grp?.toUpperCase()||"Grupo A"||'Select Group'} clases="res-item-select" defaultValue={grp.grp||"a"} overDefaults={true}/>
                             </>
                         }
                         <button onClick={e=>handleSend()}>Enviar datos</button>
