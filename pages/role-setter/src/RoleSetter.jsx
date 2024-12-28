@@ -50,7 +50,7 @@ export default function RoleSetter() {
             type: menuVal ,
         })
       }
-      fetch("/load-to-set-roles", SearchReq).then(r=> r.json()).then(data=>{
+      fetch(`/load-to-set-${menuVal}`, SearchReq).then(r=> r.json()).then(data=>{//Carga peticiones o cuentas
         setResults({resList: data.resList, type: menuVal});//Usado para reducir y controlar mejor los tiempos de carga
         setMenu(menuVal);//Aun asi es usado mas tarde
       })
@@ -65,6 +65,7 @@ export default function RoleSetter() {
           <div className='search-pars'>
             <div className='par-menu'>
                 <div className={`left-edge ${menu=="account"?"selected":""}`} id="account" onClick={e=>parMenuHandleClick(e)}>Cuentas</div>
+                <div className={`center-edge ${menu=="justify"?"selected":""}`} id="justify" onClick={e=>parMenuHandleClick(e)}>Justificaciones</div>
                 <div className={`right-edge ${menu=="petitions"?"selected":""}`} id="petitions" onClick={e=>parMenuHandleClick(e)}>Peticiones</div>
                 {console.log("finalM state: ", menu, " account class: ", menu=="account"?"selected":"", " petitions class: ", menu=="petitions"?"selected":"")}
             </div>

@@ -6,12 +6,12 @@ export function alumnIdSelEff(alumnsLoadFinal, setAlumnObjSel, alumnIdSel){//La 
     alumnsLoadFinal.forEach(async (v, i)=>{//Cuando se elija un alumno
         //console.log("Testing v.id with selected alumn id: ", v.id, " = ", alumnIdSel.id);
         if(v.id==alumnIdSel.id){
-            await setAlumnObjSel(
-            {
+            let newAlumnObjSel={
                 id: v.id,
                 nom_comp: v.nom_comp,
                 nombre: v.nombre,
                 apellido: v.apellido,
+                cursoId: v.cursoId,
                 dni: v.dni,
                 grupo_tal: v.grupo_tal,
                 cuenta_id: v.cuenta_id,
@@ -20,7 +20,8 @@ export function alumnIdSelEff(alumnsLoadFinal, setAlumnObjSel, alumnIdSel){//La 
                 inas_aula: v.inas_aula,
                 inas_preh: v.inas_preh,
                 inas_fis: v.inas_fis,
-            })
+            }
+            setAlumnObjSel(newAlumnObjSel)
         }
     })
 }
@@ -28,14 +29,18 @@ export function alumnIdSelEff(alumnsLoadFinal, setAlumnObjSel, alumnIdSel){//La 
 //El filtro se aplica aca, cada vez que se va cambiando el curso
 export function courseIdSelEff(data, courseIdSel, setAlumnsLoadCourse, alumnsLoadCourse, setAlumnsLoadFinal){
     //console.log("testing data: ", data)
+    
+    
     setAlumnsLoadFinal([])
     setAlumnsLoadCourse([])
     data?.alumnList.forEach(async (v, i)=>{//alumnosList se carga una vez;
+        
         if(v.curso_id==courseIdSel.id){
             const objToPush={
                 id: v.id,
                 nom_comp: v.nom_comp,
                 nombre: v.nombre,
+                cursoId: courseIdSel.id,
                 apellido: v.apellido,
                 dni: v.dni,
                 grupo_tal: v.grupo_tal,
@@ -46,9 +51,8 @@ export function courseIdSelEff(data, courseIdSel, setAlumnsLoadCourse, alumnsLoa
                 inas_preh: v.inas_preh,
                 inas_fis: v.inas_fis,
             };
-            
             setAlumnsLoadCourse([...alumnsLoadCourse, objToPush])//Se desestructura el array para crear uno nuevo con el nuevo objeto
-            //console.log("new setting of alumnsLoadCourse: ", alumnsLoadCourse)
+            
             return
         }
         
@@ -74,6 +78,7 @@ export function grpIdSelEff(grp, alumnsLoadCourse, alumnsLoadGrp, setAlumnsLoadG
                 nom_comp: v.nom_comp,
                 nombre: v.nombre,
                 apellido: v.apellido,
+                cursoId: v.curso_id,
                 dni: v.dni,
                 grupo_tal: v.grupo_tal,
                 cuenta_id: v.cuenta_id,

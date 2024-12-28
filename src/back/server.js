@@ -111,11 +111,12 @@ app.post("/login-account", logMiddles,(req, res)=>logPoint(req, res));
 
 app.post("/register-account",registerMiddles,(req, res)=>regPoint(req, res));
 
-import { loadCourses, loadAlumns, loadAccountsRoSe, loadPetitionsRoSe, loadCoursesAsistencias, loadAsistencias } from "./servMods/endpoints/loadPoints.js";
+import { loadCourses, loadAlumns, loadAccountsRoSe, loadPetitionsRoSe, loadCoursesAsistencias, loadAsistencias, loadJustifyRoSe } from "./servMods/endpoints/loadPoints.js";
 import { submitPresence } from "./servMods/endpoints/presencePoints.js";
 import { readAuthCookies, clearAuthCookie, getAuthCookies } from "./servMods/endpoints/cookiePoints.js";
 import { setRole } from "./servMods/endpoints/settersRoles.js";
 import { delPetition, setPetition, verifyPetition } from "./servMods/endpoints/setterPetitions.js";
+import { setNewJustify } from "./servMods/endpoints/setterJustifiers.js";
 
 
 app.get("/read-auth", (req, res)=>readAuthCookies(req, res));
@@ -128,7 +129,11 @@ app.post("/load-alumns", (req,res)=>loadAlumns(req, res));
 
 app.post("/submit-presence",(req, res)=> submitPresence(req, res));
 
-app.post("/load-to-set-roles", (req, res)=>req.body.type=="account"?loadAccountsRoSe(req, res): loadPetitionsRoSe(req, res))
+app.post("/load-to-set-justify",(req, res)=>loadJustifyRoSe(req, res))
+
+app.post("/load-to-set-petitions", (req, res)=>loadPetitionsRoSe(req, res));
+
+app.post("/load-to-set-account", (req, res)=>loadAccountsRoSe(req, res));//req.body.type=="account"?loadAccountsRoSe(req, res): loadPetitionsRoSe(req, res)
 
 app.post("/set-petition", (req, res)=>setPetition(req, res))
 
@@ -138,9 +143,11 @@ app.post("/set-role", (req, res)=>setRole(req, res))
 
 app.post("/del-petition", (req, res)=>delPetition(req.body.petiId, req, res))
 
-app.post("/load-courses-asistencias", (req, res)=>loadCoursesAsistencias(req, res));
+app.post("/load-courses-asistencias", (req, res)=>loadCoursesAsistencias(req, res))
 
 app.post("/load-asistencias", (req, res)=>loadAsistencias(req, res))
+
+app.post("/set-justify", (req, res)=> setNewJustify(req, res))
 
 let PORT= process.env.PORT || 3001;
 let HOSTNAME="127.0.0.1";

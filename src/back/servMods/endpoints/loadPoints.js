@@ -119,6 +119,13 @@ export function loadPetitionsRoSe(req, res){
     
 }
 
+export function loadJustifyRoSe(req, res){
+    let body= req.body;
+    res.setHeader("Content-Type", "application/json");
+
+    mySQLConnection("SELECT * FROM asist_justify WHERE curso_id=? alumn_id=?", [body.cursoId, body.alumnId]).then(asistJustify=> res.status(200).json({resList: asistJustify}));
+}
+
 export function loadAsistencias(req, res){
     console.log("AlumnId test", req.body)
     mySQLConnection("SELECT * FROM asistencias WHERE alumno_id=?", [req.body.alumn_id]).then(listAsistencias=>{

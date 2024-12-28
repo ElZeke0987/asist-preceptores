@@ -6,13 +6,8 @@ import Calendar from './Calendar.jsx';
 
 export default function Asistencias() {
   
-  /* List de los items cargados */
-  const [cursosList, setCursosList]=useState([]);
-  const [alumnosList, setAlumnosList]=useState([]);
- 
-  
   /* selection of alumn (the most important) */
-  const [alumnObjSel, setAlumnObjSel]=useState({id: 0});
+  const [alumnObjSel, setAlumnObjSel]=useState({id: 0, cursoId: 1});
   
   return(
     <main>

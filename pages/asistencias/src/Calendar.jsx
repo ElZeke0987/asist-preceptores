@@ -31,7 +31,6 @@ export default function Calendar({alumnObjSel}){
     const [listAsistencias, setListAsistencias]=useState([]);
     const [listAsistenciasByDate, setListAsistenciasByDate]=useState([]);
     const [settedLABD, setSettedLABD]=useState(false);
-
     useEffect(()=>{//Efecto para controlar el limite de meses en el año (enero minimo, diciembre maximo)
         console.log("new month: ", actualDate);
         setActualDate((prevDate) => {
@@ -81,6 +80,7 @@ export default function Calendar({alumnObjSel}){
         setActualDate(dir=="left"?actualDate-1:actualDate+1)
     }
     const [cellOpen, setCellOpen]=useState(0)
+    
     return(
         <section className='asist-calendar'>
             <div className='calendar-generals'>
@@ -124,8 +124,13 @@ export default function Calendar({alumnObjSel}){
                     
                     {dayList.map((day, ind)=>{
                             const actualPropDate=actualDate+"-"+(ind+1)
-                            
-                            return(listAsistenciasByDate!=[]&&listAsistenciasByDate!=undefined&&<><CellAsist listAsistencias={listAsistenciasByDate[actualPropDate]} actualDateId={actualDate} day={day} ind={ind} setCellOpen={setCellOpen} cellOpen={cellOpen}/></>)
+
+                            return(listAsistenciasByDate!=[]&&listAsistenciasByDate!=undefined&&<>
+                                <CellAsist 
+                                listAsistencias={listAsistenciasByDate[actualPropDate]} 
+                                actualDateId={actualDate} day={day} ind={ind} 
+                                setCellOpen={setCellOpen} cellOpen={cellOpen} 
+                                alumnId={alumnObjSel.id}  cursoId={alumnObjSel.cursoId}/></>)
                     })
                     }
                             

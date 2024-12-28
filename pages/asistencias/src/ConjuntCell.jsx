@@ -7,7 +7,6 @@ const moduleText = {
     [undefined]: "Und"
 };
 function ToJustCheckbox({ asistItem, setJustModInas, justModInas }) {
-    useEffect(() => console.log("justModInas test: ", justModInas), [justModInas]);
     return (
         <div>
             <input type="checkbox" checked={justModInas[asistItem.modulo]}
@@ -21,14 +20,14 @@ function ToJustCheckbox({ asistItem, setJustModInas, justModInas }) {
 }
 
 function ModuleElement({ asist }) {
-    console.log("value of mapped asistList: ", asist)
     return <div className={"asist-mod-" + asist?.modulo + " asist-mod " + (asist?.presencia == 1 ? "asist-pres" : "asist-inas")}> {moduleText[asist?.modulo]}: {asist?.presencia == 1 ? "Pres" : "Inas"}</div>
 }
 
 export default function ConjuntCell(
-    {asistList,
+    {asistList,//
     shouldJustify,
-    opened}) {
+    opened,
+    alumnId, cursoId}) {
     if(!asistList)return
     const [justModInas, setJustModInas] = useState({
         taller: false,
@@ -40,14 +39,34 @@ export default function ConjuntCell(
     const [justifyItem, setJustifyItem] = useState(false);
     const [asistanceOpen, setAsistanceOpen]=useState(false)
 
+
+
     const [justMsg, setJustMsg]=useState("");
-    useEffect(()=>{
-        console.log("Open asist state: ", asistanceOpen)
-    },[asistanceOpen])
-    useEffect(()=>console.log("New object: ", justModInas), [justModInas])
+    
+
 
     function handleSendJustInfo(){
+        let newArrayWithInas =  [];
+        asistList.forEach(asistence => {
+            if(asistence.presencia==0)newArrayWithInas.push(asistence);
+        });
+        const setJustifyReq={
+            method:"POST",
+            credentials:"include",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({
+                alumnId,
+                cursoId,
+                justModInas,
+                justifyItem,
+                justMsg, 
+                asistList: newArrayWithInas})
+        }
         console.log("Sending info to SV DB")
+        fetch("/set-justify",setJustifyReq).then(r=>r.json()).then(data=>{
+            console.log("SV DB response: ",data)
+            setJustSended(true)
+        })
     }
     return (
         <div className={`asist-day`}>
