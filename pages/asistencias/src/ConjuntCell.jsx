@@ -27,7 +27,7 @@ export default function ConjuntCell(
     {asistList,//
     shouldJustify,
     opened,
-    alumnId, cursoId}) {
+    alumnId, cursoId, nomComp, curso}) {
     if(!asistList)return
     const [justModInas, setJustModInas] = useState({
         taller: false,
@@ -57,6 +57,8 @@ export default function ConjuntCell(
             body:JSON.stringify({
                 alumnId,
                 cursoId,
+                nomComp,
+                curso,
                 justModInas,
                 justifyItem,
                 justMsg, 
@@ -65,7 +67,8 @@ export default function ConjuntCell(
         console.log("Sending info to SV DB")
         fetch("/set-justify",setJustifyReq).then(r=>r.json()).then(data=>{
             console.log("SV DB response: ",data)
-            setJustSended(true)
+            setAsistanceOpen(false)
+            setJustOpen(false)
         })
     }
     return (

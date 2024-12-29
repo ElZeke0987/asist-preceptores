@@ -13,7 +13,17 @@ export default function AsistenterPage(){
     const [modEsc, setModEsc]=useState({val: "aula"})
     const [courseSel, setCourseSel] = useState({id: 1, curso:"1ro1ra"});
     const [grpSel, setGrpSel] = useState("both");
+    const [msgList, setMsgList] = useState([])
 
+    function handleMsgCloseClick(indexToDelete){
+        let newMsgList=[];
+        msgList.forEach((msg, index) => {
+            if(index==indexToDelete){return}
+            newMsgList.push(msg)
+        });
+        console.log("test of newMsgList: ", newMsgList, " should render?: ", (msgList.length==0))
+        setMsgList(newMsgList)
+    }
     
     return(
         <div className="background-asist">
@@ -26,7 +36,19 @@ export default function AsistenterPage(){
                 courseSel={courseSel} setCourseSel={setCourseSel}
                 grpSel={grpSel} setGrpSel={setGrpSel}
                 />
-                
+                {(msgList.length!=0)&&<div className="msg-list-cont">
+                        <div className="msg-list-center">
+                        {
+                            msgList.map((msg, i)=>{
+                                return (<div className={"msg-item msg-type-"+msg.type}>
+                                            <div className="msg-text">{msg.msg}</div>
+                                            <div className="msg-close-button" onClick={e=>handleMsgCloseClick(i)}>X</div>
+                                        </div>)
+                            })
+                        }
+                        </div>
+                    </div>
+                    }
                 <div className="searcher">
                     <input type="text" placeholder="Buscar alumno..."/>
                     <button className="submit-search">
@@ -48,7 +70,7 @@ export default function AsistenterPage(){
                         {alumnsList==[]&&<div>Cargando y filtrando alumnos</div>}
                     </div>
                     <div className="submit-presence">
-                        <button onClick={e=>requestToPostInform(profAsist, modEsc.val, courseSel.id, grpSel, alumnsList, allJustified )}>
+                        <button onClick={e=>requestToPostInform(profAsist, modEsc.val, courseSel.id, grpSel, alumnsList, allJustified, setMsgList )}>
                             <div className="button-cont">
                                 <div className="text-submit">Enviar informe</div>
                                 <div className="point-down-animation">{">"}</div>

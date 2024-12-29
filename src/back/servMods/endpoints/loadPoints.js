@@ -99,6 +99,7 @@ export function loadAccountsRoSe(req, res){
     
     let queryToUse=search==""?"SELECT * FROM cuentas": "SELECT * FROM cuentas WHERE username LIKE ?"
     let replsToUse=search==""?[]:[`%{${search}}%`]*/
+    
     const schoolRoles=["prec", "prof", "alum"];
     mySQLConnection("SELECT * FROM cuentas", []).then(async acc=> {sendTable(req, res, acc)});//Devolvemos todas las cuenta
 }
@@ -119,11 +120,13 @@ export function loadPetitionsRoSe(req, res){
     
 }
 
-export function loadJustifyRoSe(req, res){
+export async function loadJustifyRoSe(req, res){
     let body= req.body;
     res.setHeader("Content-Type", "application/json");
-
-    mySQLConnection("SELECT * FROM asist_justify WHERE curso_id=? alumn_id=?", [body.cursoId, body.alumnId]).then(asistJustify=> res.status(200).json({resList: asistJustify}));
+    console.log("body test: ", body)
+    let alumnList = await mySQLConnection("SELECT * FROM alumnos");
+    let asistJustify= await mySQLConnection("SELECT * FROM asist_justify", []);
+    res.status(200).json({resList: asistJustify, alumnList})
 }
 
 export function loadAsistencias(req, res){

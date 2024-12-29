@@ -130,7 +130,7 @@ export default function Calendar({alumnObjSel}){
                                 listAsistencias={listAsistenciasByDate[actualPropDate]} 
                                 actualDateId={actualDate} day={day} ind={ind} 
                                 setCellOpen={setCellOpen} cellOpen={cellOpen} 
-                                alumnId={alumnObjSel.id}  cursoId={alumnObjSel.cursoId}/></>)
+                                alumnId={alumnObjSel.id}  cursoId={alumnObjSel.cursoId} nomComp={alumnObjSel.nom_comp} curso={alumnObjSel.curso}/></>)
                     })
                     }
                             

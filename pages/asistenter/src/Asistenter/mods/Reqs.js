@@ -52,7 +52,7 @@ export async function requestToLoadAlumns({setAlumnsList, group, course}){
     fetch("/load-alumns", alumnReq).then(res=>res.json()).then(data=>{setAlumnsList(data.alumnsList)})//renderAlumns(data.alumnsList, setAlumnsList))
 }
 
-export function requestToPostInform(profAsistVal, moduloVal, courseId, grupo, allAlumns, allJustified){
+export async function requestToPostInform(profAsistVal, moduloVal, courseId, grupo, allAlumns, allJustified, setMsgList){
     console.log("Enviando informe...")
     let asistenciasObj={
         courseId,
@@ -80,5 +80,12 @@ export function requestToPostInform(profAsistVal, moduloVal, courseId, grupo, al
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(asistenciasObj)
     }
-    fetch("/submit-presence",asistBody).then(res=>window.location.href="/" )//Modificar por links
+    const data = await fetch("/submit-presence",asistBody).then(r=>r.json())
+    console.log("test of data returned from /submit-presence: ", data)
+    if(data.msgList){
+        setMsgList(prev=>[...prev, ...data.msgList])
+        return
+    }
+    setMsgList(prev=>[...prev, data])
+    //window.location.href="/"//Modificar por links
 }

@@ -116,7 +116,7 @@ import { submitPresence } from "./servMods/endpoints/presencePoints.js";
 import { readAuthCookies, clearAuthCookie, getAuthCookies } from "./servMods/endpoints/cookiePoints.js";
 import { setRole } from "./servMods/endpoints/settersRoles.js";
 import { delPetition, setPetition, verifyPetition } from "./servMods/endpoints/setterPetitions.js";
-import { setNewJustify } from "./servMods/endpoints/setterJustifiers.js";
+import { rejJustification, setNewJustify, verifyJustification } from "./servMods/endpoints/setterJustifiers.js";
 
 
 app.get("/read-auth", (req, res)=>readAuthCookies(req, res));
@@ -135,19 +135,23 @@ app.post("/load-to-set-petitions", (req, res)=>loadPetitionsRoSe(req, res));
 
 app.post("/load-to-set-account", (req, res)=>loadAccountsRoSe(req, res));//req.body.type=="account"?loadAccountsRoSe(req, res): loadPetitionsRoSe(req, res)
 
-app.post("/set-petition", (req, res)=>setPetition(req, res))
+app.post("/set-petition", (req, res)=>setPetition(req, res));
 
-app.get("/verify-petition", (req, res)=>verifyPetition(req, res))
+app.get("/verify-petition", (req, res)=>verifyPetition(req, res));
 
-app.post("/set-role", (req, res)=>setRole(req, res))
+app.post("/set-role", setRole);
 
-app.post("/del-petition", (req, res)=>delPetition(req.body.petiId, req, res))
+app.post("/del-petition", (req, res)=>delPetition(req.body.petiId, req, res));
 
-app.post("/load-courses-asistencias", (req, res)=>loadCoursesAsistencias(req, res))
+app.post("/load-courses-asistencias", loadCoursesAsistencias);
 
-app.post("/load-asistencias", (req, res)=>loadAsistencias(req, res))
+app.post("/load-asistencias", loadAsistencias);
 
-app.post("/set-justify", (req, res)=> setNewJustify(req, res))
+app.post("/set-justify", setNewJustify);
+
+app.post("/verify-justify", verifyJustification);
+
+app.post("/reject-justify", rejJustification)
 
 let PORT= process.env.PORT || 3001;
 let HOSTNAME="127.0.0.1";

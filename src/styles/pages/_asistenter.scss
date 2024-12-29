@@ -81,11 +81,63 @@
             }
         }
     }
+    .msg-list-cont{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        .msg-list-center{
+            display: grid;
+            grid-template-columns: 100%;
+            grid-auto-rows: $msgItemHY;
+            gap: $msgListCenterGridGap;
+
+            background-color: $msgListContBg;
+            width: $msgListCenterWX;
+            border-radius: 10px;
+            padding: $msgListCenterPadding;
+            .msg-type-error{
+                border: $msgItemError 2px solid;
+                color: $msgItemError;
+            }
+            .msg-type-update{
+                border: $msgItemUpdate 2px solid;
+                color: $msgItemUpdate;
+            }
+            .msg-type-success{
+                border: $msgItemSuccess 2px solid;
+                color: $msgItemSuccess;
+            }
+            .msg-item{
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                height: 100%;
+                border-radius: 10px;
+                .msg-text{
+                    text-align: center;
+                    width: $msgItemTextWX;
+                }
+                .msg-close-button{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 100%;
+                    width: $msgItemCloseWX;
+                    display: flex;
+                    transition: all 0.5s;
+                    &:hover{
+                        background-color: $msgItemCloseHoverBG;
+                        color: $msgItemCloseHoverColor
+                    }
+                }
+            }
+        }
+    }
     .searcher{
         $radius1: 35px;
         $radius2: 35px;
         
-        
+        margin-top: $searcherMarginTop;
         width: $searcherWidth;
         height: 25px;
         display: flex;

@@ -12,7 +12,7 @@ export async function delPetition(petiId, req, res){
     res.status(200).json({msg: "Deleted succesfuly the petition", code:3});
 }
 
-export async function verifyPetition(req, res){
+export async function verifyPetition(req, res){//Esto verifica desde el cliente que este usando, que la peticion haya sido hecha
     const cookie = await getAuthCookies(req);
     const cuentaId = cookie.decd.id;
     let petition = await mySQLConnection("SELECT * FROM role_petitions WHERE cuenta_id=?", [cuentaId])
@@ -23,7 +23,7 @@ export async function verifyPetition(req, res){
     res.send({code: 3});
 }
 
-export async function setPetition(req, res){
+export async function setPetition(req, res){//Esto crea una nueva peticion desde el cliente
     const cookie = await getAuthCookies(req);
     const decd = cookie.decd;
     const cuentaId = decd.id;
@@ -39,7 +39,7 @@ export async function setPetition(req, res){
             res.status(404).json({msg: "Course doesn't exists", code: 2})
             return
         }
-        await mySQLConnection("SELECT * FROM role_petitions WHERE cuenta_id=?", [cuentaId]).then(validatingPetition=>{
+        await mySQLConnection("SELECT * FROM role_petitions WHERE cuenta_id=?", [cuentaId]).then(validatingPetition=>{//Similar a verifyPetition
             if(validatingPetition[0]){
                 res.status(400).json({msg: "Role petition already made", code: 2});
                 return
