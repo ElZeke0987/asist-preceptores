@@ -12,6 +12,10 @@ $paddingInTourYX: 20px 80px;
 $cusSelectBg: #3f82f7;
 $cusSelOptsContBg: #a0aed1;
 $cusSelOptsContHoverBg: #7d98dd;
+$cusSelScrollbarWX: 10px;
+$cusSelScrollColor: #030f2b;
+$cusSelListOptsMaxHY: 35vh;
+
 
 $borderInParams: #9b9b9b;
 $widthBorderX: 4px;
@@ -118,3 +122,25 @@ $accHelloColor: #eee;
 $accHelloBG:  linear-gradient(63deg, rgba(45,45,66,1) 0%, rgba(0,0,0,1) 32%, rgba(57,68,83,1) 64%, rgba(0,0,0,1) 100%);
 $accIconSize: 200px;
 $accPresPadding: 20px;
+
+$generalMarginFromNavAsistencias: 13px;
+
+$parsSelectItemWX: 8vw;
+$parsSelectItemHY: 7vh;
+$parsSelectGap: 20px;
+$parItemSelectOptListMargin: 5px;
+
+$asistCalMarginGen: 10px;
+$asistCalMarginTop: 17px;
+$asistCalGap: 8px;
+
+$calGeneralBG: #6d80b5;
+$calGenHeaderBG: #4474bc;
+
+$monthSelGenHY: 8vh;
+$monthChangeBGHover: #bbb;
+$monthChangeBGActive: #9ac7ee;
+$calMonthSelectBG: #bcccf1;
+$calMonthChangeBG: $calMonthSelectBG;
+
+$calDaysColWX: calc(100%/7);

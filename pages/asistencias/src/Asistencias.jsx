@@ -11,12 +11,11 @@ export default function Asistencias() {
   
   return(
     <main>
-      <section className='pars-select'>
-            <div>
-              <ParsCourses setAlumnObjSel={setAlumnObjSel}/>
-
+      <section className='pars-select-general-cont'>
+          <div className='pars-select'>
+            <ParsCourses setAlumnObjSel={setAlumnObjSel}/>
+          </div>
               
-            </div>
       </section>
       {alumnObjSel.id!=0&&<Calendar alumnObjSel={alumnObjSel}/>
     }

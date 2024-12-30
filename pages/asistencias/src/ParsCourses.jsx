@@ -54,21 +54,25 @@ export default function ParsCourses({setAlumnObjSel}){
     else{
     return(
         <>
-            <CustomSelect opts={data?.courseList} onSelect={setCourseIdSel} 
-            defaultText={data?.courseList[0]?.curso||"1ro1ra"} defaultValue={data?.courseList[0]?.id||1} overDefaults={true} 
-            propTxt='curso' propVal='id' clases={"pars-course"} 
-            setIsOpenPar={setCourseOpen} isOpenPar={courseOpen}/>
-
-            <CustomSelect opts={grpList} onSelect={setGrpSel} 
-            defaultText={"Todos"} defaultValue={"all"} overDefaults={true}
-            propTxt='txt' propVal='grp' clases={"pars-group"} 
-            setIsOpenPar={setGrpOpen} isOpenPar={grpOpen}/>
-
-            <CustomSelect opts={alumnsLoadFinal} onSelect={setAlumnIdSel} 
-            defaultText={"Seleccionar alumno"} 
-            defaultValue={null} overDefaults={true}
-            propTxt={'nom_comp'||'apellido'} propVal='id'  clases={"pars-alumn"} 
-            setIsOpenPar={setAlumnsOpen} isOpenPar={alumnsOpen} />
+            <div className="par-select-cont">
+                <CustomSelect opts={data?.courseList} onSelect={setCourseIdSel} 
+                defaultText={data?.courseList[0]?.curso||"1ro1ra"} defaultValue={data?.courseList[0]?.id||1} overDefaults={true} 
+                propTxt='curso' propVal='id' clases={"pars-course pars-select-item"} 
+                setIsOpenPar={setCourseOpen} isOpenPar={courseOpen}/>
+            </div>
+            <div className="par-select-cont">
+                <CustomSelect opts={grpList} onSelect={setGrpSel} 
+                defaultText={"Todos"} defaultValue={"all"} overDefaults={true}
+                propTxt='txt' propVal='grp' clases={"pars-group pars-select-item"} 
+                setIsOpenPar={setGrpOpen} isOpenPar={grpOpen}/>
+            </div>
+            <div className="par-select-cont">
+                <CustomSelect opts={alumnsLoadFinal} onSelect={setAlumnIdSel} 
+                defaultText={"Seleccionar alumno"} 
+                defaultValue={null} overDefaults={true}
+                propTxt={'nom_comp'||'apellido'} propVal='id'  clases={"pars-alumn pars-select-item"} 
+                setIsOpenPar={setAlumnsOpen} isOpenPar={alumnsOpen} />
+            </div>
         
         </>)
     }

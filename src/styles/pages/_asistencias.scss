@@ -1,0 +1,88 @@
+.pars-select-general-cont{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: $generalMarginFromNavAsistencias;
+}
+
+.pars-select{
+    border-radius: 30px;
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: $parsSelectItemHY;
+    grid-auto-columns: $parsSelectItemWX;
+    gap: $parsSelectGap;
+    position: relative;
+    .par-select-cont{
+        .cus-select{
+            border-radius: 10px;
+            overflow: hidden;
+            
+        }
+        .cus-select-options{
+            top: calc(100% + $parItemSelectOptListMargin);
+            border-radius: 10px;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        width: 100%;
+        height: 100%;
+    }
+}
+.asist-calendar{
+    display: grid;
+    grid-template-columns: auto 1fr;
+    margin: $asistCalMarginGen;
+    margin-top: $asistCalMarginTop;
+    gap: $asistCalGap;
+    .calendar-generals{
+        display: flex;
+        border-radius: 20px;
+        width: 100%;
+        overflow: hidden;
+        background-color: $calGeneralBG;
+        .cal-gen-col{
+            display: flex;
+            flex-direction: column;
+            .mod-col-header{
+                background-color: $calGenHeaderBG;
+            }
+            .mod-row{
+                padding: 10px;
+            }
+        }
+    }
+    .calendar-list{
+        width: 100%;
+        .calendar-month{
+            display: grid;
+            width: 100%;
+            height: $monthSelGenHY;
+            grid-template-columns: 15% 70% 15%;
+            .cus-select{
+                background-color: $calMonthSelectBG;
+            }
+            .change-month{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                transition: all 1.2s;
+                background-color: $calMonthChangeBG;
+                &:hover{
+                    background-color: $monthChangeBGHover;
+                }
+                &:active{
+                    transition: all 0s;
+                    background-color: $monthChangeBGActive
+                }
+            }
+        }
+        .calendar-days{
+            width: 100%;
+            display: grid;
+            grid-auto-flow: column;
+            grid-auto-columns: $calDaysColWX;
+        }
+    }
+}
+    

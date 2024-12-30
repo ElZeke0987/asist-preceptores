@@ -12,6 +12,7 @@ function ToJustCheckbox({ asistItem, setJustModInas, justModInas }) {
             <input type="checkbox" checked={justModInas[asistItem.modulo]}
                 onClick={() => setJustModInas(prev => {
                     console.log("Checkbox clicked for module: ", asistItem.modulo);
+                    asistItem.should_just=true;
                     return { ...prev, [asistItem.modulo]: !prev[asistItem.modulo] }
                 })} />
             <label>{asistItem.modulo}</label>
@@ -20,15 +21,21 @@ function ToJustCheckbox({ asistItem, setJustModInas, justModInas }) {
 }
 
 function ModuleElement({ asist }) {
-    return <div className={"asist-mod-" + asist?.modulo + " asist-mod " + (asist?.presencia == 1 ? "asist-pres" : "asist-inas")}> {moduleText[asist?.modulo]}: {asist?.presencia == 1 ? "Pres" : "Inas"}</div>
+    return (
+    <div className={"asist-mod-" + asist?.modulo + " asist-mod " + (asist?.presencia == 1 ? "asist-pres" : "asist-inas")}> 
+
+        {moduleText[asist?.modulo]}: {asist?.presencia == 1 ? "Pres" : "Inas"}
+    </div>)
 }
 
 export default function ConjuntCell(
-    {asistList,//
-    shouldJustify,
-    opened,
-    alumnId, cursoId, nomComp, curso}) {
-    if(!asistList)return
+    {conjuntAsist,//es la lista de modulos o el conjunto en si mismo de ellos
+    alumnId, 
+    cursoId, 
+    nomComp, 
+    curso,
+    date}) {
+    if(!conjuntAsist)return
     const [justModInas, setJustModInas] = useState({
         taller: false,
         edu_fis: false,
@@ -38,17 +45,15 @@ export default function ConjuntCell(
     const [justOpen, setJustOpen] = useState(false); // Maneja el estado de que si se abre o no el sistema para justificar faltas
     const [justifyItem, setJustifyItem] = useState(false);
     const [asistanceOpen, setAsistanceOpen]=useState(false)
-
-
-
+    let arrToSendJustAsistId=[];
     const [justMsg, setJustMsg]=useState("");
     
-
+    const fechaOfConjunt={}
 
     function handleSendJustInfo(){
         let newArrayWithInas =  [];
-        asistList.forEach(asistence => {
-            if(asistence.presencia==0)newArrayWithInas.push(asistence);
+        conjuntAsist.forEach(asistence => {//Toma las inasistencias de la conjuntAsist que se deban justificar
+            if(asistence.presencia==0&&asistence.should_just)newArrayWithInas.push(asistence);
         });
         const setJustifyReq={
             method:"POST",
@@ -62,7 +67,8 @@ export default function ConjuntCell(
                 justModInas,
                 justifyItem,
                 justMsg, 
-                asistList: newArrayWithInas})
+                
+                conjuntAsist: newArrayWithInas})
         }
         console.log("Sending info to SV DB")
         fetch("/set-justify",setJustifyReq).then(r=>r.json()).then(data=>{
@@ -73,26 +79,23 @@ export default function ConjuntCell(
     }
     return (
         <div className={`asist-day`}>
-            <button onClick={e => setAsistanceOpen(!asistanceOpen)}>{asistanceOpen?"Volver":"Cambiar datos"}</button>
-            {!asistanceOpen&&<div className="asist-four-modules">
-                {asistList?.map((v, e) => {
+            {!justOpen&&<div className="asist-four-modules">
+                <div className="asist-date">{date}</div>
+                {conjuntAsist?.map((v, e) => {
                     return (<ModuleElement asist={v} key={e} />);
                 })}
             </div>}
-            
-            {asistanceOpen && <div className="asist-changes">
-                
-                <button onClick={e => setJustOpen(!justOpen)}>Justificar</button>
-                {justOpen && <div className="justifier-form">
-                    {asistList.map((v, i) => {
-                        if (v == undefined) return;
-                        return (<ToJustCheckbox asistItem={v} setJustModInas={setJustModInas} justModInas={justModInas} key={i} />);
-                    })}
-                    <label>Mensaje Justificativo</label>
-                    <textarea placeholder="Un justificativo claro, conciso y veridico" onChange={e=>setJustMsg(e.target.value)}></textarea>
-                    <button onClick={e=>handleSendJustInfo()}>Enviar Justificativo</button>
-                </div>}
+            <button onClick={e => setJustOpen(!justOpen)}>{justOpen?"Volver":"Justificar"}</button>
+            {justOpen && <div className="justifier-form">
+                {conjuntAsist.map((v, i) => {
+                    if (v == undefined||v.presencia==true) return;
+                    return (<ToJustCheckbox asistItem={v} setJustModInas={setJustModInas} justModInas={justModInas} key={i} />);
+                })}
+                <label>Mensaje Justificativo</label>
+                <textarea placeholder="Un justificativo claro, conciso y veridico" onChange={e=>setJustMsg(e.target.value)}></textarea>
+                <button onClick={e=>handleSendJustInfo()}>Enviar Justificativo</button>
             </div>}
+
         </div>
     );
 }

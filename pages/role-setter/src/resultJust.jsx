@@ -6,13 +6,13 @@ export default function ResultJust({alumnItem, justAsist, type}){
     const fJustReq={
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({justAsistId: justAsist.id})
+        body: JSON.stringify({justAsistId: justAsist.id, asistId: justAsist.asist_id})
     }
     console.log("testing justAsist object: ", justAsist)
     function handleSendJust(action){
         fetch(action=="justificar"?"/verify-justify":"/reject-justify", fJustReq).then(r=>r.json()).then(final=>{setEnd(true);console.log("Succesfuly justified asistance")})
     }
-    return(
+    return( 
         <>
         {(end==false)&&<div className={"result-item result-"+type}>
             {/** Manejar errores */}

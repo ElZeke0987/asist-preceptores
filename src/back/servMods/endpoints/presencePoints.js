@@ -8,21 +8,19 @@ const propMod = {
     "aula": `inas_aula`
 }
 
-async function changeInasCount(asist, asistBody, operation){
-    const alumnInasVal = await mySQLConnection('SELECT * FROM alumnos WHERE id=?', [asist.id])
-    
+export async function changeInasCount(asist, asistBody, operation){//Asist es la inasistencia o asistencia en si, que queremos cambiar, asistBody debe tener el modulo, en este caso, es redundante, ya que esta la misma propiedad en el asist
+    const alumnInasVal = await mySQLConnection('SELECT * FROM alumnos WHERE id=?', [asist.alumno_id])
     //                                          Cuidado
-    const alumnInasAdd=`UPDATE alumnos SET ${propMod[asistBody.modv]} = ? + 1, inasistencias = inas_aula/2 + inas_tal/2 + inas_fis/2 + inas_preh/4 WHERE id = ?`;
+    const alumnInasAdd=`UPDATE alumnos SET ${propMod[asistBody?.modv||asist.modulo]} = ? + 1, inasistencias = inas_aula/2 + inas_tal/2 + inas_fis/2 + inas_preh/4 WHERE id = ?`;
     /*                           Valores a sumar o restar para ver lo que vale cada inasistencia a x modulo                                                    */
-    const alumnInasSust=`UPDATE alumnos SET ${propMod[asistBody.modv]} = ? - 1, inasistencias = inas_aula/2 - inas_tal/2 - inas_fis/2 - inas_preh/4 WHERE id = ?`;
+    const alumnInasSust=`UPDATE alumnos SET ${propMod[asistBody?.modv||asist.modulo]} = ? - 1, inasistencias = inas_aula/2 - inas_tal/2 - inas_fis/2 - inas_preh/4 WHERE id = ?`;
     const alumnInas=operation=="+"?alumnInasAdd:alumnInasSust;
-    console.log("using this sql query: ", alumnInas)
-    await mySQLConnection(alumnInas ,[ alumnInasVal[0][propMod[asistBody.modv]],asist.id])//Suma la inasistencia
+    await mySQLConnection(alumnInas ,[ alumnInasVal[0][propMod[asistBody?.modv||asist.modulo]],asist.id])//Suma la inasistencia
 }
 
 async function verifyAsistExistence(asistBody){
     let msgListToReturn=[];
-    const asistIteration= asistBody.asistArr.map(async asist=>{
+    const asistIteration= asistBody.asistArr.map(async asist=>{//asistArr son todas las asistencias tomadas en la clase
         
         //Primero debe verificar de que no se repita las tomas de asistencias en el mismo dia(fecha), y en su defecto, cambiarlas de ser que ya exista
         asist.justificada = asistBody.justificada ? true : asist.justificada;
@@ -112,7 +110,10 @@ export async function submitPresence(req, res){
     }
     const dateTime = new Date()
     const mes = dateTime.getMonth();
-    const diaSem = daySemList[dateTime.getDay()];
+    let dia = dateTime.getDay();
+    if(dia==0)dia=7;
+    const diaSem = daySemList[dia];
+    console.log("testing month and day: month: ", mes, " day Sem: ", diaSem, " day number: ", dia)
     //Consultas sujeta a futuras modificaciones
     let newClass = `INSERT INTO clases 
     (id, materia_class_id, submit_datetime,curso_id, prof_asist,modulo,grupo_tal,asistencias,justificada,mes, dia, dia_sem) VALUES 
@@ -120,7 +121,7 @@ export async function submitPresence(req, res){
     let classVals =[asistBody.courseId, asistBody.prof_asist, asistBody.modv, asistBody.grupo ? asistBody.grupo : 'NULL', asistBody.presentes, asistBody.justificada, mes, dateTime.getDay(),diaSem];
     
     mySQLConnection(newClass, classVals)
-    .then(r=>insertAsis(asistBody, r, mes, dateTime.getDay(),diaSem, res))
+    .then(r=>insertAsis(asistBody, r, mes, dia,diaSem, res))
     .catch(err=>{throw err})
     
 

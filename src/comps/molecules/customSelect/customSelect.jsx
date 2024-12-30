@@ -26,7 +26,7 @@ export default function CustomSelect(
     /* Valor seleccionado */
     let [selOpt, setSelOpt]=useState((opts[0]==undefined||overDefaults)?{[propVal]: defaultValue||"none", [propTxt]: defaultText||"Seleccione una opcion"}:opts[0]);
     async function handleSelect(opt){//ACORDARSE QUE ESTO NO ES TIPO EVENTO QUE TE DEVUELVE UN OBJETO EVENT, DEVOLVERA LA OPCION SELECCIONADA EN EL PRIMER PARAMETRO
-        await setSelOpt(opt);
+        await forEffectVal!=undefined?setSelOpt({[propVal]: forEffectVal, [propTxt]: forEffectTxt}):setSelOpt(opt);//Da la capacidad de que los valores se definan desde otra parte pero aun asi tengan la funcionalidad de selector para seleccionar por esta lista
         await isOpenPar!=undefined?setIsOpenPar(false):setIsOpen(false);
         if(onSelect)onSelect(opt);
     }
@@ -35,11 +35,13 @@ export default function CustomSelect(
         await isOpenPar!=undefined?setIsOpenPar(!isOpenPar):setIsOpen(!isOpen)
     }
     useEffect(()=>{//Para manejar el evento de cambio de valor de otras formas
-        if(forEffectVal&&forEffectTxt){
-            setSelOpt(forEffectVal)
+        //console.log("testing for effects: ", forEffectVal, " txt: ", forEffectTxt)
+        if(forEffectVal!=undefined&&forEffectTxt!=undefined){
+            
+            setSelOpt({[propVal]: forEffectVal, [propTxt]: forEffectTxt})
         }
     },[forEffectVal])
-    
+
        
     /*Defaults
         --Agarra el defaultText o defaultValue
@@ -50,23 +52,24 @@ export default function CustomSelect(
     /*let valFinal=overDefaults?defaultValue: (selOpt?selOpt[propVal]:defaultValue);
     let txtFinal=overDefaults? defaultText: (selOpt?selOpt[propTxt]:defaultText);
     let [mounted, setMounted]=useState(true);*/
+    
     return(
-        <div className={`cus-selec-wrapper ${clases||clases.join(" ")}`} data-value={selOpt[propVal]} >
+        <div className={`cus-select-wrapper ${clases||clases.join(" ")}`} data-value={selOpt[propVal]} >
             <div className="cus-select">
                 <div className="cus-select-selected opt-selected" data-value={selOpt[propVal]} onClick={()=>{handleOpen()}}>
-                    {forEffectTxt||selOpt[propTxt]}
+                    {selOpt[propTxt]}
                 </div>
-                {(isOpenPar!=undefined?isOpenPar:isOpen)&&
+                
+            </div>
+            {(isOpenPar!=undefined?isOpenPar:isOpen)&&
                     (<div className="cus-select-options">
                         {opts.map((opt, i)=>{
-                            
                             return (Eleme===DefaultOptElem?
-                            <Eleme key={i} text={forEffectTxt||opt[propTxt]} value={opt||opt[propVal]} onClick={()=>handleSelect(opt)} />:
-                            <Eleme className="cus-select-option" key={i} onClick={()=>handleSelect(opt||opt[propVal])} />)
+                            <Eleme key={i} text={/*forEffectTxt||*/opt[propTxt]} value={opt[propVal]} onClick={()=>handleSelect(opt)} />:
+                            <Eleme className="cus-select-option" key={i} onClick={()=>handleSelect(opt[propVal])} />)
                         })}
                     </div>)
                 }
-            </div>
         </div>
         
     )
