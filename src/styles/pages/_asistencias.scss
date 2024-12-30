@@ -79,9 +79,19 @@
         }
         .calendar-days{
             width: 100%;
-            display: grid;
-            grid-auto-flow: column;
-            grid-auto-columns: $calDaysColWX;
+            display: flex;
+            flex-direction: column;
+            .cal-header-days{
+                display: grid;
+                grid-auto-flow: column;
+                grid-auto-columns: $calDaysColWX;
+                height: 10%;
+            }
+            .cal-list-days{
+                display: grid;
+                grid-template-columns: repeat(7, 1fr);
+                grid-template-rows: repeat(5, 50px);
+            }
         }
     }
 }

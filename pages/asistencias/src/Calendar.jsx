@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import CustomSelect from "../../../src/comps/molecules/customSelect/customSelect";
 import ConjuntCell from "./ConjuntCell";
 import { obtenerInfoDays } from "./getDaysInfo";
-import { DATE } from "sequelize";
 
 const monthList=[
     {mes: "Enero", id: 0},
@@ -20,28 +19,28 @@ const monthList=[
   
   ];
   const dayList=[
+      "Domingo",
       "Lunes",
       "Martes",
       "Miercoles",
       "Jueves",
       "Viernes",
       "Sabado",
-      "Domingo",
+      
   ];
 
 export default function Calendar({alumnObjSel}){
     
     const actualMonthId=new Date().getMonth();//Mes ahora
     const nowYear=new Date().getFullYear()//Año ahora
-    const mesInfo=obtenerInfoDays(nowYear, actualMonthId)//cantDias, primerDia y ultimoDia
-
+    const [mesInfo, setMesInfo]=useState(obtenerInfoDays(nowYear, actualMonthId))//cantDias, primerDia y ultimoDia
+    console.log("mesInfo test: ", mesInfo);
     const [actualYear, setActualYear]=useState(nowYear)//A futuro, no sera un select, unicamente tendra flechas intercambiables y se podra poner un valor
     const [actualDate, setActualDate]=useState({id: actualMonthId, mes: monthList[actualMonthId].mes});
     const [listAsistencias, setListAsistencias]=useState([]);
     const [listAsistenciasByDate, setListAsistenciasByDate]=useState([]);
     const [settedLABD, setSettedLABD]=useState(false);
-    const [maxDays, setMaxDays]=useState(mesInfo.cantDias);
-    const [initDay, setInitDay]=useState(mesInfo.primerDia)
+
     
     useEffect(async()=>{//Efecto para cargar las asistencias del alumno
         const loadAsistsReq={
@@ -61,7 +60,6 @@ export default function Calendar({alumnObjSel}){
                     conjuntedByDate.push(asistencia)
                     return
                 }
-                
                 const dateYMD2= conjuntedByDate[0].fecha.split('T')[0]//Para verificar si al menos, al primer objeto de la
                 if(dateYMD==dateYMD2){//Si comparten la misma fecha de registro de asistencia se agrega al conjunto
                     conjuntedByDate.push(asistencia)
@@ -69,31 +67,18 @@ export default function Calendar({alumnObjSel}){
                     newListAsistencias.push({date: dateYMD, dia: asistencia.dia, mes: asistencia.mes, conjunt: conjuntedByDate})//Asi se crea una lista dividida en conjuntos definidos por la fecha que se realizaron las asistencias que contenga dentro del conjunto
                     conjuntedByDate=[]
                 }
-                // newListAsistencias[i]={
-                //     id:v.id,
-                //     fecha:v.fecha,
-                //     asistencia:v.asistencia,
-                //     actualDateId: v.actualDateId,
-                //     presencia: v.presencia,
-                //     justificada: v.justificada,
-                //     dia:v.dia,
-                //     mes:v.mes
-                // }
             })
             console.log("new filtered list of conjunts: ", newListAsistencias)
             setListAsistencias(newListAsistencias);
-           /* let reducedByDate=data?.listAsistencias.reduce((subDiv, asistencia)=>{
-                
-                const id = dateYMD//Clave para buscar en el subDiv, (mes(0-11)-numero del dia de la semana(1-7))
-                if(!subDiv[id]){//Si no existe el conjunto de la clave, se crea uno nuevo
-                    subDiv[id]=[]//Genera un array vacio para usar el push
-                }
-                subDiv[id].push(asistencia);//Si existe, pone la asistencia dentro del conjunto, basandose en la fecha
-                return subDiv
-            }, {})
-            setListAsistenciasByDate(reducedByDate);*/
+
         })
       },[alumnObjSel])
+
+    useEffect(()=>{
+        diaNRender=1;
+        setMesInfo(obtenerInfoDays(actualYear, actualDate.id))
+    },[actualDate, actualYear])
+
     function handleClickMonth(dir){
         
         let operation=dir=="left"?actualDate.id-1:actualDate.id+1;
@@ -105,7 +90,7 @@ export default function Calendar({alumnObjSel}){
         setActualDate({id: operation, mes: monthList[operation].mes})
     }
     const [cellOpen, setCellOpen]=useState(0)
-    
+    let diaNRender=0;
     return(
         <section className='asist-calendar'>
             <div className='calendar-generals'>
@@ -170,28 +155,45 @@ export default function Calendar({alumnObjSel}){
                     </div>
                 </div>
                 <div className='calendar-days'>
+                    <div className="cal-header-days">
+                        {dayList.map((day, dayN)=>{
+                            return (
+                            <div className={'cal-day ' + day.toLowerCase()} key={dayN}>
+                                <h3>{day}</h3>             
+                            </div>)
+                            })
+                        
+                        }
+                    </div>
                     
-                    {dayList.map((day, dayN)=>{
-                        return (
-                        <div className={'cal-day ' + day.toLowerCase()} key={dayN}>
-                            <h3>{day}</h3>
-                            <div className='day-col'></div>
-                            
-                            
-                        </div>)
-                        })
-                    
-                    }
-                    {
-                        for(let diaN=1; diaN<=maxDays; diaN++ ){
-                            listAsistenciasByDate.map((conjuntAsist, ind)=>{//Verifica sobre todas las asistencias del alumno
-                                if(conjuntAsist.fecha!=new Date(actualYear, actualMonthId, diaN).getDate()) return//Primero, si esta en el año y mes seleccionados, se mostrara obviamente, es la mejor condicional para separar por las fechas exactas
+                    <div className={"cal-list-days "}>
+                        {
+                        
+                        Array.from({length: 36/*maxDays+1*/}).map(()=>{
+                            diaNRender++
+                            if(diaNRender < mesInfo.primerDia||diaNRender>mesInfo.cantDias+mesInfo.primerDia||diaNRender-mesInfo.primerDia==0)return <div className="cal-day-empty">Empty</div>//Se empezaran a renderizar las celdas en el momento que se llegue al dia de inicio
+                            const diaN = diaNRender-mesInfo.primerDia
+                            //console.log("diaNumber: ", actualYear, actualMonthId, diaN)
+                            const asistenciasDelAlumnoEnElDia=[]
+                            listAsistencias.forEach((conjuntAsist)=>{
+                                //Primero, si esta en el año y mes seleccionados, se mostrara obviamente, es la mejor condicional para separar por las fechas exactas
+
+                                const selDate=new Date(actualYear, actualMonthId, diaN).toDateString()//.split("T")[0]
+                                if(conjuntAsist.date==selDate)asistenciasDelAlumnoEnElDia.push(conjuntAsist)
+                            })
+                            if(asistenciasDelAlumnoEnElDia.length==0)return <div className="asist-conjunt-cont asist-void">{diaN}</div>
+                            asistenciasDelAlumnoEnElDia.map((conjuntAsist, ind)=>{//Verifica sobre todas las asistencias del alumno
+                                console.log("Test of alumnObjSel", alumnObjSel)
                                 return(
-                                <><ConjuntCell conjuntAsist={conjuntAsist.conjunt} date={conjuntAsist.date} alumnId={alumnId} cursoId={cursoId} nomComp={nomComp} curso={curso}/></>
+                                <div className="asist-conjunt-cont day-col-item">
+                                    <div className="asist-date">{diaN}</div>
+                                    <ConjuntCell conjuntAsist={conjuntAsist.conjunt} alumnId={alumnObjSel.id} cursoId={alumnObjSel.cursoId} nomComp={alumnObjSel.nom_comp} curso={alumnObjSel.curso}/>
+                                </div>
                                 )
                             })
+                        })
                         }
-                    }
+                    </div>
                     
                             
                 </div>

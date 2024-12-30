@@ -34,8 +34,9 @@ export default function ConjuntCell(
     cursoId, 
     nomComp, 
     curso,
-    date}) {
-    if(!conjuntAsist)return
+    }) {
+        console.log(" rendering asist: ", conjuntAsist)
+    if(!conjuntAsist)return<div>Und</div>
     const [justModInas, setJustModInas] = useState({
         taller: false,
         edu_fis: false,
@@ -77,10 +78,11 @@ export default function ConjuntCell(
             setJustOpen(false)
         })
     }
+    
     return (
         <div className={`asist-day`}>
             {!justOpen&&<div className="asist-four-modules">
-                <div className="asist-date">{date}</div>
+
                 {conjuntAsist?.map((v, e) => {
                     return (<ModuleElement asist={v} key={e} />);
                 })}
