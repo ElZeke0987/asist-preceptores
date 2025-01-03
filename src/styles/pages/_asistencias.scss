@@ -91,8 +91,40 @@
                 display: grid;
                 grid-template-columns: repeat(7, 1fr);
                 grid-template-rows: repeat(5, 50px);
+                
             }
         }
     }
 }
-    
+.asist-conjunt-cont{
+    position: relative;
+}
+.cal-list-days .asist-day{
+    position: absolute;
+    z-index: 10;
+    background-color: $asistDayBG;
+    padding: $asistDayPadding;
+    .asist-four-modules{
+        
+        display: grid;
+        grid-template-columns: repeat(2,$asistFoMoCellWX);
+        grid-auto-rows: $asistFoMoCellHY;
+        
+        .asist-mod{
+            border-radius: 7.5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+        .asist-pres{
+            background-color: $asistPresBG;
+            
+        }
+        .asist-inas{
+            background-color: $asistInasBG;
+        }
+    }
+
+}

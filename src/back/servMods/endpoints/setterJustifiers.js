@@ -29,11 +29,10 @@ export async function setNewJustify(req, res){
     let accepted=userRole=="adm"||userRole=="prec"?1:0;
     let shouldJustify=0;
     let body = req.body;
-    
-    
+  
     try{
         
-        let newConjunt = await mySQLConnection("INSERT INTO conjunt_asist (id, fecha, mes, dia, should_just, curso_id, alumn_id) VALUES (NULL, ?, ?, ?, ?, ?, ?)", [body.conjuntAsist[0].fecha, body.asistList[0].mes, body.asistList[0].dia, shouldJustify, body.cursoId, body.alumnId])//Por ahora es unicamente usado para las justificaciones, despues no haria falta tener en cuenta esto
+        let newConjunt = await mySQLConnection("INSERT INTO conjunt_asist (id, fecha, mes, dia, should_just, curso_id, alumn_id) VALUES (NULL, ?, ?, ?, ?, ?, ?)", [body.conjuntAsist[0].fecha, body.conjuntAsist[0].mes, body.conjuntAsist[0].dia, shouldJustify, body.cursoId, body.alumnId])//Por ahora es unicamente usado para las justificaciones, despues no haria falta tener en cuenta esto
         
         body.conjuntAsist.forEach(async moduleToCheck => {
             if(!moduleToCheck.presencia&&moduleToCheck.should_just){
@@ -46,7 +45,7 @@ export async function setNewJustify(req, res){
         
         res.status(200).json({msg: "Se logro exitosamente insertar todo", accepted});
     }catch(err){
-        console.log("error prueb: ", err)
+        console.log("error prueba: ", err)
         res.status(400).json({msg:"Hubo un error al insertar justificativo", err})
     }
 }

@@ -2,8 +2,8 @@ import { useEffect } from "react"
 
 export function alumnIdSelEff(alumnsLoadFinal, setAlumnObjSel, alumnIdSel){//La lista final despues de todos los filtros, seria la de los grupos
 //Hay que probar si dejar que sea en la lista pequeña y filtrada es buena opcion o si usar la lista total de alumnos para buscar al mismo, buscar cual es mas propensa a errores
-    //console.log("Testing alumnIdSelEff: ", alumnsLoadFinal);
-    alumnsLoadFinal.forEach(async (v, i)=>{//Cuando se elija un alumno
+    console.log("Testing alumnIdSelEff: ", alumnsLoadFinal);
+    alumnsLoadFinal.forEach((v, i)=>{//Cuando se elija un alumno
         //console.log("Testing v.id with selected alumn id: ", v.id, " = ", alumnIdSel.id);
         if(v.id==alumnIdSel.id){
             let newAlumnObjSel={
@@ -21,7 +21,9 @@ export function alumnIdSelEff(alumnsLoadFinal, setAlumnObjSel, alumnIdSel){//La 
                 inas_aula: v.inas_aula,
                 inas_preh: v.inas_preh,
                 inas_fis: v.inas_fis,
-            }
+            };
+
+            console.log("hola testing: ", newAlumnObjSel );
             setAlumnObjSel(newAlumnObjSel)
         }
     })
@@ -29,8 +31,8 @@ export function alumnIdSelEff(alumnsLoadFinal, setAlumnObjSel, alumnIdSel){//La 
 
 //El filtro se aplica aca, cada vez que se va cambiando el curso
 export function courseIdSelEff(data, courseIdSel, setAlumnsLoadCourse, alumnsLoadCourse, setAlumnsLoadFinal){
-    //console.log("testing data: ", data)
-    
+
+    let newAlumnsLoadCourse=[];
     
     setAlumnsLoadFinal([])
     setAlumnsLoadCourse([])
@@ -53,17 +55,20 @@ export function courseIdSelEff(data, courseIdSel, setAlumnsLoadCourse, alumnsLoa
                 inas_preh: v.inas_preh,
                 inas_fis: v.inas_fis,
             };
-            setAlumnsLoadCourse([...alumnsLoadCourse, objToPush])//Se desestructura el array para crear uno nuevo con el nuevo objeto
+
+            newAlumnsLoadCourse.push(objToPush)
+            
             
             return
         }
         
     })
-
+    setAlumnsLoadCourse(newAlumnsLoadCourse)
 }
 
 //El segundo filtro, para los grupos de taller y esas cosas, se puede aplicar sobre los alumnos ya filtrados de curso
 export function grpIdSelEff(grp, alumnsLoadCourse, alumnsLoadGrp, setAlumnsLoadGrp, setAlumnsLoadFinal){
+    let newAlumnsLoadGrp=[];
     setAlumnsLoadFinal([])
     setAlumnsLoadGrp([])
     //console.log("testing grp par of grpIdSelEff: ", grp, " and alumns Loaded by course filter: ", alumnsLoadCourse)
@@ -91,9 +96,11 @@ export function grpIdSelEff(grp, alumnsLoadCourse, alumnsLoadGrp, setAlumnsLoadG
                 inas_preh: v.inas_preh,
                 inas_fis: v.inas_fis,
             };
-            await setAlumnsLoadGrp([...alumnsLoadGrp, objToAdd]);
+
+            newAlumnsLoadGrp.push(objToAdd)
+            
             
         }
     });
-    setAlumnsLoadFinal(alumnsLoadGrp);
+    setAlumnsLoadGrp(newAlumnsLoadGrp);
 }

@@ -14,7 +14,9 @@ function getQueryType(qry){
 export async function mySQLConnection(query, dataArray){
     let conn = new Sequelize("escuela", "root", "", {
         host: "localhost",
-        dialect: "mysql"
+        dialect: "mysql",
+        logging: true
+
     })
     try{
         const [results, fields]=await conn.query({

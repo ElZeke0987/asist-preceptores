@@ -1,6 +1,4 @@
 
-//import { BrowserRouter as Router, Route, Routes, Link, Navigate} from "react-router-dom";
-//import errorPage from "./otherPages/errorPage.jsx";
 import { reqPage } from "./mods.js";
 import { useState } from "react";
 
@@ -14,7 +12,6 @@ const cookieReq={
     let [rol, setRol]=useState();
     fetch("/read-auth", cookieReq).then(r=>r.json()).then(decoded=>{
         const newData = decoded.data
-        console.log("Decoded data token: ", newData);
         setUsername(newData.use);
         setRol(newData.rol);
     })

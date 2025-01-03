@@ -23,8 +23,7 @@ function ToJustCheckbox({ asistItem, setJustModInas, justModInas }) {
 function ModuleElement({ asist }) {
     return (
     <div className={"asist-mod-" + asist?.modulo + " asist-mod " + (asist?.presencia == 1 ? "asist-pres" : "asist-inas")}> 
-
-        {moduleText[asist?.modulo]}: {asist?.presencia == 1 ? "Pres" : "Inas"}
+        {moduleText[asist?.modulo]}
     </div>)
 }
 
@@ -81,8 +80,8 @@ export default function ConjuntCell(
     
     return (
         <div className={`asist-day`}>
-            {!justOpen&&<div className="asist-four-modules">
-
+            {!justOpen&&
+            <div className="asist-four-modules">
                 {conjuntAsist?.map((v, e) => {
                     return (<ModuleElement asist={v} key={e} />);
                 })}

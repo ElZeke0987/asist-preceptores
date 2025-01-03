@@ -59,20 +59,23 @@ function insertingSchooRole(body, req, res, role, userInfo){
             }
                 
         });//Unclaiming
-        //Condicion de que si es un alumno o no
+        //Condicion de que si es un alumno o no, buscara diferentes procedimientos de insercion al sistema
         role=="alum"?insertingAlumn(body, res, role)://Insercion de docente (Preceptor o profesor por ahora)
         mySQLConnection(tableQueriesIns[role], [body.nom+" "+body.ape, body.nom, body.ape, body.dni, body.accId]).then(insDocent=>{
 
-            if(role=="prec")verifyPermisions(canSetPrecAdm, req, res, userInfo, {handlePermission:(status)=>{
-                if(status){
-                    mySQLConnection("UPDATE cuentas SET rol=?, rol_id=? WHERE id=?", [role, insDocent, body.accId])//Se cambia al siguiente sujeto o rol
-                    res.send({msg: "Inserted docent succesfuly", res: insDocent, code: 3})
-                }else{
-                    res.send({msg: "Can't change other prec being a prec yourself", res: insDocent, code: 5})
-                }
+            if(role=="prec"){
+                verifyPermisions(canSetPrecAdm, req, res, userInfo, {handlePermission:(status)=>{//Si es un rol de Preceptor, de alto nivel, se tiene que verificar que sea administrador quien lo este poniendo
+                    if(status){
+                        mySQLConnection("UPDATE cuentas SET rol=?, rol_id=? WHERE id=?", [role, insDocent, body.accId])//Se cambia al siguiente sujeto o rol
+                        res.send({msg: "Inserted docent succesfuly", res: insDocent, code: 3})
+                    }else{
+                        res.send({msg: "Can't change other prec being a prec yourself", res: insDocent, code: 5})
+                    }
                     
-            }})
-            
+                }})
+                return
+            }
+            if(role=="prof")mySQLConnection("UPDATE cuentas SET rol=?, rol_id=? WHERE id=?", [role, insDocent, body.accId])//En el caso del profesor
         })
     })
 }
@@ -109,28 +112,31 @@ async function setRoleFunc(req, res, userInfo){
          * el primero selecciona para verificar despues de que no hayan dos personas iguales (por DNI, que es un numero que no puede ser igual)
          * el segundo selecciona para ver si los datos ingresados en el form, son propios de algun alumno, para asi revincular la cuenta
          */
-        
+        console.log("Perteneciente a la institucion")
         mySQLConnection(tableQueriesSelByBas[role], [body.nom, body.ape, body.dni]).then(roleSchool=>{
             if(roleSchool[0]){//Si existe el sujeto peticionado
                 if(roleSchool[0].claimed==1){//Si ya esta claimed
+                    console.log("Ya esta vinculado")
                     res.send({msg: role+" ya esta vinculado a otra cuenta", code: 4})
                     return
                 }
+                console.log("Poniendo nuevo rol al perteneciente a la institucion")
                 updatingSchoolRole(body, req, res, role, roleSchool[0], userInfo);
 
                 return
             }
             insertingSchooRole(body, req, res, role, userInfo);
         })
+        return
+    }
+    console.log("Updating to another type of role")
+    //Punto donde se dividen los roles no pertenecientes a la institucion
+    mySQLConnection("UPDATE cuentas SET rol=?, rol_id=NULL WHERE id=?", [role, body.accId]).then(async (ins)=>{
+
+        if(schoolRoles.includes(body.actualRole))await mySQLConnection(tableQueriesUpd[body.actualRole], [0, null, body.roleBodyId]);
+        res.send({msg: "Inserted other role succesfuly", res: ins, code: 3})
+    });
     
-    }
-    else{
-        //Punto donde se dividen los roles no pertenecientes a la institucion
-        
-        mySQLConnection("UPDATE cuentas SET rol=?, rol_id=NULL WHERE id=?", [role, body.accId]).then((ins)=>{
-            res.send({msg: "Inserted other role succesfuly", res: ins, code: 3})
-        });
-    }
     
 }
 const canSetAlumns=["prec", "adm"]
@@ -140,12 +146,13 @@ export async function setRole(req, res){
     let role= req.body.role.role;//Rol pedido
     if(userInfo){
         console.log("testing userinfo: ", userInfo, " and role: ", req.body.role)
-        if(role=="alum"||role=="visit"){
+        if(role=="alum"||role=="visit"||role=="prof"){
             console.log("Checking if this account can set alumns or another roles")
             verifyPermisions(canSetAlumns, req, res, userInfo, {handlePermission: (status)=>{
                 console.log("status of permission: ", status);
                 status?setRoleFunc(req, res, userInfo):res.send({msg:"No puede cambiar a alumno esta cuenta por temas de permisos", code:5});
             }})
+            return
         }
         if((role=="prec"||role=="adm" )||(req.body.actualRole=="prec"||req.body.actualRole=="adm")){
             console.log("Checking if this account can set preceptor or admin role test");
@@ -153,6 +160,7 @@ export async function setRole(req, res){
                 console.log("status of permission: ", status);
                 status?setRoleFunc(req, res, userInfo):res.send({msg:"Cambio de roles no autorizado para tu nivel", code:5});
             }})
+            return
         }
     }
 }

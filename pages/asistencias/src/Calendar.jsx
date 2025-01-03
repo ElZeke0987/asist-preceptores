@@ -34,7 +34,7 @@ export default function Calendar({alumnObjSel}){
     const actualMonthId=new Date().getMonth();//Mes ahora
     const nowYear=new Date().getFullYear()//Año ahora
     const [mesInfo, setMesInfo]=useState(obtenerInfoDays(nowYear, actualMonthId))//cantDias, primerDia y ultimoDia
-    console.log("mesInfo test: ", mesInfo);
+   // console.log("mesInfo test: ", mesInfo);
     const [actualYear, setActualYear]=useState(nowYear)//A futuro, no sera un select, unicamente tendra flechas intercambiables y se podra poner un valor
     const [actualDate, setActualDate]=useState({id: actualMonthId, mes: monthList[actualMonthId].mes});
     const [listAsistencias, setListAsistencias]=useState([]);
@@ -42,7 +42,8 @@ export default function Calendar({alumnObjSel}){
     const [settedLABD, setSettedLABD]=useState(false);
 
     
-    useEffect(async()=>{//Efecto para cargar las asistencias del alumno
+    useEffect(()=>{//Efecto para cargar las asistencias del alumno
+        
         const loadAsistsReq={
           method: "POST",
           headers: {"Content-Type": "application/json"},
@@ -50,25 +51,36 @@ export default function Calendar({alumnObjSel}){
             alumn_id: alumnObjSel.id,
           })
         }
-        await fetch("/load-asistencias", loadAsistsReq).then(r=>r.json()).then(data=>{//Carga las asistencias e inasistencias de un alumno, todas, y solo de un alumno
+        fetch("/load-asistencias", loadAsistsReq).then(r=>r.json()).then(data=>{//Carga las asistencias e inasistencias de un alumno, todas, y solo de un alumno
             let newListAsistencias=[]
             let conjuntedByDate=[]
             data.listAsistencias.forEach((asistencia,i)=>{//asistencia son las asistencias directamente cargadas de la BD
-                console.log("testing for conjunting asistance: ", asistencia)
                 const dateYMD= asistencia.fecha.split('T')[0]//Se convierte la fecha DATETIME a DATE nada mas
+                console.log("testing asistencia: ", asistencia.fecha.split('T')[0])
                 if(!conjuntedByDate[0]){//Si no habia conjunto creado se crea y se sigue iterando
                     conjuntedByDate.push(asistencia)
+                    if(data.listAsistencias.length==1){//En el caso de ser primera asistencia
+                        newListAsistencias.push({date: dateYMD, dia: asistencia.dia, mes: asistencia.mes, conjunt: conjuntedByDate})
+                        conjuntedByDate=[]
+                    }
                     return
                 }
                 const dateYMD2= conjuntedByDate[0].fecha.split('T')[0]//Para verificar si al menos, al primer objeto de la
                 if(dateYMD==dateYMD2){//Si comparten la misma fecha de registro de asistencia se agrega al conjunto
                     conjuntedByDate.push(asistencia)
-                }else{//Si no es el caso se reinicia todo y se agrega el nuevo conjunto
+                    if(!data.listAsistencias[i+1]){
+                        newListAsistencias.push({date: dateYMD, dia: asistencia.dia, mes: asistencia.mes, conjunt: conjuntedByDate})//Asi se crea una lista dividida en conjuntos definidos por la fecha que se realizaron las asistencias que contenga dentro del conjunto
+                        conjuntedByDate=[]
+                    }
+                    return
+                }
+                
+                if(dateYMD!=dateYMD2){ //Si no es el caso se reinicia todo y se agrega el nuevo conjunto y es la ultima asistencia de la lista
                     newListAsistencias.push({date: dateYMD, dia: asistencia.dia, mes: asistencia.mes, conjunt: conjuntedByDate})//Asi se crea una lista dividida en conjuntos definidos por la fecha que se realizaron las asistencias que contenga dentro del conjunto
                     conjuntedByDate=[]
                 }
             })
-            console.log("new filtered list of conjunts: ", newListAsistencias)
+            console.log("new alumnObjSel test on self eff: ", alumnObjSel)
             setListAsistencias(newListAsistencias);
 
         })
@@ -90,6 +102,7 @@ export default function Calendar({alumnObjSel}){
         setActualDate({id: operation, mes: monthList[operation].mes})
     }
     const [cellOpen, setCellOpen]=useState(0)
+    const [openDay, setOpenDay]=useState(0)
     let diaNRender=0;
     return(
         <section className='asist-calendar'>
@@ -178,22 +191,32 @@ export default function Calendar({alumnObjSel}){
                             listAsistencias.forEach((conjuntAsist)=>{
                                 //Primero, si esta en el año y mes seleccionados, se mostrara obviamente, es la mejor condicional para separar por las fechas exactas
                                 
-                                const selDate=String(actualYear)+"-"+String(actualMonthId+1)+"-"+String(diaN);
+                                const selDate=String(actualYear)+"-"+(actualDate.id<10?"0":"")+String(actualDate.id+1)+"-"+(diaN<10?"0":"")+String(diaN);
 
-                                console.log("Filter? :", conjuntAsist.date, " = ", selDate)
                                 if(conjuntAsist.date==selDate)asistenciasDelAlumnoEnElDia.push(conjuntAsist)
                             })
-                            console.log("testing asistencias hoy: ", asistenciasDelAlumnoEnElDia)
-                            if(asistenciasDelAlumnoEnElDia.length==0)return <div className="asist-conjunt-cont asist-void day-col-item">{diaN}</div>
-                            asistenciasDelAlumnoEnElDia.map((conjuntAsist, ind)=>{//Verifica sobre todas las asistencias del alumno
-                                console.log("Test of alumnObjSel", alumnObjSel)
-                                return(
-                                <div className="asist-conjunt-cont day-col-item">
-                                    <div className="asist-date">{diaN}</div>
-                                    <ConjuntCell conjuntAsist={conjuntAsist.conjunt} alumnId={alumnObjSel.id} cursoId={alumnObjSel.cursoId} nomComp={alumnObjSel.nom_comp} curso={alumnObjSel.curso}/>
+                            
+                            if(asistenciasDelAlumnoEnElDia.length==0){return <div className="asist-conjunt-cont asist-void day-col-item" key={diaN}>{diaN}</div>}
+ 
+                            
+                            
+                            const openCond=diaN==openDay&&actualMonthId==actualDate.id&&actualYear==2025;
+                            //console.log("openCond: ", actualMonthId, " = ", actualDate)
+                            return (
+                                <div className="asist-conjunt-cont day-col-item" key={diaN}>
+                                    <div className="asist-date" onClick={()=>setOpenDay(prev=>prev==diaN?0:diaN)}>{diaN}{openCond?"(cerrar)":"(abrir)"}</div>
+                                    {openCond&&<div className="asist-conjunt">
+                                        {
+                                            asistenciasDelAlumnoEnElDia.map((conjuntAsist, ind)=>{//Verifica sobre todas las asistencias del alumno
+                                                console.log("Test of alumnObjSel", alumnObjSel, " and conjuntAsist: ", conjuntAsist, " and diaN: ", diaN)
+                                                return(
+                                                         <ConjuntCell conjuntAsist={conjuntAsist.conjunt} alumnId={alumnObjSel.id} cursoId={alumnObjSel.cursoId} nomComp={alumnObjSel.nom_comp} curso={alumnObjSel.curso}/>
+                                                    )
+                                            })
+                                        }
+                                    </div>}
                                 </div>
-                                )
-                            })
+                            )
                         })
                         }
                     </div>

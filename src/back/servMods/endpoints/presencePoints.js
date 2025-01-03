@@ -9,7 +9,7 @@ const propMod = {
 }
 
 export async function changeInasCount(asist, asistBody, operation){//Asist es la inasistencia o asistencia en si, que queremos cambiar, asistBody debe tener el modulo, en este caso, es redundante, ya que esta la misma propiedad en el asist
-    const alumnInasVal = await mySQLConnection('SELECT * FROM alumnos WHERE id=?', [asist.alumno_id])
+    const alumnInasVal = await mySQLConnection('SELECT * FROM alumnos WHERE id=?', [asist.alumno_id||asist.id])
     //                                          Cuidado
     const alumnInasAdd=`UPDATE alumnos SET ${propMod[asistBody?.modv||asist.modulo]} = ? + 1, inasistencias = inas_aula/2 + inas_tal/2 + inas_fis/2 + inas_preh/4 WHERE id = ?`;
     /*                           Valores a sumar o restar para ver lo que vale cada inasistencia a x modulo                                                    */
@@ -20,6 +20,9 @@ export async function changeInasCount(asist, asistBody, operation){//Asist es la
 
 async function verifyAsistExistence(asistBody){
     let msgListToReturn=[];
+    let noNoChangesMade=false;//Primero pasa por los verificadores de aca abajo, hace sus cambios, si no hizo nada, es porque no hubo cambios en el sistema, por ende No changes made
+    let presenceList=false;
+    console.log("asistArr: ", asistBody.asistArr)
     const asistIteration= asistBody.asistArr.map(async asist=>{//asistArr son todas las asistencias tomadas en la clase
         
         //Primero debe verificar de que no se repita las tomas de asistencias en el mismo dia(fecha), y en su defecto, cambiarlas de ser que ya exista
@@ -32,21 +35,25 @@ async function verifyAsistExistence(asistBody){
             verifyAsistance: asistencia antes
             asist: nueva asistencia
         */
-        if(verifyAsistance[0]){
+       console.log("verifyAsistance: ", verifyAsistance);
+
+        if(verifyAsistance[0]!=undefined){
+            presenceList=true;
             let shouldReturnInform={msg: "", type: ""};
-            
+            //console.log("testing asist already made for that alumn");
             const updateAsistance = `UPDATE asistencias SET presencia = ?, justificada=? WHERE id=?`;//Para manejar llegadas tarde o justificativos que vienen con algun alumno mas
             const asisVals = [asist.presencia, asist.justificada, verifyAsistance[0].id];
             await mySQLConnection(updateAsistance, asisVals)
             //Si antes se resto o sumo inasistencia, ahora se debe hacer el proceso contrario y reponer a la cantidad que tenia:
-            console.log("Test of booleans: last asistance: ", verifyAsistance[0].presencia, " last justifyer: ", verifyAsistance[0].justificada, " new asistance: ", asist.presencia," new justifier: ", asist.justificada)
+            //console.log("Test of booleans: last asistance: ", verifyAsistance[0].presencia, " last justifyer: ", verifyAsistance[0].justificada, " new asistance: ", asist.presencia," new justifier: ", asist.justificada)
             if(!verifyAsistance[0].presencia&&(asist.presencia||asist.justificada)){//Verifica que si antes no asistio, en la nueva toma de asistencia, verifique si asistio o tiene justificada la falta
                 
                 shouldReturnInform.msg="Se cambio a presente a "+verifyAsistance[0].name_completo+" que antes estaba ausente"
                 if(asist.justificada&&!asist.presencia)shouldReturnInform.msg="Se le justifico la falta a "+verifyAsistance[0].name_completo+" que antes estaba ausente";
                 shouldReturnInform.type="update";
                 msgListToReturn.push(shouldReturnInform)
-
+                noNoChangesMade=true;
+                console.log("llegada tarde, noNoChangesMade: ", noNoChangesMade, " for: ", verifyAsistance[0].name_completo)
                 changeInasCount(asist, asistBody, "-")
                 return
             }
@@ -57,7 +64,8 @@ async function verifyAsistExistence(asistBody){
                 shouldReturnInform.msg="Se cambio a ausente a "+verifyAsistance[0].name_completo+" que se creia estar presente"
                 shouldReturnInform.type="update";
                 msgListToReturn.push(shouldReturnInform)
-
+                noNoChangesMade=true;
+                console.log("el que se creia estar presente pero ahora ausente, noNoChangesMade: ", noNoChangesMade, " for: ", verifyAsistance[0].name_completo)
                 changeInasCount(asist, asistBody, "+")
                 return
             }
@@ -66,7 +74,8 @@ async function verifyAsistExistence(asistBody){
                 shouldReturnInform.msg="Se cambio a ausente a "+verifyAsistance[0].name_completo+" que no tenia justificativo"
                 shouldReturnInform.type="update";
                 msgListToReturn.push(shouldReturnInform)
-
+                noNoChangesMade=true;
+                console.log("setted to ausent without justification, noNoChangesMade: ", noNoChangesMade, " for: ", verifyAsistance[0].name_completo)
                 changeInasCount(asist, asistBody, "+")
                 return
             }
@@ -75,6 +84,15 @@ async function verifyAsistExistence(asistBody){
         }
     })
     await Promise.all(asistIteration)
+    let unChangedObj={msg:"", type:""}
+    console.log("noNoChangesMade: ", noNoChangesMade)
+    if(noNoChangesMade==false&&presenceList){
+        unChangedObj.msg="No changes made"
+        unChangedObj.type="update";
+
+        msgListToReturn.push(unChangedObj)
+    }
+    
     return msgListToReturn
 }
 
@@ -104,6 +122,10 @@ const daySemList=[
 export async function submitPresence(req, res){
     let asistBody = req.body;
     const msgList= await verifyAsistExistence(asistBody)
+    if(msgList==222){
+        console.log("No changes actually on inform")
+        return//En el caso de que literalmente no haya habido cambios en la asistencia
+    }
     if(msgList.length!=0){
         res.status(200).json({msgList})
         return
@@ -113,7 +135,7 @@ export async function submitPresence(req, res){
     let dia = dateTime.getDay();
     if(dia==0)dia=7;
     const diaSem = daySemList[dia];
-    console.log("testing month and day: month: ", mes, " day Sem: ", diaSem, " day number: ", dia)
+    //console.log("testing month and day: month: ", mes, " day Sem: ", diaSem, " day number: ", dia)
     //Consultas sujeta a futuras modificaciones
     let newClass = `INSERT INTO clases 
     (id, materia_class_id, submit_datetime,curso_id, prof_asist,modulo,grupo_tal,asistencias,justificada,mes, dia, dia_sem) VALUES 

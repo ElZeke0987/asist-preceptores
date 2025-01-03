@@ -44,6 +44,14 @@ export default function ParsCourses({setAlumnObjSel}){
 
     useEffect(()=>setAlumnsLoadFinal(alumnsLoadCourse),[alumnsLoadCourse])
 
+    useEffect(()=>setAlumnsLoadFinal(alumnsLoadGrp), [alumnsLoadGrp])
+
+   /* useEffect(()=>console.log("new alumnsLoadCourse: ", alumnsLoadCourse), [alumnsLoadCourse])
+
+    useEffect(()=>console.log("new alumnsLoadFinal: ", alumnsLoadFinal), [alumnsLoadFinal])*/
+
+    
+
     useEffect(()=>setAlumnsLoadFinal(alumnsLoadGrp),[alumnsLoadGrp])
     
     if(data==undefined){
