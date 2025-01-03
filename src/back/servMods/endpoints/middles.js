@@ -45,7 +45,7 @@ export const registerMiddles = [
     body("tel", "Tel number is required").not().isEmpty(),
     body("pass", "Password required").not().isEmpty(),
     body("pass", "Min 8 chars for password").isLength({min: 8}),
-    body("pass", "One number, caps or symbol is required").matches(/^(?=.*[A-Z])(?=.*\d)(?=.*[@#$!%*?&^|])[A-Za-z\d@$!%*?&]/),
+    body("pass", "Password should hae one number, caps or symbol at least").matches(/^(?=.*[A-Z])(?=.*\d)(?=.*[@#$!%*?&^|])[A-Za-z\d@$!%*?&]/),
     body("rPass", "Repeat password please").not().isEmpty(),
     body("rPass", "Both password fields will be the same").custom((value, { req })=>{
         if(value != req.body.pass){throw new Error("Passwords do not match")}

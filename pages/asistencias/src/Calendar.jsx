@@ -171,17 +171,20 @@ export default function Calendar({alumnObjSel}){
                         
                         Array.from({length: 36/*maxDays+1*/}).map(()=>{
                             diaNRender++
-                            if(diaNRender < mesInfo.primerDia||diaNRender>mesInfo.cantDias+mesInfo.primerDia||diaNRender-mesInfo.primerDia==0)return <div className="cal-day-empty">Empty</div>//Se empezaran a renderizar las celdas en el momento que se llegue al dia de inicio
+                            if(diaNRender < mesInfo.primerDia||diaNRender>mesInfo.cantDias+mesInfo.primerDia||diaNRender-mesInfo.primerDia==0)return <div className="cal-day-empty day-col-item"></div>//Se empezaran a renderizar las celdas en el momento que se llegue al dia de inicio
                             const diaN = diaNRender-mesInfo.primerDia
                             //console.log("diaNumber: ", actualYear, actualMonthId, diaN)
                             const asistenciasDelAlumnoEnElDia=[]
                             listAsistencias.forEach((conjuntAsist)=>{
                                 //Primero, si esta en el año y mes seleccionados, se mostrara obviamente, es la mejor condicional para separar por las fechas exactas
+                                
+                                const selDate=String(actualYear)+"-"+String(actualMonthId+1)+"-"+String(diaN);
 
-                                const selDate=new Date(actualYear, actualMonthId, diaN).toDateString()//.split("T")[0]
+                                console.log("Filter? :", conjuntAsist.date, " = ", selDate)
                                 if(conjuntAsist.date==selDate)asistenciasDelAlumnoEnElDia.push(conjuntAsist)
                             })
-                            if(asistenciasDelAlumnoEnElDia.length==0)return <div className="asist-conjunt-cont asist-void">{diaN}</div>
+                            console.log("testing asistencias hoy: ", asistenciasDelAlumnoEnElDia)
+                            if(asistenciasDelAlumnoEnElDia.length==0)return <div className="asist-conjunt-cont asist-void day-col-item">{diaN}</div>
                             asistenciasDelAlumnoEnElDia.map((conjuntAsist, ind)=>{//Verifica sobre todas las asistencias del alumno
                                 console.log("Test of alumnObjSel", alumnObjSel)
                                 return(

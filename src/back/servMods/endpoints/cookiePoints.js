@@ -64,14 +64,14 @@ export async function setInitCookies(req, res){
 
 export function readAuthCookies(req, res){
     if (!req.cookies.authToken){
-        res.status(401).json({data: "Token no encontrado"})
+        res.status(404).json({data: "Token no encontrado"})
         return
     };
     const authToken = req.cookies.authToken;
     jwt.verify(authToken, clave_finals, (err, decd)=>{
         if(err){
             console.log("Token invalido: ", err.message);
-            return res.status(401).json({
+            return res.status(403).json({
                 status: 'error',
                 message: err.message,
             }) 
@@ -82,16 +82,16 @@ export function readAuthCookies(req, res){
 }
 export function getAuthCookies(req){
     if (!req.cookies.authToken){
-        return {r: false, msg: "Token no encontrado"};
+        return {r: false, status: 404,msg: "Token no encontrado"};
     };
     const authToken = req.cookies.authToken;
     return new Promise((resolve) => {
         jwt.verify(authToken, clave_finals, (err, decd) => {
             if (err) {
                 console.log("Token inválido: ", err.message);
-                return resolve({ r: false, msg: err.message });
+                return resolve({ r: false, status: 403, msg: err.message });
             }
-            resolve({ r: true, decd });
+            resolve({ r: true, status: 200, decd });
         });
     });
 }

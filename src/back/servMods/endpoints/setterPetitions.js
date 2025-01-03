@@ -14,6 +14,11 @@ export async function delPetition(petiId, req, res){
 
 export async function verifyPetition(req, res){//Esto verifica desde el cliente que este usando, que la peticion haya sido hecha
     const cookie = await getAuthCookies(req);
+    if(cookie.status!=200){
+        res.status(cookie.status).json({msg: cookie.msg})
+        return
+    }
+
     const cuentaId = cookie.decd.id;
     let petition = await mySQLConnection("SELECT * FROM role_petitions WHERE cuenta_id=?", [cuentaId])
     if (petition[0]){
@@ -41,7 +46,7 @@ export async function setPetition(req, res){//Esto crea una nueva peticion desde
         }
         await mySQLConnection("SELECT * FROM role_petitions WHERE cuenta_id=?", [cuentaId]).then(validatingPetition=>{//Similar a verifyPetition
             if(validatingPetition[0]){
-                res.status(400).json({msg: "Role petition already made", code: 2});
+                res.status(401).json({msg: "Role petition already made", code: 2});
                 return
             }
         })
@@ -64,7 +69,7 @@ export async function setPetition(req, res){//Esto crea una nueva peticion desde
     }else{
         let PetiIdIns=await mySQLConnection("INSERT INTO role_petitions (id, cuenta_id, rol, nombre, apellido, dni, msg_pet, username) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?)", 
         [cuentaId , petRole, petiBody.nom, petiBody.ape, petiBody.dni, null, username]);
-        res.status(200).json({msg: "petition succesfuly made", petiId })  
+        res.status(200).json({msg: "petition succesfuly made", petiId: PetiIdIns })  
     }
 }
 
