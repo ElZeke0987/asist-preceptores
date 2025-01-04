@@ -15,7 +15,7 @@ export async function mySQLConnection(query, dataArray){
     let conn = new Sequelize("escuela", "root", "", {
         host: "localhost",
         dialect: "mysql",
-        logging: true
+        //logging: false,
 
     })
     try{

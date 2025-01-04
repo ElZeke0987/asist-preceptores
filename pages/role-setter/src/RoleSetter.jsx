@@ -140,7 +140,7 @@ export default function RoleSetter() {
                   if(alumnPar&&!aOpt){return}
                   console.log("Testing alumnPar: ", alumnPar, " aOpt: ", aOpt, " value of justAsist: ", v)
                   if(v.alumn_id!=aOpt?.id){return}
-                  
+                  if(v.accepted||v.rejected){return}
                   return <ResultJust alumnItem={aOpt} justAsist={v} type={menu}/>
               }
               if(cOpt&&v&&menu!="justify"){

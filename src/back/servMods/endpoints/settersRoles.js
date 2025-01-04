@@ -55,18 +55,18 @@ function insertingSchooRole(body, req, res, role, userInfo){
         mySQLConnection("SELECT rol_id FROM cuentas WHERE id=?", [body.accId])
         .then(roleId=>{
             if(roleId[0].rol_id!=0){
-                mySQLConnection(tableQueriesUpd[role], [0, null, roleId[0].rol_id])
+                mySQLConnection(tableQueriesUpd[role], [0, null, roleId[0].rol_id])//Cambia un puesto de x rol existente para que quede en desuso o unclaimed
             }
                 
         });//Unclaiming
         //Condicion de que si es un alumno o no, buscara diferentes procedimientos de insercion al sistema
         role=="alum"?insertingAlumn(body, res, role)://Insercion de docente (Preceptor o profesor por ahora)
-        mySQLConnection(tableQueriesIns[role], [body.nom+" "+body.ape, body.nom, body.ape, body.dni, body.accId]).then(insDocent=>{
+        mySQLConnection(tableQueriesIns[role], [body.nom+" "+body.ape, body.nom, body.ape, body.dni, body.accId]).then(async insDocent=>{
 
             if(role=="prec"){
-                verifyPermisions(canSetPrecAdm, req, res, userInfo, {handlePermission:(status)=>{//Si es un rol de Preceptor, de alto nivel, se tiene que verificar que sea administrador quien lo este poniendo
+                await verifyPermisions(canSetPrecAdm, req, res, userInfo, {handlePermission: async (status)=>{//Si es un rol de Preceptor, de alto nivel, se tiene que verificar que sea administrador quien lo este poniendo
                     if(status){
-                        mySQLConnection("UPDATE cuentas SET rol=?, rol_id=? WHERE id=?", [role, insDocent, body.accId])//Se cambia al siguiente sujeto o rol
+                        await mySQLConnection("UPDATE cuentas SET rol=?, rol_id=? WHERE id=?", [role, insDocent, body.accId])//Se cambia al siguiente sujeto o rol
                         res.send({msg: "Inserted docent succesfuly", res: insDocent, code: 3})
                     }else{
                         res.send({msg: "Can't change other prec being a prec yourself", res: insDocent, code: 5})
@@ -75,7 +75,7 @@ function insertingSchooRole(body, req, res, role, userInfo){
                 }})
                 return
             }
-            if(role=="prof")mySQLConnection("UPDATE cuentas SET rol=?, rol_id=? WHERE id=?", [role, insDocent, body.accId])//En el caso del profesor
+            if(role=="prof")await mySQLConnection("UPDATE cuentas SET rol=?, rol_id=? WHERE id=?", [role, insDocent, body.accId])//En el caso del profesor
         })
     })
 }
@@ -101,7 +101,7 @@ async function setRoleFunc(req, res, userInfo){
     let body=req.body;
     let role=body.role.role||body.role;
     console.log("l-100: body test: ", body)
-    if(schoolRoles.includes(role)){
+    if(schoolRoles.includes(role)){//Es un rol de la escuela
         /**Complementacion de role_id
          * Todo se basa en que si ya esta el alumno, preceptor o profesor en la base de datos, coincidendo datos basicos
          * Si ya hay un rol_id definido es claramente porque esta vinculado, se tiene que dejar esta columna en NULL si no lo esta
@@ -113,7 +113,8 @@ async function setRoleFunc(req, res, userInfo){
          * el segundo selecciona para ver si los datos ingresados en el form, son propios de algun alumno, para asi revincular la cuenta
          */
         console.log("Perteneciente a la institucion")
-        mySQLConnection(tableQueriesSelByBas[role], [body.nom, body.ape, body.dni]).then(roleSchool=>{
+        await mySQLConnection("DELETE FROM role_petitions WHERE cuenta_id=?", [body.accId])
+        await mySQLConnection(tableQueriesSelByBas[role], [body.nom, body.ape, body.dni]).then(roleSchool=>{
             if(roleSchool[0]){//Si existe el sujeto peticionado
                 if(roleSchool[0].claimed==1){//Si ya esta claimed
                     console.log("Ya esta vinculado")
