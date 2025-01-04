@@ -81,6 +81,7 @@
             width: 100%;
             display: flex;
             flex-direction: column;
+            
             .cal-header-days{
                 display: grid;
                 grid-auto-flow: column;
@@ -91,11 +92,32 @@
                 display: grid;
                 grid-template-columns: repeat(7, 1fr);
                 grid-template-rows: repeat(5, 50px);
+                position: relative;
+                .feedback-anim{
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    grid-column: 1 / 8;
+                    grid-row: 1 / 6;
+                    background-color: $calListFeedbackBG;
+                    animation: feedback-rerender $calListFeedbackMS forwards;
+                }
                 
             }
+            
         }
     }
 }
+
+@keyframes feedback-rerender {
+    0%{
+        opacity: 1;
+    }
+    100%{
+        opacity: 0;
+    }
+}
+
 .asist-conjunt-cont{
     position: relative;
 }

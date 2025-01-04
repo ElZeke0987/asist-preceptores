@@ -40,8 +40,22 @@ export default function Calendar({alumnObjSel}){
     const [listAsistencias, setListAsistencias]=useState([]);
     const [listAsistenciasByDate, setListAsistenciasByDate]=useState([]);
     const [settedLABD, setSettedLABD]=useState(false);
+    const [feedbackAnim, setFeedbackAnim]=useState(true);
+    const [hasAnimated, setHasAnimated]=useState(false);
+    useEffect(() => {
+        
+        if (feedbackAnim && !hasAnimated) {
+            console.log("changing feedback");
+            setHasAnimated(true); // Marcar que la animación ha ocurrido
+            const timer = setTimeout(() => {
+                console.log("timer ended")
+                setFeedbackAnim(false); // Cambiar el estado después de 200ms
+            }, 20000);
+            //return () => clearTimeout(timer); // Limpiar el timeout si el componente se desmonta
+        }
+    }, [feedbackAnim, hasAnimated]); // Agregar hasAnimated como dependencia
 
-    
+
     useEffect(()=>{//Efecto para cargar las asistencias del alumno
         
         const loadAsistsReq={
@@ -54,13 +68,16 @@ export default function Calendar({alumnObjSel}){
         fetch("/load-asistencias", loadAsistsReq).then(r=>r.json()).then(data=>{//Carga las asistencias e inasistencias de un alumno, todas, y solo de un alumno
             let newListAsistencias=[]
             let conjuntedByDate=[]
+            //console.log("loaded asistencias: ", data.listAsistencias)
             data.listAsistencias.forEach((asistencia,i)=>{//asistencia son las asistencias directamente cargadas de la BD
                 const dateYMD= asistencia.fecha.split('T')[0]//Se convierte la fecha DATETIME a DATE nada mas
-                console.log("testing asistencia: ", asistencia.fecha.split('T')[0])
+                // console.log("testing asistencia: ", asistencia.fecha.split('T')[0])
                 if(!conjuntedByDate[0]){//Si no habia conjunto creado se crea y se sigue iterando
                     conjuntedByDate.push(asistencia)
+                    //console.log("Creating conjunt: ", conjuntedByDate, dateYMD)
                     if(data.listAsistencias.length==1){//En el caso de ser primera asistencia
                         newListAsistencias.push({date: dateYMD, dia: asistencia.dia, mes: asistencia.mes, conjunt: conjuntedByDate})
+                        //console.log("Only this conjunt: ", conjuntedByDate)
                         conjuntedByDate=[]
                     }
                     return
@@ -68,8 +85,12 @@ export default function Calendar({alumnObjSel}){
                 const dateYMD2= conjuntedByDate[0].fecha.split('T')[0]//Para verificar si al menos, al primer objeto de la
                 if(dateYMD==dateYMD2){//Si comparten la misma fecha de registro de asistencia se agrega al conjunto
                     conjuntedByDate.push(asistencia)
-                    if(!data.listAsistencias[i+1]){
+                    //console.log("Same date conjunt: ", conjuntedByDate, dateYMD, dateYMD2)
+                    const nextAsist=data.listAsistencias[i+1];
+                    const nextDateYMD=nextAsist?.fecha.split('T')[0];
+                    if(!nextAsist||dateYMD!=nextDateYMD){//Si en la siguiente ya no hay nada
                         newListAsistencias.push({date: dateYMD, dia: asistencia.dia, mes: asistencia.mes, conjunt: conjuntedByDate})//Asi se crea una lista dividida en conjuntos definidos por la fecha que se realizaron las asistencias que contenga dentro del conjunto
+                        //console.log("Last conjunt of the list in the next iteration: ", conjuntedByDate, dateYMD, nextDateYMD, nextAsist)
                         conjuntedByDate=[]
                     }
                     return
@@ -77,12 +98,15 @@ export default function Calendar({alumnObjSel}){
                 
                 if(dateYMD!=dateYMD2){ //Si no es el caso se reinicia todo y se agrega el nuevo conjunto y es la ultima asistencia de la lista
                     newListAsistencias.push({date: dateYMD, dia: asistencia.dia, mes: asistencia.mes, conjunt: conjuntedByDate})//Asi se crea una lista dividida en conjuntos definidos por la fecha que se realizaron las asistencias que contenga dentro del conjunto
+                    //console.log("Dates in conjunst aren't the same: ", conjuntedByDate, dateYMD, dateYMD2)
                     conjuntedByDate=[]
                 }
             })
-            console.log("new alumnObjSel test on self eff: ", alumnObjSel)
+            //console.log("End of iteration: ", conjuntedByDate)
+            setHasAnimated(false)    
             setListAsistencias(newListAsistencias);
-
+            setFeedbackAnim(true);
+            console.log("Changing alumn")
         })
       },[alumnObjSel])
 
@@ -180,6 +204,7 @@ export default function Calendar({alumnObjSel}){
                     </div>
                     
                     <div className={"cal-list-days "}>
+                        {feedbackAnim&&<div className="feedback-anim"></div>}
                         {
                         
                         Array.from({length: 36/*maxDays+1*/}).map(()=>{

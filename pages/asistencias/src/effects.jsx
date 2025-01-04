@@ -2,7 +2,7 @@ import { useEffect } from "react"
 
 export function alumnIdSelEff(alumnsLoadFinal, setAlumnObjSel, alumnIdSel){//La lista final despues de todos los filtros, seria la de los grupos
 //Hay que probar si dejar que sea en la lista pequeña y filtrada es buena opcion o si usar la lista total de alumnos para buscar al mismo, buscar cual es mas propensa a errores
-    console.log("Testing alumnIdSelEff: ", alumnsLoadFinal);
+    //console.log("Testing alumnIdSelEff: ", alumnsLoadFinal);
     alumnsLoadFinal.forEach((v, i)=>{//Cuando se elija un alumno
         //console.log("Testing v.id with selected alumn id: ", v.id, " = ", alumnIdSel.id);
         if(v.id==alumnIdSel.id){
@@ -23,7 +23,7 @@ export function alumnIdSelEff(alumnsLoadFinal, setAlumnObjSel, alumnIdSel){//La 
                 inas_fis: v.inas_fis,
             };
 
-            console.log("hola testing: ", newAlumnObjSel );
+            //console.log("hola testing: ", newAlumnObjSel );
             setAlumnObjSel(newAlumnObjSel)
         }
     })
