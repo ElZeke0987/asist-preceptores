@@ -20,9 +20,9 @@ function ToJustCheckbox({ asistItem, setJustModInas, justModInas }) {
     );
 }
 
-function ModuleElement({ asist }) {
+function ModuleElement({ asist }) {// asist es un objeto de la tabla asistencias
     return (
-    <div className={"asist-mod-" + asist?.modulo + " asist-mod " + (asist?.presencia == 1 ? "asist-pres" : "asist-inas")}> 
+    <div className={"asist-mod-" + asist?.modulo + " asist-mod " + (asist?.presencia == 1 ? "asist-pres" : "asist-inas") + (asist?.justificada==1?"asist-just":"")}> 
         {moduleText[asist?.modulo]}
     </div>)
 }
@@ -89,7 +89,7 @@ export default function ConjuntCell(
             <button onClick={e => setJustOpen(!justOpen)}>{justOpen?"Volver":"Justificar"}</button>
             {justOpen && <div className="justifier-form">
                 {conjuntAsist.map((v, i) => {
-                    if (v == undefined||v.presencia==true) return;
+                    if (v == undefined||v.presencia||v.justificada) return;
                     return (<ToJustCheckbox asistItem={v} setJustModInas={setJustModInas} justModInas={justModInas} key={i} />);
                 })}
                 <label>Mensaje Justificativo</label>

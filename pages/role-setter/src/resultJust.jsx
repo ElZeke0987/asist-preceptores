@@ -29,16 +29,16 @@ export default function ResultJust({alumnItem, justAsist, type}){
                 </div>
             </div>
             <div className="res-item-opts">
-
-            <div className="opts">
-                {/* A futuro un boton para denunciar y todo un sistema para ello */}
-                <div className="del-opt" onClick={e=>handleSendJust("rechazar")}>
-                    {"<"}Rechazar
+                
+                <div className="opts">
+                    {/* A futuro un boton para denunciar y todo un sistema para ello */}
+                    <div className="del-opt" onClick={e=>handleSendJust("rechazar")}>
+                        {"<"}Rechazar
+                    </div>
+                    <div className="ace-opt" onClick={e=>handleSendJust("justificar")}>
+                        Justificar{">"}
+                    </div>
                 </div>
-                <div className="ace-opt" onClick={e=>handleSendJust("justificar")}>
-                    Justificar{">"}
-                </div>
-            </div>
             </div>
         </>
             
